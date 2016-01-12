@@ -1,42 +1,61 @@
 (function () {
+    var Set = function () {
+        var _items = [];
+
+        return {
+            push: function (component) {
+                _items.push(component);
+            },
+            last: function () {
+                return ((_items.length > 0) ? _items[_items.length - 1] : null);
+            }
+        };
+    };
+
     var Chain = function () {
         var self = this;
         var _chain = [];
+        var _chainRunDelay = 500;
+        var _chainComponents = new Set();
+        var _chainCallback = function () {
+            throw new Error('Chain callback is not defined');
+        };
 
-        var _addAction = function (actionType) {
+        var _createActionFunction = function (actionType) {
             return function () {
                 var args = Array.prototype.slice.call(arguments, 0);
-                console.log('-- add to chain', actionType);
+
                 _chain.push({
                     actionType: actionType,
                     args: args
                 });
+
                 if (typeof args[0] === 'function') {
+                    _chainCallback = args[0];
+                    _createActionFunction = function () {
+                        throw new Error('Call _addChain() after run.');
+                    };
                     _run();
-                    _addAction = function () {
-                        throw 'Call _addChain() after run.';
-                    }
                 }
+
                 return self;
             };
         };
 
         var _run = function () {
             var callActionByIndex = function (index) {
-                console.log('-- callAction', index, _chain[index]['actionType']);
                 _actions[_chain[index]['actionType']](
                     index,
                     function (err) {
-                        console.log('-- action callback', arguments);
                         if (err) {
-                            _chain[_chain - 1]['args'][0].apply(_chain, [null]);
+                            _chainCallback(new Error(err));
                             return;
-                        }
-
-                        if (index + 1 === _chain.length) {
-                            _chain[index]['args'][0].apply(_chain, [null]);
+                        } else if (index + 1 === _chain.length) {
+                            _chainCallback(null);
                         } else if (index + 1 < _chain.length) {
-                            callActionByIndex(index + 1);
+                            setTimeout(function () {
+                                callActionByIndex(index + 1);
+                            }, _chainRunDelay);
                         }
                     }
                 );
@@ -45,31 +64,81 @@
             callActionByIndex(0);
         };
 
-        var _actions = {
-            button: function (index, callback) {
-                var args = _chain[index]['args'];
-                console.log('-- action BUTTON', args);
-                callback(null);
+        var _domHelpers = {
+            getComponent: function (selector, callback) {
+                var component = Ext.ComponentQuery.query(selector)[0];
+
+                if (component) {
+                    callback(null, component);
+                } else {
+                    callback('Selector "' + selector+ '" not found.');
+                }
             },
-            click: function (index, callback) {
-                var args = _chain[index]['args'];
-                console.log('-- action CLICK', args);
-                callback(null);
+            clickOnComponent: function (componentObject, callback) {
+                var err;
+                var el = componentObject.component.el.dom;
+                var rect = el.getBoundingClientRect();
+
+                if (window.callPhantom) {
+                    err = !window.callPhantom({
+                        sendEvent: ['click', rect.left + rect.width / 2, rect.top + rect.height / 2]
+                    });
+                } else {
+                    try {
+                        document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2).click();
+                        err = false;
+                    } catch (e) {
+                        err = true;
+                    }
+                }
+
+                if (err) {
+                    callback('Cannot click on ' + componentObject.type + ' "' + componentObject.selector + '".');
+                } else {
+                    callback(null);
+                }
             }
         };
 
-        // add init action and return object
-        return {
-            button: _addAction('button'),
-            click: _addAction('click')
+        var _actions = {
+            button: function (index, callback) {
+                var args = _chain[index]['args'];
+                var selector = args[0];
+
+                _domHelpers.getComponent('button[text~="' + selector + '"]', function (err, component) {
+                    if (component) {
+                        _chainComponents.push({
+                            type: 'button',
+                            selector: selector,
+                            component: component
+                        });
+                    }
+
+                    callback(err);
+                });
+            },
+            click: function (index, callback) {
+                var componentObject = _chainComponents.last();
+
+                if (!componentObject) {
+                    callback('No click target.');
+                }
+
+                _domHelpers.clickOnComponent(componentObject, callback);
+            }
         };
+
+        // add actions
+        self.button = _createActionFunction('button');
+        self.click = _createActionFunction('click');
+
+        return self;
     };
 
     var _createChain = function (initActionType) {
         return function () {
             var chain = new Chain(initActionType);
-            chain[initActionType].apply(chain, Array.prototype.slice.call(arguments, 0));
-            return chain;
+            return chain[initActionType].apply(chain, Array.prototype.slice.call(arguments, 0));
         }
     };
 
