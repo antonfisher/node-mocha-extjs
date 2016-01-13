@@ -12,6 +12,34 @@
         };
     };
 
+    //TODO to class
+    var _cursor = function (x, y) {
+        var size = 14;
+        var timeout = 600;
+        var point = document.createElement('div');
+
+        point.style.top = (y + 'px');
+        point.style.left = (x + 'px');
+        point.style.width = (size + 'px');
+        point.style.zIndex = '100000';
+        point.style.height = (size + 'px');
+        point.style.border = '2px solid #ffffff';
+        point.style.opacity = '1';
+        point.style.position = 'absolute';
+        point.style.transition = ('opacity ' + timeout + 'ms ease-out');
+        point.style.borderRadius = ('0 ' + ((size / 2) + 'px ') + ((size / 2) + 'px ') + ((size / 2) + 'px'));
+        point.style.backgroundColor = '#ee3333';
+
+        document.body.appendChild(point);
+
+        setTimeout(function () {
+            point.style.opacity = '0';
+            setTimeout(function () {
+                document.body.removeChild(point);
+            }, timeout);
+        }, timeout);
+    };
+
     var Chain = function () {
         var self = this;
         var _chain = [];
@@ -77,20 +105,29 @@
             clickOnComponent: function (componentObject, callback) {
                 var err;
                 var el = componentObject.component.el.dom;
+
+                // for PhantomJs:
+                //  ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js:116
+                // add "page.sendEvent.apply(this, data.sendEvent);"
+                //
                 var rect = el.getBoundingClientRect();
+                var x = (rect.left + rect.width / 2);
+                var y = (rect.top + rect.height / 2);
 
                 if (window.callPhantom) {
                     err = !window.callPhantom({
-                        sendEvent: ['click', rect.left + rect.width / 2, rect.top + rect.height / 2]
+                        sendEvent: ['click', x, y]
                     });
                 } else {
                     try {
-                        document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2).click();
+                        document.elementFromPoint(x, y).click();
                         err = false;
                     } catch (e) {
                         err = true;
                     }
                 }
+
+                _cursor(x, y);
 
                 if (err) {
                     callback('Cannot click on ' + componentObject.type + ' "' + componentObject.selector + '".');
