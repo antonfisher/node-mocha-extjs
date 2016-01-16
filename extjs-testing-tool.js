@@ -16,26 +16,32 @@
         var self = this;
         var _size = 14;
         var _timeout = 400;
-        var _point = document.createElement('div');
         var _initTransition = ('all ' + _timeout + 'ms ease-in-out');
         var _position = {
             x: 0,
             y: 0
         };
 
-        _point.style.top = (_position.y + 'px');
-        _point.style.left = (_position.x + 'px');
-        _point.style.width = (_size + 'px');
-        _point.style.zIndex = '90000';
-        _point.style.height = (_size + 'px');
-        _point.style.border = '2px solid #ffffff';
-        _point.style.position = 'absolute';
-        _point.style.opacity = '1';
-        _point.style.transition = _initTransition;
-        _point.style.borderRadius = ('0 ' + ((_size / 2) + 'px ') + ((_size / 2) + 'px ') + ((_size / 2) + 'px'));
-        _point.style.backgroundColor = '#ee3333';
+        var _point = window.document.getElementById('mocha-extjs-testing-tool-pointer');
 
-        window.document.body.appendChild(_point);
+        if (!_point) {
+            _point = document.createElement('div');
+
+            _point.id = 'mocha-extjs-testing-tool-pointer';
+            _point.style.top = (_position.y + 'px');
+            _point.style.left = (_position.x + 'px');
+            _point.style.width = (_size + 'px');
+            _point.style.zIndex = '90000';
+            _point.style.height = (_size + 'px');
+            _point.style.border = '2px solid #ffffff';
+            _point.style.position = 'absolute';
+            _point.style.opacity = '1';
+            _point.style.transition = _initTransition;
+            _point.style.borderRadius = ('0 ' + ((_size / 2) + 'px ') + ((_size / 2) + 'px ') + ((_size / 2) + 'px'));
+            _point.style.backgroundColor = '#ee3333';
+
+            window.document.body.appendChild(_point);
+        }
 
         self.moveTo = function (x, y, callback) {
             var translate = ('translate(' + x + 'px,' + y + 'px)');
@@ -52,13 +58,6 @@
                         callback(null);
                     }, 50);
                 }, 50);
-            }, _timeout);
-        };
-
-        self.destroy = function () {
-            _point.style.opacity = '0';
-            setTimeout(function () {
-                window.document.body.removeChild(_point);
             }, _timeout);
         };
 
@@ -89,13 +88,16 @@
                     args: args
                 });
 
-                if (typeof args[0] === 'function') {
-                    _chainCallback = args[0];
-                    _chainPresented = true;
-                    _createActionFunction = function () {
-                        throw new Error('Call _addChain() after run.');
-                    };
-                    _run();
+                for (var i = 0; i < args.length; i++) {
+                    if (typeof args[i] === 'function') {
+                        _chainCallback = args[i];
+                        _chainPresented = true;
+                        _createActionFunction = function () {
+                            throw new Error('Call _addChain() after run.');
+                        };
+                        _run();
+                        break;
+                    }
                 }
 
                 return self;
@@ -109,7 +111,6 @@
                     function (err) {
                         if (err || index + 1 === _chain.length) {
                             _chainCallback(err ? new Error(err) : null);
-                            _destroy();
                             return;
                         }
 
@@ -145,6 +146,7 @@
                 if ((+new Date() - startTimestamp) > params.timeout) {
                     clearInterval(interval);
                     callback('Out of time: ' + (params.timeout / 1000) + 's (' + lastError + ')');
+                    return;
                 }
 
                 waitFn(function (err, result) {
@@ -165,8 +167,41 @@
 
 
         var _domHelpers = {
-            getComponent: function (selector, callback) {
-                var component = Ext.ComponentQuery.query(selector)[0];
+            getComponent: function (type, titleOrSelector, callback) {
+                var selector = null;
+                var component = null;
+
+                if (!type) {
+                    selector = titleOrSelector;
+                    component = Ext.ComponentQuery.query(selector)[0];
+                }
+
+                if (!component && type) {
+                    var titleFn = null;
+                    selector = type;
+
+                    if (type === 'button') {
+                        titleFn = 'getText';
+                        selector += ('[text~="' + titleOrSelector + '"]');
+                    } else if (type === 'tab' || type === 'window') {
+                        titleFn = 'getTitle';
+                        selector += ('[title~="' + titleOrSelector + '"]');
+                    } else {
+                        return callback('Type "' + '" not supported.');
+                    }
+
+                    component = Ext.ComponentQuery.query(selector)[0];
+
+                    if (!component) {
+                        var components = (Ext.ComponentQuery.query(type) || []);
+                        for (var i = 0; i < components.length; i++) {
+                            if ((new RegExp(titleOrSelector, 'g')).test(components[i][titleFn]())) {
+                                component = components[i];
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 if (!component) {
                     return callback('Selector "' + selector + '" not found.');
@@ -244,20 +279,20 @@
             }
         };
 
-        var _actions = {
-            button: function (index, callback) {
+        var _createComponentWaitFunction = function (type) {
+            return function (index, callback) {
                 var args = _chain[index]['args'];
-                var selector = args[0];
+                var titleOrSelector = args[0];
 
                 _waitForFn(
                     function (done) {
-                        _domHelpers.getComponent('button[text~="' + selector + '"]', done);
+                        _domHelpers.getComponent(type, titleOrSelector, done);
                     },
                     function (err, component) {
                         if (component) {
                             _chainComponents.push({
-                                type: 'button',
-                                selector: selector,
+                                type: type,
+                                selector: titleOrSelector,
                                 component: component
                             });
                         }
@@ -265,7 +300,14 @@
                         callback(err);
                     }
                 );
-            },
+            }
+        };
+
+        var _actions = {
+            tab: _createComponentWaitFunction('tab'),
+            button: _createComponentWaitFunction('button'),
+            window: _createComponentWaitFunction('window'),
+            //noWindow: _createComponentWaitFunction('window', true),
             click: function (index, callback) {
                 var componentObject = _chainComponents.last();
 
@@ -307,17 +349,26 @@
             }
         };
 
-        var _destroy = function () {
-            _cursor.destroy();
-        };
-
         // find component
+        self.tab = _createActionFunction('tab');
         self.button = _createActionFunction('button');
+        self.window = _createActionFunction('window');
+
+        // no component expected
+        //self.noWindow = _createActionFunction('window');
 
         // component actions
         self.click = _createActionFunction('click');
         self.isEnabled = _createActionFunction('isEnabled');
         self.isDisabled = _createActionFunction('isDisabled');
+
+        //TODO
+        // fill
+        // select grid row
+        // check grid rows count
+        // wait load mask
+        // text presented
+        // hidden
 
         return self;
     };
@@ -330,6 +381,9 @@
     };
 
     window.extJsTT = {
-        button: _createChain('button')
+        tab: _createChain('tab'),
+        button: _createChain('button'),
+        window: _createChain('window'),
+        //noWindow: _createChain('noWindow')
     };
 })();
