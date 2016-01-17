@@ -1,0 +1,45 @@
+#mocha {
+    z-index: 100000;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #FFF;
+    height: 100%;
+    margin: 0;
+    padding-right: 15px;
+    min-width: 300px;
+    overflow: auto;
+    opacity: 0.87;
+    border-left: 1px solid #f0f0f0;
+}
+
+#mocha #mocha-stats {
+    padding: 5px 10px 0 5px;
+    border: 1px dashed #cccccc;
+}
+
+#mocha #mocha-report {
+    padding: 60px 0 0 0;
+    height: 100%;
+}
+
+#mocha .test pre.error {
+    max-width: 500px;
+    font-size: 10px;
+    line-height: 11px;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+#mocha-error {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    z-index: 100000;
+    background: #ffdddd;
+    color: #ff6666;
+    font-size: 16px;
+    padding: 20px;
+    opacity: 0.9;
+    border: 5px solid #ff6666;
+}

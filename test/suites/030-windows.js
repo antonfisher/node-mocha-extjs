@@ -22,10 +22,10 @@ describe('Windows', function () {
     //    extJsTT.noWindow('Confirm', done);
     //});
 
-    after(function () {
-        setTimeout(function () {
-            document.location.href = document.location.href;
-        }, 1000);
-    });
+    //after(function () {
+    //    setTimeout(function () {
+    //        document.location.href = document.location.href;
+    //    }, 1000);
+    //});
 
 });
