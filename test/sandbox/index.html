@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html manifest="">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Sandbox</title>
+
+    <!-- The line below must be kept intact for Sencha Cmd to build your application -->
+    <script id="microloader" type="text/javascript" src="bootstrap.js"></script>
+</head>
+<body>
+
+<!-- mocha.js --->
+<div id="mocha"></div>
+
+<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+<link href="../../css/mocha-extjs.css" rel="stylesheet"/>
+<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="../../extjs-testing-tool.js"></script>
+
+<script>mocha.setup('bdd')</script>
+<script src="../suites/010-environment.js"></script>
+<script src="../suites/020-buttons.js"></script>
+<script src="../suites/030-windows.js"></script>
+<script>
+    mocha.checkLeaks();
+    mocha.globals(['Ext', 'Sandbox']);
+
+    window.onload = function () {
+        setTimeout(function () {
+            mocha.run();
+        }, 1000);
+    };
+</script>
+
+</body>
+</html>
