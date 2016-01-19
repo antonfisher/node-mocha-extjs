@@ -25,9 +25,14 @@
 <script src="../suites/010-environment.js"></script>
 <script src="../suites/020-buttons.js"></script>
 <script src="../suites/030-windows.js"></script>
+<script src="../suites/040-fields.js"></script>
+<script src="../suites/050-grids.js"></script>
+<script src="../suites/060-loadmasks.js"></script>
 <script>
     mocha.checkLeaks();
     mocha.globals(['Ext', 'Sandbox']);
+
+    var eTT = new ExtJsTestingTool();
 
     window.onload = function () {
         setTimeout(function () {

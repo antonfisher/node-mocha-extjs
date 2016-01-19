@@ -4,9 +4,9 @@
   "id": "f7f558e3-d885-4b67-9b73-52bbd50052b2",
   "js": [
     {
-      //"path": "${framework.dir}/build/ext-all-debug.js"
-      "path": "http://cdn.sencha.com/ext/gpl/5.1.0/build/ext-all-debug.js",
-      "remote": true
+      "path": "${framework.dir}/build/ext-all-debug.js"
+      //"path": "http://cdn.sencha.com/ext/gpl/5.1.0/build/ext-all-debug.js",
+      //"remote": true
     },
     {
       "path": "app.js",

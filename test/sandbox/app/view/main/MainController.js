@@ -6,7 +6,8 @@ Ext.define('Sandbox.view.main.MainController', {
         'Ext.window.MessageBox'
     ],
 
-    // Buttons
+
+    // buttons
 
     onButtonsSimpleButtonClick: function (btn) {
         btn.setDisabled(true);
@@ -22,7 +23,8 @@ Ext.define('Sandbox.view.main.MainController', {
         }, 1000);
     },
 
-    // Windows
+
+    // windows
 
     onWindowsShowConfirmButtonClick: function (btn) {
         Ext.getBody().mask('Wait window...');
@@ -31,6 +33,17 @@ Ext.define('Sandbox.view.main.MainController', {
             Ext.Msg.confirm('Confirm', 'Are you sure?', function () {
                 btn.setText(btn.getText() + ' [done]');
             });
+        }, 1000);
+    },
+
+
+    // loadMasks
+
+    onLoadMasksShowButtonClick: function (btn) {
+        Ext.getBody().mask('Wait load mask...');
+        setTimeout(function () {
+            Ext.getBody().unmask();
+            btn.setText(btn.getText() + ' [done]');
         }, 1000);
     }
 

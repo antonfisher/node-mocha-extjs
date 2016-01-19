@@ -45,13 +45,46 @@ Ext.define('Sandbox.view.main.Main', {
             }]
         }, {
             title: 'Fields',
-            items: []
+            items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Name'
+            }, {
+                xtype: 'numberfield',
+                fieldLabel: 'Count'
+            }]
         }, {
             title: 'Grids',
-            items: []
+            items: [{
+                xtype: 'grid',
+                title: 'Names',
+                width: 300,
+                height: 150,
+                border: true,
+                columns: [{
+                    header: 'Name',
+                    dataIndex: 'name',
+                    flex: 1
+                }, {
+                    header: 'Count',
+                    dataIndex: 'count'
+                }],
+                store: Ext.create('Ext.data.Store', {
+                    fields: ['name', 'count'],
+                    data: [{
+                        name: 'Aaa',
+                        count: 3
+                    }, {
+                        name: 'Bbb',
+                        count: 5
+                    }]
+                })
+            }]
         }, {
-            title: 'Load mask',
-            items: []
+            title: 'LoadMasks',
+            items: [{
+                text: 'Show',
+                handler: 'onLoadMasksShowButtonClick'
+            }]
         }]
     }
 });
