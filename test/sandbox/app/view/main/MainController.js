@@ -45,6 +45,20 @@ Ext.define('Sandbox.view.main.MainController', {
             Ext.getBody().unmask();
             btn.setText(btn.getText() + ' [done]');
         }, 1000);
+    },
+
+
+    // texts
+
+    onTextsShowTextButtonClick: function (btn) {
+        var self = this;
+        Ext.getBody().mask('Wait for text appears...');
+        btn.setText('Wait for text appears...');
+        setTimeout(function () {
+            Ext.getBody().unmask();
+            self.getViewModel().set('buttonResultText', 'Result is here!');
+            btn.setText(btn.getText() + ' [done]');
+        }, 1000);
     }
 
 });

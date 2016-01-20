@@ -519,6 +519,33 @@
                         },
                         callback
                     );
+                },
+                waitText: function (index, callback) {
+                    //TODO check parent
+
+                    var args = _chain[index]['args'];
+                    var text = args[0];
+
+                    _waitForFn(
+                        function (done) {
+                            var textPresented = false;
+
+                            if (text instanceof RegExp) {
+                                textPresented = text.test(window.document.body.innerText);
+                            } else if (window.find) {
+                                textPresented = window.find(text, true, true, true); // arg aWholeWord - Unimplemented
+                            } else {
+                                textPresented = (new RegExp(text, 'g')).test(window.document.body.innerText);
+                            }
+
+                            if (textPresented) {
+                                done(null);
+                            } else {
+                                done('Text pattern "' + text + '" not found');
+                            }
+                        },
+                        callback
+                    );
                 }
             };
 
@@ -549,11 +576,10 @@
             self.checkRowsCount = _createActionFunction('checkRowsCount');
 
             // wait methods
+            self.waitText = _createActionFunction('waitText');
             self.waitLoadMask = _createActionFunction('waitLoadMask');
 
             //TODO
-            // wait load mask
-            // text presented
             // hidden
             // check disabled elements
 
@@ -576,6 +602,7 @@
             window: _createChain('window'),
             textfield: _createChain('textfield'),
             numberfield: _createChain('numberfield'),
+            waitText: _createChain('waitText'),
             waitLoadMask: _createChain('waitLoadMask'),
             no: {
                 tab: _createChain('window', true),

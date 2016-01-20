@@ -85,6 +85,19 @@ Ext.define('Sandbox.view.main.Main', {
                 text: 'Show',
                 handler: 'onLoadMasksShowButtonClick'
             }]
+        }, {
+            title: 'Content',
+            items: [{
+                text: 'Show result',
+                handler: 'onTextsShowTextButtonClick'
+            }, {
+                xtype: 'displayfield',
+                labelWidth: 145,
+                fieldLabel: 'Wait new content here',
+                bind: {
+                    value: '{buttonResultText}'
+                }
+            }]
         }]
     }
 });
