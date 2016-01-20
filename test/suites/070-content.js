@@ -2,7 +2,7 @@ describe('Content', function () {
     this.bail(true);
     this.timeout(20 * 1000);
 
-    it('Switch ot "Contents" tab', function (done) {
+    it('Switch ot "Content" tab', function (done) {
         eTT.tab('Content').click(done);
     });
 
@@ -12,6 +12,14 @@ describe('Content', function () {
 
     it('Text "Result is here!" should appears in 1s', function (done) {
         eTT.waitText('Result is here!', done);
+    });
+
+    it('"Hide me" button should be hidden after click', function (done) {
+        eTT.button('Hide me').click().isHidden(done);
+    });
+
+    it('"Hide me" button should be visible again', function (done) {
+        eTT.button('Hide me').isVisible(done);
     });
 
 });

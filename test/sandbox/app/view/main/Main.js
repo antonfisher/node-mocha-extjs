@@ -51,6 +51,27 @@ Ext.define('Sandbox.view.main.Main', {
             }, {
                 xtype: 'numberfield',
                 fieldLabel: 'Count'
+            }, {
+                xtype: 'checkbox',
+                boxLabel: 'include'
+            }, {
+                xtype: 'radio',
+                boxLabel: 'check A',
+                name: 'checkMe',
+                value: 'a'
+            }, {
+                xtype: 'radio',
+                boxLabel: 'check B',
+                name: 'checkMe',
+                value: 'b'
+            }, {
+                xtype: 'combobox',
+                fieldLabel: 'Select in list',
+                editable: false,
+                store: [
+                    ['a', 'Position A'],
+                    ['b', 'Position B']
+                ]
             }]
         }, {
             title: 'Grids',
@@ -97,6 +118,9 @@ Ext.define('Sandbox.view.main.Main', {
                 bind: {
                     value: '{buttonResultText}'
                 }
+            }, {
+                text: 'Hide me',
+                handler: 'onContentHideMeButtonClick'
             }]
         }]
     }

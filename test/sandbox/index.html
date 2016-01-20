@@ -15,10 +15,13 @@
 <!-- mocha.js --->
 <div id="mocha"></div>
 
-<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+<!--<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />-->
+<link href="/test/sandbox/lib/mocha.css" rel="stylesheet" />
 <link href="../../css/mocha-extjs.css" rel="stylesheet"/>
-<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
-<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<!--<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>-->
+<!--<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>-->
+<script src="/test/sandbox/lib/expect.js"></script>
+<script src="/test/sandbox/lib/mocha.js"></script>
 <script src="../../extjs-testing-tool.js"></script>
 
 <script>mocha.setup('bdd')</script>
@@ -28,6 +31,7 @@
 <script src="../suites/040-fields.js"></script>
 <script src="../suites/050-grids.js"></script>
 <script src="../suites/060-loadmasks.js"></script>
+<script src="../suites/070-content.js"></script>
 <script>
     mocha.checkLeaks();
     mocha.globals(['Ext', 'Sandbox']);

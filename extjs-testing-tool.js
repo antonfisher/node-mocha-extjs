@@ -174,6 +174,7 @@
                 getComponent: function (type, titleOrSelector, callback) {
                     var selector = null;
                     var component = null;
+                    var selectors = [];
                     var _getVisibleComponents = function (selector) {
                         return Ext.ComponentQuery.query(selector).filter(function (c) {
                             if (!c.el || !c.el.dom) {
@@ -198,41 +199,58 @@
                     }
 
                     if (!component && type) {
-                        var titleFn = null;
-                        selector = type;
+                        var titleProperties = [];
 
                         if (type === 'button') {
-                            titleFn = 'getText';
-                            selector += ('[text~="' + titleOrSelector + '"]');
+                            titleProperties = ['text'];
+                            selectors = [type + '[text~="' + titleOrSelector + '"]'];
                         } else if (type === 'tab' || type === 'window' || type === 'grid') {
-                            titleFn = 'getTitle';
-                            selector += ('[title~="' + titleOrSelector + '"]');
-                        } else if (type === 'textfield' || type === 'numberfield') {
-                            titleFn = 'getFieldLabel';
-                            selector += ('[fieldLabel~="' + titleOrSelector + '"]');
+                            titleProperties = ['title'];
+                            selectors = [type + '[title~="' + titleOrSelector + '"]'];
+                        } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
+                            titleProperties = ['fieldLabel'];
+                            selectors = [type + '[fieldLabel~="' + titleOrSelector + '"]'];
+                        } else if (type === 'checkbox' || type === 'radio') {
+                            titleProperties = ['fieldLabel', 'boxLabel'];
+                            selectors = [
+                                type + '[fieldLabel~="' + titleOrSelector + '"]',
+                                type + '[boxLabel~="' + titleOrSelector + '"]'
+                            ];
                         } else {
                             return callback('Type "' + '" not supported.');
                         }
 
                         _mochaUI.hide();
-                        component = _getVisibleComponents(selector)[0];
+                        selectors.every(function (item) {
+                            component = _getVisibleComponents(item)[0];
+                            return !component;
+                        });
                         _mochaUI.show();
 
                         if (!component) {
-                            var components = (Ext.ComponentQuery.query(type) || []);
-                            for (var i = 0; i < components.length; i++) {
-                                if ((new RegExp(titleOrSelector, 'g')).test(components[i][titleFn]())) {
-                                    component = components[i];
-                                    break;
-                                }
-                            }
+                            (Ext.ComponentQuery.query(type) || []).every(function (item) {
+                                titleProperties.every(function (prop) {
+                                    var title = item[prop];
+                                    var fnName = ('get' + prop[0].toUpperCase() + prop.slice(1));
+                                    if (fnName && item[fnName] && typeof item[fnName] === 'function') {
+                                        title = item[fnName].call(item);
+                                    }
+                                    if ((new RegExp(titleOrSelector, 'g')).test(title)) {
+                                        component = item;
+                                    }
+                                    return !component;
+                                });
+                                return !component;
+                            });
                         }
                     }
 
                     if (!component) {
-                        return callback('Selector "' + selector + '" not found.');
+                        return callback('Selector "' + (selector || selectors.join(', ')) + '" not found.');
                     } else if (!component.el || !component.el.dom) {
-                        return callback('No existing HTML element for selector "' + selector + '".');
+                        return callback(
+                            'No existing HTML element for selector "' + (selector || selectors.join(', ')) + '".'
+                        );
                     }
 
                     //TODO to method
@@ -411,8 +429,11 @@
             var _actions = {
                 tab: _createComponentWaitFunction('tab'),
                 grid: _createComponentWaitFunction('grid'),
+                radio: _createComponentWaitFunction('radio'),
                 button: _createComponentWaitFunction('button'),
                 window: _createComponentWaitFunction('window'),
+                checkbox: _createComponentWaitFunction('checkbox'),
+                combobox: _createComponentWaitFunction('combobox'),
                 textfield: _createComponentWaitFunction('textfield'),
                 numberfield: _createComponentWaitFunction('numberfield'),
                 click: function (index, callback) {
@@ -487,8 +508,7 @@
                     var componentObject = _chainComponents.last();
 
                     if (!componentObject) {
-                        callback('No target for "isEnabled" check.');
-                        return;
+                        return callback('No target for "isDisabled" check.');
                     }
 
                     _waitForFn(
@@ -498,27 +518,51 @@
                         callback
                     );
                 },
-                waitLoadMask: function (index, callback) {
+                isVisible: function (index, callback) {
+                    var componentObject = _chainComponents.last();
+
+                    if (!componentObject) {
+                        return callback('No target for "isVisible" check.');
+                    }
+
                     _waitForFn(
                         function (done) {
-                            var maskDisplayed = false;
-
-                            Ext.ComponentManager.each(function (i, value) {
-                                //TODO use common in visible code
-                                if ((value instanceof Ext.LoadMask) && value.isVisible()) {
-                                    maskDisplayed = true;
-                                    return false;
-                                }
-                            });
-
-                            if (maskDisplayed) {
-                                done(true);
-                            } else {
-                                done(null);
-                            }
+                            _domHelpers.checkState(componentObject, 'isHidden', false, done);
                         },
                         callback
                     );
+                },
+                isHidden: function (index, callback) {
+                    var componentObject = _chainComponents.last();
+
+                    if (!componentObject) {
+                        return callback('No target for "isHidden" check.');
+                    }
+
+                    _waitForFn(
+                        function (done) {
+                            _domHelpers.checkState(componentObject, 'isHidden', true, done);
+                        },
+                        callback
+                    );
+                },
+                waitLoadMask: function (index, callback) {
+                    // wait load mask display delay
+                    setTimeout(function () {
+                        _waitForFn(
+                            function (done) {
+                                //TODO improve this method
+                                var maskDisplayed = (window.document.getElementsByClassName('x-mask-msg').length > 0);
+
+                                if (maskDisplayed) {
+                                    done(true);
+                                } else {
+                                    done(null);
+                                }
+                            },
+                            callback
+                        );
+                    }, 500);
                 },
                 waitText: function (index, callback) {
                     //TODO check parent
@@ -552,8 +596,11 @@
             // find component
             self.tab = _createActionFunction('tab');
             self.grid = _createActionFunction('grid');
+            self.radio = _createActionFunction('radio');
             self.button = _createActionFunction('button');
             self.window = _createActionFunction('window');
+            self.checkbox = _createActionFunction('checkbox');
+            self.combobox = _createActionFunction('combobox');
             self.textfield = _createActionFunction('textfield');
             self.numberfield = _createActionFunction('numberfield');
 
@@ -561,8 +608,11 @@
             self.no = {
                 tab: _createActionFunction('tab', true),
                 grid: _createActionFunction('grid', true),
+                radio: _createActionFunction('radio', true),
                 button: _createActionFunction('button', true),
                 window: _createActionFunction('window', true),
+                checkbox: _createActionFunction('checkbox', true),
+                combobox: _createActionFunction('combobox', true),
                 textfield: _createActionFunction('textfield', true),
                 numberfield: _createActionFunction('numberfield', true)
             };
@@ -573,15 +623,13 @@
             self.selectRow = _createActionFunction('selectRow');
             self.isEnabled = _createActionFunction('isEnabled');
             self.isDisabled = _createActionFunction('isDisabled');
+            self.isHidden = _createActionFunction('isHidden');
+            self.isVisible = _createActionFunction('isVisible');
             self.checkRowsCount = _createActionFunction('checkRowsCount');
 
             // wait methods
             self.waitText = _createActionFunction('waitText');
             self.waitLoadMask = _createActionFunction('waitLoadMask');
-
-            //TODO
-            // hidden
-            // check disabled elements
 
             return self;
         };
@@ -598,8 +646,11 @@
         return {
             tab: _createChain('tab'),
             grid: _createChain('grid'),
+            radio: _createChain('radio'),
             button: _createChain('button'),
             window: _createChain('window'),
+            checkbox: _createChain('checkbox'),
+            combobox: _createChain('combobox'),
             textfield: _createChain('textfield'),
             numberfield: _createChain('numberfield'),
             waitText: _createChain('waitText'),
@@ -607,8 +658,11 @@
             no: {
                 tab: _createChain('window', true),
                 grid: _createChain('grid', true),
+                radio: _createChain('radio', true),
                 window: _createChain('window', true),
                 button: _createChain('button', true),
+                checkbox: _createChain('checkbox', true),
+                combobox: _createChain('combobox', true),
                 textfield: _createChain('textfield', true),
                 numberfield: _createChain('numberfield', true)
             }

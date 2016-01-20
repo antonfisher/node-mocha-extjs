@@ -48,7 +48,7 @@ Ext.define('Sandbox.view.main.MainController', {
     },
 
 
-    // texts
+    // content
 
     onTextsShowTextButtonClick: function (btn) {
         var self = this;
@@ -58,6 +58,18 @@ Ext.define('Sandbox.view.main.MainController', {
             Ext.getBody().unmask();
             self.getViewModel().set('buttonResultText', 'Result is here!');
             btn.setText(btn.getText() + ' [done]');
+        }, 1000);
+    },
+
+    onContentHideMeButtonClick: function (btn) {
+        Ext.getBody().mask('Hide button...');
+        setTimeout(function () {
+            btn.hide();
+            Ext.getBody().mask('Show button...');
+            setTimeout(function () {
+                Ext.getBody().unmask();
+                btn.show();
+            }, 1000);
         }, 1000);
     }
 
