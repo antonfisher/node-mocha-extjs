@@ -27,7 +27,7 @@ describe('Fields', function () {
     });
 
     it('Click on combobox "Select in list"', function (done) {
-        eTT.combobox('Select in list').click(done);
+        eTT.combobox('Select in list').select(1, done);
     });
 
 });

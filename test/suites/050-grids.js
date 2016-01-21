@@ -7,11 +7,11 @@ describe('Grids', function () {
     });
 
     it('Click on second "Names" grid row', function (done) {
-        eTT.grid('Names').selectRow(1, done);
+        eTT.grid('Names').select(1, done);
     });
 
     it('Click on first "Names" grid row', function (done) {
-        eTT.grid('Names').selectRow(0, done);
+        eTT.grid('Names').select(0, done);
     });
 
     it('Rows number should be equal 2', function (done) {

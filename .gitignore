@@ -3,6 +3,9 @@
 
 *.log
 
+/dist
+/node_modules
+
 /test/sandbox/ext
 /test/sandbox/overrides
 /test/sandbox/packages

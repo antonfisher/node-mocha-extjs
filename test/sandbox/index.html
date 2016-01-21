@@ -15,28 +15,26 @@
 <!-- mocha.js --->
 <div id="mocha"></div>
 
-<!--<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />-->
-<link href="/test/sandbox/lib/mocha.css" rel="stylesheet" />
-<link href="../../css/mocha-extjs.css" rel="stylesheet"/>
-<!--<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>-->
-<!--<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>-->
-<script src="/test/sandbox/lib/expect.js"></script>
-<script src="/test/sandbox/lib/mocha.js"></script>
-<script src="../../extjs-testing-tool.js"></script>
+<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+<link href="dist/mocha-extjs.css" rel="stylesheet"/>
+
+<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="dist/mocha-extjs.js"></script>
 
 <script>mocha.setup('bdd')</script>
-<script src="../suites/010-environment.js"></script>
-<script src="../suites/020-buttons.js"></script>
-<script src="../suites/030-windows.js"></script>
-<script src="../suites/040-fields.js"></script>
-<script src="../suites/050-grids.js"></script>
-<script src="../suites/060-loadmasks.js"></script>
-<script src="../suites/070-content.js"></script>
+<script src="test/suites/010-environment.js"></script>
+<script src="test/suites/020-buttons.js"></script>
+<script src="test/suites/030-windows.js"></script>
+<script src="test/suites/040-fields.js"></script>
+<script src="test/suites/050-grids.js"></script>
+<script src="test/suites/060-loadmasks.js"></script>
+<script src="test/suites/070-content.js"></script>
 <script>
     mocha.checkLeaks();
     mocha.globals(['Ext', 'Sandbox']);
 
-    var eTT = new ExtJsTestingTool();
+    var eTT = new MochaExtJs();
 
     window.onload = function () {
         setTimeout(function () {
