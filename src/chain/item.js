@@ -36,6 +36,7 @@ export class ChainItem {
         console.error(`called on implemented method: ${this.constructor.name}.run()`);
     }
 
+    //TODO move to Set
     getLastComponent () {
         for (var i = this._chain.length - 1; i >= 0; i--) {
             if (this._chain[i]._component) {

@@ -25,7 +25,7 @@ export class ExtJsDriver {
 
         //BUG does not work properly
         var _getVisibleComponents = function (selector) {
-            return Ext.ComponentQuery.query(selector).filter(function (item) {
+            return Ext.ComponentQuery.query(selector).filter((item) => {
                 if (!item.el || !item.el.dom) {
                     return false;
                 }
@@ -35,7 +35,7 @@ export class ExtJsDriver {
                 var y = (r.top + r.height / 2);
 
                 MochaUI.hide();
-                var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
+                var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
                     return (dom === item.el.dom);
                 });
                 MochaUI.show();
@@ -54,33 +54,33 @@ export class ExtJsDriver {
 
             if (type === 'button') {
                 titleProperties = ['text'];
-                selectors = [type + '[text~="' + titleOrSelector + '"]'];
+                selectors = [`${type}[text~="${titleOrSelector}"]`];
             } else if (type === 'tab' || type === 'window' || type === 'grid') {
                 titleProperties = ['title'];
-                selectors = [type + '[title~="' + titleOrSelector + '"]'];
+                selectors = [`${type}[title~="${titleOrSelector}"]`];
             } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
                 titleProperties = ['fieldLabel'];
-                selectors = [type + '[fieldLabel~="' + titleOrSelector + '"]'];
+                selectors = [`${type}[fieldLabel~="${titleOrSelector}"]`];
             } else if (type === 'checkbox' || type === 'radio') {
                 titleProperties = ['fieldLabel', 'boxLabel'];
                 selectors = [
-                    type + '[fieldLabel~="' + titleOrSelector + '"]',
-                    type + '[boxLabel~="' + titleOrSelector + '"]'
+                    `${type}[fieldLabel~="${titleOrSelector}"]`,
+                    `${type}[boxLabel~="${titleOrSelector}"]`
                 ];
             } else {
-                return callback('Type "' + '" not supported.');
+                return callback(`Type "${type}" not supported.`);
             }
 
-            selectors.every(function (item) {
+            selectors.every((item) => {
                 extJsComponent = _getVisibleComponents(item)[0];
                 return !extJsComponent;
             });
 
             if (!extJsComponent) {
-                (Ext.ComponentQuery.query(type) || []).every(function (item) {
-                    titleProperties.every(function (prop) {
+                (Ext.ComponentQuery.query(type) || []).every((item) => {
+                    titleProperties.every((prop) => {
                         var title = item[prop];
-                        var fnName = ('get' + prop[0].toUpperCase() + prop.slice(1));
+                        var fnName = `get${prop[0].toUpperCase()}${prop.slice(1)}`;
                         if (fnName && item[fnName] && typeof item[fnName] === 'function') {
                             title = item[fnName].call(item);
                         }
@@ -95,19 +95,17 @@ export class ExtJsDriver {
         }
 
         if (!extJsComponent) {
-            return callback('Selector "' + (selector || selectors.join(', ')) + '" not found.');
+            return callback(`Selector "${selector || selectors.join(', ')}" not found.`);
         } else if (!extJsComponent.el || !extJsComponent.el.dom) {
-            return callback(
-                'No existing HTML element for selector "' + (selector || selectors.join(', ')) + '".'
-            );
+            return callback(`No existing HTML element for selector "${selector || selectors.join(', ')}".`);
         }
 
         //TODO to method
         var rect = extJsComponent.el.dom.getBoundingClientRect();
         if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
             return callback(
-                'No visible HTML element for selector "' + selector + '", offset: '
-                + rect.left + ',' + rect.top + ', size: ' + rect.width + ',' + rect.height + '.'
+                `No visible HTML element for selector "${selector}", `
+                + `offset: ${rect.left},${rect.top}, size: ${rect.width},${rect.height}.`
             );
         }
 
@@ -146,7 +144,7 @@ export class ExtJsDriver {
 
     waitLoadMask (callback) {
         return waitForFn(
-            function (done) {
+            (done) => {
                 //TODO improve this method
                 var maskDisplayed = (window.document.getElementsByClassName('x-mask-msg').length > 0);
 
@@ -166,7 +164,7 @@ export class ExtJsDriver {
     waitText (callback, text) {
         //TODO check parent
         return waitForFn(
-            function (done) {
+            (done) => {
                 var textPresented = false;
 
                 if (text instanceof RegExp) {

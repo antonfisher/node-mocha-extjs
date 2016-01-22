@@ -1,26 +1,24 @@
 'use strict';
 
-export function waitForFn (waitFn, callback, params) {
-    params = (params || {});
-    params.delay = (typeof params.delay !== 'undefined' ? params.delay : 10);
-    params.timeout = (typeof params.timeout !== 'undefined' ? params.timeout : 10 * 1000);
-
+export function waitForFn (waitFn, callback, {delay: delay, timeout: timeout} = {delay: 10, timeout: 10 * 1000}) {
     var _ticInterval = 500;
+
     var interval;
-    var startTimestamp = +(new Date());
     var lastError = '';
     var exectution = false;
+    var startTimestamp = +(new Date());
+
     var intervalFn = function () {
-        if ((+new Date() - startTimestamp) > params.timeout) {
+        if ((+new Date() - startTimestamp) > timeout) {
             exectution = false;
             clearInterval(interval);
-            return callback('Out of time: ' + (params.timeout / 1000) + 's (' + lastError + ')');
+            return callback(`Out of time: ${timeout / 1000}s (${lastError})`);
         }
 
         if (!exectution) {
             try {
                 exectution = true;
-                waitFn(function (err, result) {
+                waitFn((err, result) => {
                     if (!exectution) {
                         console.warn(`waitForFn(): Operation finished after time out.`);
                         return;
@@ -40,8 +38,8 @@ export function waitForFn (waitFn, callback, params) {
         }
     };
 
-    setTimeout(function () {
+    setTimeout(() => {
         interval = setInterval(intervalFn, _ticInterval);
         intervalFn();
-    }, params.delay);
+    }, delay);
 }

@@ -11,7 +11,7 @@ export class ChainActionItem extends ChainItem {
         if (self.driver[self.type]) {
             // call driver action
             return waitForFn(
-                function (done) {
+                (done) => {
                     self.driver[self.type](done, ...self._callArgs);
                 },
                 callback
@@ -34,7 +34,7 @@ export class ChainActionItem extends ChainItem {
             }
 
             return waitForFn(
-                function (done) {
+                (done) => {
                     lastComponent[self._type](done, ...self._callArgs);
                 },
                 callback

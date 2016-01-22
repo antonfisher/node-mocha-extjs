@@ -29,7 +29,7 @@ export class HTMLComponentBase {
         //TODO remove
         var _cursor = new Cursor();
 
-        _cursor.moveTo(x + 1, y + 1, function () {
+        _cursor.moveTo(x + 1, y + 1, () => {
             MochaUI.hide();
 
             if (el.focus) {
@@ -49,17 +49,13 @@ export class HTMLComponentBase {
                     window.document.elementFromPoint(x, y).click();
                     err = false;
                 } catch (e) {
-                    err = ('[' + x + ',' + y + '] (' + e + ')');
+                    err = `[${x},${y}] (${e})`;
                 }
             }
 
             MochaUI.show();
 
-            if (err) {
-                return callback('cannot click on "' + el.id + '" ' + err);
-            } else {
-                return callback(null);
-            }
+            return callback(err ? `cannot click on "${el.id}" ${err}` : null);
         });
     }
 

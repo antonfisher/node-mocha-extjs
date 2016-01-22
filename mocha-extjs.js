@@ -9,7 +9,10 @@ export class MochaExtJs {
     constructor ({driver: driver, cursor: cursor}= {driver: new ExtJsDriver(), cursor: new Cursor()}) {
 
         return function () {
-            return new Chain({driver: driver});
+            return new Chain({
+                driver: driver,
+                cursor: cursor
+            });
         };
     }
 

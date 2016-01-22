@@ -20,7 +20,7 @@ export class ChainComponentItem extends ChainItem {
         var titleOrSelector = self._callArgs[0];
 
         waitForFn(
-            function (done) {
+            (done) => {
                 self.driver.getComponent(self._type, titleOrSelector, function (err, result) {
                     if (self._invert) {
                         var message = (
@@ -32,7 +32,7 @@ export class ChainComponentItem extends ChainItem {
                     }
                 });
             },
-            function (err, component) {
+            (err, component) => {
                 if (component) {
                     self._component = component;
                 }
