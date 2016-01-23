@@ -1,22 +1,21 @@
 'use strict';
 
 //TODO remove this dependency
-import {Cursor} from '../../../cursor.js';
 import {MochaUI} from '../../../utils/mochaUI.js'
 
 export class HTMLComponentBase {
 
-    constructor (htmlElement) {
-        this._htmlElement = htmlElement;
-    }
+    constructor ({htmlElement, cursor}) {
+        var self = this;
 
-    get htmlElement () {
-        return this._htmlElement;
+        self.cursor = cursor;
+        self.htmlElement = htmlElement;
     }
 
     click (callback) {
+        var self = this;
+        var el = self.htmlElement;
         var err;
-        var el = this.htmlElement;
 
         // for PhantomJs:
         //  ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js:116
@@ -26,10 +25,7 @@ export class HTMLComponentBase {
         var x = (rect.left + rect.width / 2);
         var y = (rect.top + rect.height / 2);
 
-        //TODO remove
-        var _cursor = new Cursor();
-
-        _cursor.moveTo(x + 1, y + 1, () => {
+        self.cursor.moveTo(x + 1, y + 1, () => {
             MochaUI.hide();
 
             if (el.focus) {

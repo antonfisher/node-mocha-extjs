@@ -4,30 +4,33 @@ import {HTMLComponentBase} from '../../html/components/base.js';
 
 export class ExtJsComponentBase {
 
-    constructor ({selectors, extJsComponent}) {
-        this._selectors = selectors;
-        this._htmlComponent = null;
-        this._extJsComponent = extJsComponent;
-    }
+    constructor ({selectors, extJsComponent, cursor}) {
+        var self = this;
 
-    get selectors () {
-        return this._selectors;
-    }
+        self.cursor = cursor;
+        self.selectors = selectors;
+        self.extJsComponent = extJsComponent;
 
-    get extJsComponent () {
-        return this._extJsComponent;
+        self._htmlComponent = null;
     }
 
     get htmlComponent () {
         var self = this;
 
-        if (!self._htmlComponent) {
-            if (self.extJsComponent) {
-                if (self.extJsComponent.inputEl) {
-                    self._htmlComponent = new HTMLComponentBase(self.extJsComponent.inputEl.dom);
-                } else if (self.extJsComponent.el) {
-                    self._htmlComponent = new HTMLComponentBase(self.extJsComponent.el.dom);
-                }
+        if (!self._htmlComponent && self.extJsComponent) {
+            let htmlElement = null;
+
+            if (self.extJsComponent.inputEl) {
+                htmlElement = self.extJsComponent.inputEl.dom;
+            } else if (self.extJsComponent.el) {
+                htmlElement = self.extJsComponent.el.dom;
+            }
+
+            if (htmlElement) {
+                self._htmlComponent = new HTMLComponentBase({
+                    cursor: self.cursor,
+                    htmlElement
+                });
             }
         }
 

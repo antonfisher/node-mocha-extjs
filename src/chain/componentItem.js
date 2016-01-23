@@ -8,24 +8,18 @@ export class ChainComponentItem extends ChainItem {
     constructor (...args) {
         super(...args);
 
-        this._component = null;
-    }
-
-    get component () {
-        return this._component;
+        this.component = null;
     }
 
     run (callback) {
         var self = this;
-        var titleOrSelector = self._callArgs[0];
+        var titleOrSelector = self.callArgs[0];
 
-        waitForFn(
+        return waitForFn(
             (done) => {
-                self.driver.getComponent(self._type, titleOrSelector, function (err, result) {
-                    if (self._invert) {
-                        var message = (
-                            'Component ' + self._type + ' "' + titleOrSelector + '" still presented.'
-                        );
+                self.chain.driver.getComponent(self.type, titleOrSelector, (err, result) => {
+                    if (self.invert) {
+                        let message = `Component ${self.type} "${titleOrSelector}" still presented.`;
                         return done(err ? null : message);
                     } else {
                         return done(err, result);
@@ -33,11 +27,8 @@ export class ChainComponentItem extends ChainItem {
                 });
             },
             (err, component) => {
-                if (component) {
-                    self._component = component;
-                }
-
-                callback(err);
+                self.component = component;
+                return callback(err);
             }
         );
     }

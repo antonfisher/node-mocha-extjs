@@ -17,36 +17,43 @@ import {ExtJsComponentNumberField} from './components/numberField.js';
 
 export class ExtJsDriver {
 
+    constructor ({cursor}) {
+        var self = this;
+
+        if (!cursor) {
+            throw new Error(`Class ${self.constructor.name} created with undefined property "cursor".`);
+        }
+
+        self.cursor = cursor;
+    }
+
+    get supportedComponents () {
+        return [
+            'tab', 'grid', 'radio', 'button', 'window', 'checkbox', 'combobox', 'textfield', 'numberfield'
+        ];
+    }
+
+    get supportedComponentActions () {
+        return [
+            'click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount'
+        ];
+    }
+
+    get supportedActions () {
+        return [
+            'waitText', 'waitLoadMask'
+        ];
+    }
+
     getComponent (type, titleOrSelector, callback) {
         var self = this;
         var selector = null;
         var extJsComponent = null;
         var selectors = [];
 
-        //BUG does not work properly
-        var _getVisibleComponents = function (selector) {
-            return Ext.ComponentQuery.query(selector).filter((item) => {
-                if (!item.el || !item.el.dom) {
-                    return false;
-                }
-
-                var r = item.el.dom.getBoundingClientRect();
-                var x = (r.left + r.width / 2);
-                var y = (r.top + r.height / 2);
-
-                MochaUI.hide();
-                var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
-                    return (dom === item.el.dom);
-                });
-                MochaUI.show();
-
-                return (visible.length > 0);
-            });
-        };
-
         if (!type) {
             selector = titleOrSelector;
-            extJsComponent = _getVisibleComponents(selector)[0];
+            extJsComponent = self.getVisibleComponents(selector)[0];
         }
 
         if (!extJsComponent && type) {
@@ -72,7 +79,7 @@ export class ExtJsDriver {
             }
 
             selectors.every((item) => {
-                extJsComponent = _getVisibleComponents(item)[0];
+                extJsComponent = self.getVisibleComponents(item)[0];
                 return !extJsComponent;
             });
 
@@ -112,6 +119,7 @@ export class ExtJsDriver {
         var componentObject = null;
         var properties = {
             selectors: (selector || selectors.join(', ')),
+            cursor: self.cursor,
             extJsComponent
         };
 
@@ -140,6 +148,27 @@ export class ExtJsDriver {
         } else {
             throw new Error(`Component "${type}" is not supported by driver "${self.constructor.name}".`);
         }
+    }
+
+    //BUG does not work properly
+    getVisibleComponents (selector) {
+        return Ext.ComponentQuery.query(selector).filter((item) => {
+            if (!item.el || !item.el.dom) {
+                return false;
+            }
+
+            var r = item.el.dom.getBoundingClientRect();
+            var x = (r.left + r.width / 2);
+            var y = (r.top + r.height / 2);
+
+            MochaUI.hide();
+            var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
+                return (dom === item.el.dom);
+            });
+            MochaUI.show();
+
+            return (visible.length > 0);
+        });
     }
 
     waitLoadMask (callback) {

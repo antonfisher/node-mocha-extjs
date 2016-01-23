@@ -3,104 +3,114 @@
 import {Set} from './utils/set.js';
 import {ChainActionItem} from './chain/actionItem.js';
 import {ChainComponentItem} from './chain/componentItem.js';
+import {ChainComponentActionItem} from './chain/componentActionItem.js';
 
 export class Chain {
 
-    constructor ({driver, cursor}) {
+    constructor ({driver, itemsRunDelay = 200}) {
         var self = this;
 
-        var _chain = [];
-        var _chainRunDelay = 200;
-        var _chainPresented = false;
-        var _chainCallback = function () {
-            throw new Error('Chain callback is not defined');
+        self._itemsSet = new Set();
+
+        self._chainRunned = false;
+        self._chainCallback = function () {
+            throw new Error('Chain callback is not presented.');
         };
 
-        var componentsList = [
-            'tab', 'grid', 'radio', 'button', 'window', 'checkbox', 'combobox', 'textfield', 'numberfield'
-        ];
-
-        self._chainComponents = new Set();
-        self._driver = driver;
-
-        var _createActionFunction = function (actionType, invert) {
-            return function (...args) {
-                if (_chainPresented) {
-                    throw new Error('Cannot add an action after the action which calls Mocha test callback.');
-                }
-
-                if (componentsList.includes(actionType)) {
-                    _chain.push(new ChainComponentItem({
-                        type: actionType,
-                        chain: _chain,
-                        invert: invert,
-                        callArgs: args,
-                        driver: self._driver
-                    }));
-                } else {
-                    _chain.push(new ChainActionItem({
-                        type: actionType,
-                        chain: _chain,
-                        invert: invert,
-                        callArgs: args,
-                        driver: self._driver
-                    }));
-                }
-
-                for (var i = 0; i < args.length; i++) {
-                    if (typeof args[i] === 'function') {
-                        _chainCallback = args[i];
-                        _chainPresented = true;
-                        _createActionFunction = function () {
-                            throw new Error('Call _addChain() after run.');
-                        };
-                        _run();
-                        break;
-                    }
-                }
-
-                return self;
-            };
-        };
-
-        var _run = function () {
-            var callActionByIndex = function (index) {
-                _chain[index].run((err) => {
-                    if (err || index + 1 === _chain.length) {
-                        return _chainCallback(err ? new Error(err) : null);
-                    }
-
-                    setTimeout(function () {
-                        callActionByIndex(index + 1);
-                    }, _chainRunDelay);
-                });
-            };
-
-            callActionByIndex(0);
-        };
-
+        self.driver = driver;
+        self.itemsRunDelay = itemsRunDelay;
         self.no = {};
 
         // entrance actions
-        for (let component of componentsList) {
-            self[component] = _createActionFunction(component);
-            self.no[component] = _createActionFunction(component, true);
+
+        for (let component of driver.supportedComponents) {
+            self[component] = self.createActionFunction(component);
+            self.no[component] = self.createActionFunction(component, true);
         }
 
-        self.waitText = _createActionFunction('waitText');
-        self.waitLoadMask = _createActionFunction('waitLoadMask');
+        for (let action of driver.supportedComponentActions) {
+            self[action] = self.createActionFunction(action);
+        }
 
-        // component actions
-        self.fill = _createActionFunction('fill');
-        self.click = _createActionFunction('click');
-        self.select = _createActionFunction('select');
-        self.isEnabled = _createActionFunction('isEnabled');
-        self.isDisabled = _createActionFunction('isDisabled');
-        self.isHidden = _createActionFunction('isHidden');
-        self.isVisible = _createActionFunction('isVisible');
-        self.checkRowsCount = _createActionFunction('checkRowsCount');
+        for (let action of driver.supportedActions) {
+            self[action] = self.createActionFunction(action);
+        }
 
         return self;
+    }
+
+    createActionFunction (actionType, invert) {
+        var self = this;
+
+        return function (...args) {
+            if (self._chainRunned) {
+                throw new Error('Cannot add an action after the action which calls Mocha test callback.');
+            }
+
+            var chainProperties = {
+                type: actionType,
+                chain: self,
+                invert: invert,
+                callArgs: args
+            };
+
+            if (self.driver.supportedComponents.includes(actionType)) {
+                self._itemsSet.push(new ChainComponentItem(chainProperties));
+            } else if (self.driver.supportedComponentActions.includes(actionType)) {
+                self._itemsSet.push(new ChainComponentActionItem(chainProperties));
+            } else if (self.driver.supportedActions.includes(actionType)) {
+                self._itemsSet.push(new ChainActionItem(chainProperties));
+            }
+
+            for (let arg of args) {
+                if (typeof arg === 'function') {
+                    self._chainRunned = true;
+                    self._chainCallback = arg;
+                    self.run();
+                    break;
+                }
+            }
+
+            return self;
+        };
+    }
+
+    run () {
+        var self = this;
+        var itemsGenerator = self._itemsSet.items();
+
+        var runNextAction = function () {
+            var item = itemsGenerator.next();
+
+            if (item.done) {
+                return self._chainCallback(null);
+            } else {
+                return item.value.run((err) => {
+                    if (err) {
+                        return self._chainCallback(new Error(err));
+                    }
+
+                    setTimeout(function () {
+                        runNextAction();
+                    }, self.chainRunDelay);
+                });
+            }
+        };
+
+        runNextAction();
+    }
+
+    get lastComponent () {
+        var self = this;
+
+        for (let item of self._itemsSet.reversedItems()) {
+            if (item.component) {
+                return item.component;
+                break;
+            }
+        }
+
+        return null;
     }
 
 }

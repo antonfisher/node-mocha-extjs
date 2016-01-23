@@ -1,7 +1,7 @@
 'use strict';
 
-export function waitForFn (waitFn, callback, {delay: delay, timeout: timeout} = {delay: 10, timeout: 10 * 1000}) {
-    var _ticInterval = 500;
+export function waitForFn (waitFn, callback,
+    {delay: delay, timeout: timeout, ticInterval: ticInterval} = {delay: 10, timeout: 10 * 1000, ticInterval: 500}) {
 
     var interval;
     var lastError = '';
@@ -39,7 +39,7 @@ export function waitForFn (waitFn, callback, {delay: delay, timeout: timeout} = 
     };
 
     setTimeout(() => {
-        interval = setInterval(intervalFn, _ticInterval);
+        interval = setInterval(intervalFn, ticInterval);
         intervalFn();
     }, delay);
 }
