@@ -39,10 +39,19 @@ Ext.define('Sandbox.view.main.MainController', {
 
     // loadMasks
 
-    onLoadMasksShowButtonClick: function (btn) {
+    onLoadMasksShowGlobalButtonClick: function (btn) {
         Ext.getBody().mask('Wait load mask...');
         setTimeout(function () {
             Ext.getBody().unmask();
+            btn.setText(btn.getText() + ' [done]');
+        }, 1000);
+    },
+
+    onLoadMasksShowComponentButtonClick: function (btn) {
+        var tab = btn.up('tabpanel');
+        tab.setLoading('Wait setLoading load mask...');
+        setTimeout(function () {
+            tab.setLoading(false);
             btn.setText(btn.getText() + ' [done]');
         }, 1000);
     },

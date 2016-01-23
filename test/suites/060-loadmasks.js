@@ -6,8 +6,16 @@ describe('LoadMasks', function () {
         eTT().tab('LoadMasks').click(done);
     });
 
-    it('Click on "Show" button', function (done) {
-        eTT().button('Show').click(done);
+    it('Click on "Show component" button', function (done) {
+        eTT().button('Show component').click(done);
+    });
+
+    it('Load mask should disappear in 10s', function (done) {
+        eTT().waitLoadMask(done);
+    });
+
+    it('Click on "Show global" button', function (done) {
+        eTT().button('Show global').click(done);
     });
 
     it('Load mask should disappear in 10s', function (done) {

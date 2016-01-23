@@ -103,8 +103,11 @@ Ext.define('Sandbox.view.main.Main', {
         }, {
             title: 'LoadMasks',
             items: [{
-                text: 'Show',
-                handler: 'onLoadMasksShowButtonClick'
+                text: 'Show global',
+                handler: 'onLoadMasksShowGlobalButtonClick'
+            }, {
+                text: 'Show component',
+                handler: 'onLoadMasksShowComponentButtonClick'
             }]
         }, {
             title: 'Content',
