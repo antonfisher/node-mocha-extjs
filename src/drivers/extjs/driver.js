@@ -174,13 +174,17 @@ export class ExtJsDriver {
     waitLoadMask (callback) {
         return waitForFn(
             (done) => {
-                //TODO improve this method
-                var maskDisplayed = (window.document.getElementsByClassName('x-mask-msg').length > 0);
+                var maskDisplayed = Ext.ComponentManager.getAll()
+                    .filter((item)=> {
+                        return (item.xtype === 'loadmask' && item.isHidden() === false);
+                    }).length > 0;
 
                 if (maskDisplayed) {
-                    done(true);
+                    done('Load mask still presents.');
                 } else {
-                    done(null);
+                    setTimeout(() => {
+                        done(null);
+                    }, 300);
                 }
             },
             callback,
