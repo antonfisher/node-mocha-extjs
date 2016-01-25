@@ -1,6 +1,6 @@
 {
   "name": "mocha-extjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ExtJs Test Framework for Mocha",
   "main": "mocha-extjs.js",
   "directories": {
