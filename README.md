@@ -1,11 +1,10 @@
-# ExtJs Testing Tool
+# mocha-extjs ![Status](https://img.shields.io/badge/status-alpha-orange.svg)
+Framework for ExtJs applications testing.
 
-mocha-extjs
+![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
 #ToDo
-- [ ] fill fields
-- [ ] select grid row
-- [ ] check grid rows count
-- [ ] wait load mask
-- [ ] check text presented
-- [ ] isHidden function
+- [x] es2015
+- [ ] documenation
+- [ ] eslint
+- [ ] self tests
