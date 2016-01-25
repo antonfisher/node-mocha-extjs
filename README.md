@@ -6,10 +6,10 @@ Framework for ExtJs applications testing.
 
 ## Getting Started:
 
-__1) Add Mochajs _div_ and files to your applications test page:__
+1) Add Mochajs _div_ and files to your applications test page:
 
 ```html
-<!-- index.html --->
+<!-- index.html -->
 <body>
     ...
 
@@ -20,10 +20,10 @@ __1) Add Mochajs _div_ and files to your applications test page:__
 </body>
 ```
 
-__2) Add `mocha-extjs` files:__
+2) Add _mocha-extjs_ files:
 
 ```html
-<!-- index.html --->
+<!-- index.html -->
 <body>
     ...
 
@@ -31,21 +31,21 @@ __2) Add `mocha-extjs` files:__
           rel="stylesheet" />
     <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/dist/mocha-extjs.js"></script>
 
-    <!-- first test suite --->
+    <!-- first test suite -->
     <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/test/suites/010-environment.js"></script>
 </body>
 ```
 
-__3) Add run script:__
+3) Add run script:
 
 ```html
-<!-- index.html --->
+<!-- index.html -->
 <body>
     ...
 
     <script>
         mocha.checkLeaks();
-        mocha.globals(['Ext', 'Sandbox']);
+        mocha.globals(['Ext', 'Sandbox']); // update name here
 
         if (window.initMochaPhantomJS) {
             window.initMochaPhantomJS();
@@ -62,16 +62,17 @@ __3) Add run script:__
 </body>
 ```
 
-__4) Done. Run your application!__
+4) Done. Run your application!
 
 ## Jenkins
 
-_Cooming soon, waiting for pull request in master branch of one dependency..._
+_Cooming soon, waiting for pull request in new release version of one dependency..._
 
-## Tests
+## Usage
 
-### Example:
+### Test suite example:
 ```javascript
+// tests/suites/020-buttons.js
 describe('Buttons', function () {
     this.bail(true);         // exit on first test fails
     this.timeout(20 * 1000); // necessary timeout for ui operations
@@ -105,34 +106,35 @@ eTT().waitLoadMask(done);
 eTT().waitText('Result is here!', done);
 ```
 
-## Instalation
-- `npm install mocha-extjs`
-- use files in `./dist` folder.
+## Installation
+- `$ npm install mocha-extjs`
+- use files from `./dist` folder.
 
 ## Development
-- install `Nodejs v5.3` or newer
-- clone repository `git clone git@github.com:antonfisher/mocha-extjs.git`
+- install _NodeJs v5.3_ or newer
+- clone repository `$ git clone git@github.com:antonfisher/mocha-extjs.git`
 - copy _ExtJs v5_ or _v6_ framework to `./test/Sandbox/ext` folder
 - build _Sandbox_ application
 ```bash
-cd ./mocha-extjs/test/Sandbox
-sencha app build 
+$ cd ./mocha-extjs/test/Sandbox
+$ sencha app build 
 ```
-- install dependencies `npm install`
-- run _gulp_: `./node_modules/.bin/gulp`.
+- install dependencies `$ npm install`
+- run _gulp_: `$ ./node_modules/.bin/gulp`.
 
 ## Contributing
 
 Please take care to maintain the existing coding style, unit tests for any changed functionality.
 Eslint and test your code.
 
-## Release History
+## Releases History
 
-* 0.1.0 Initial Alpha release
 * 0.1.1 Update documentation
+* 0.1.0 Initial Alpha release
 
 ## ToDo
 - [x] ES2015
+- [ ] New components
 - [ ] Documenation
 - [ ] Eslint
 - [ ] Self tests
