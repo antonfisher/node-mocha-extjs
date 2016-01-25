@@ -1,0 +1,17 @@
+.idea
+.sass-cache
+
+*.log
+
+/dist
+/node_modules
+
+/test/sandbox/ext
+/test/sandbox/overrides
+/test/sandbox/packages
+/test/sandbox/resources
+/test/sandbox/sass
+
+/test/sandbox/build/temp
+/test/sandbox/build/production/Sandbox/index.html
+/test/sandbox/build/production/Sandbox/app.*
