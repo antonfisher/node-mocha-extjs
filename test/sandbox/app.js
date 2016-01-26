@@ -4,15 +4,15 @@
  * Sencha Cmd when upgrading.
  */
 Ext.application({
-    name: 'Sandbox',
+  name: 'Sandbox',
 
-    extend: 'Sandbox.Application',
-    
-    autoCreateViewport: 'Sandbox.view.main.Main'
-	
-    //-------------------------------------------------------------------------
-    // Most customizations should be made to Sandbox.Application. If you need to
-    // customize this file, doing so below this section reduces the likelihood
-    // of merge conflicts when upgrading to new versions of Sencha Cmd.
-    //-------------------------------------------------------------------------
-});
+  extend: 'Sandbox.Application',
+
+  autoCreateViewport: 'Sandbox.view.main.Main'
+
+  //-------------------------------------------------------------------------
+  // Most customizations should be made to Sandbox.Application. If you need to
+  // customize this file, doing so below this section reduces the likelihood
+  // of merge conflicts when upgrading to new versions of Sencha Cmd.
+  //-------------------------------------------------------------------------
+})

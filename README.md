@@ -1,5 +1,7 @@
 # mocha-extjs ![Status](https://img.shields.io/badge/status-alpha-orange.svg)
 
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
 Framework for ExtJs applications testing.
 
 ![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
