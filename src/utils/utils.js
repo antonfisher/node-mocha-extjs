@@ -20,7 +20,7 @@ export function waitForFn (waitFn, callback,
                 exectution = true;
                 waitFn((err, result) => {
                     if (!exectution) {
-                        console.warn(`waitForFn(): Operation finished after time out.`);
+                        console.warn('waitForFn(): Operation finished after time out.');
                         return;
                     }
                     exectution = false;

@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/standard mocha-extjs.js ./src/**/*.js ./test/suites/**/*.js ./test/sandbox/app/**/*.js | ./node_modules/.bin/snazzy"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,8 @@
     "gulp": "^3.9.0",
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-webpack": "^1.5.0"
+    "gulp-webpack": "^1.5.0",
+    "snazzy": "^2.0.1",
+    "standard": "^5.4.1"
   }
 }
