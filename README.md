@@ -155,6 +155,7 @@ Eslint and test your code.
 
 ## Releases History
 
+* 0.1.3 Fix previous release trouble
 * 0.1.2 Update documentation
     * ES2015
     * standardjs
