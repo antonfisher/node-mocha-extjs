@@ -55,17 +55,16 @@
 
 	var _chain = __webpack_require__(192);
 
-	var _cursor = __webpack_require__(199);
+	var _mochaUI = __webpack_require__(199);
 
-	var _driver = __webpack_require__(200);
+	var _driver = __webpack_require__(201);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MochaExtJs = exports.MochaExtJs = function MochaExtJs() {
-	  var _ref = arguments.length <= 0 || arguments[0] === undefined ? { driver: new _driver.ExtJsDriver({ cursor: new _cursor.Cursor() }) } : arguments[0];
+	  var _ref = arguments.length <= 0 || arguments[0] === undefined ? { driver: new _driver.ExtJsDriver({ mochaUi: new _mochaUI.MochaUI() }) } : arguments[0];
 
 	  var driver = _ref.driver;
-	  var cursor = _ref.cursor;
 
 	  _classCallCheck(this, MochaExtJs);
 
@@ -5930,27 +5929,14 @@
 	      var self = this;
 
 	      return function () {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	          args[_key] = arguments[_key];
-	        }
-
 	        if (self._chainRunned) {
 	          throw new Error('Cannot add an action after the action which calls Mocha test callback.');
 	        }
 
-	        var chainProperties = {
-	          type: actionType,
-	          chain: self,
-	          invert: invert,
-	          callArgs: args
-	        };
+	        var actionArgs = [];
 
-	        if (self.driver.supportedComponents.includes(actionType)) {
-	          self._itemsSet.push(new _componentItem.ChainComponentItem(chainProperties));
-	        } else if (self.driver.supportedComponentActions.includes(actionType)) {
-	          self._itemsSet.push(new _componentActionItem.ChainComponentActionItem(chainProperties));
-	        } else if (self.driver.supportedActions.includes(actionType)) {
-	          self._itemsSet.push(new _actionItem.ChainActionItem(chainProperties));
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
 	        }
 
 	        var _iteratorNormalCompletion4 = true;
@@ -5964,9 +5950,9 @@
 	            if (typeof arg === 'function') {
 	              self._chainRunned = true;
 	              self._chainCallback = arg;
-	              self.run();
 	              break;
 	            }
+	            actionArgs.push(arg);
 	          }
 	        } catch (err) {
 	          _didIteratorError4 = true;
@@ -5981,6 +5967,25 @@
 	              throw _iteratorError4;
 	            }
 	          }
+	        }
+
+	        var chainProperties = {
+	          type: actionType,
+	          chain: self,
+	          invert: invert,
+	          callArgs: actionArgs
+	        };
+
+	        if (self.driver.supportedComponents.includes(actionType)) {
+	          self._itemsSet.push(new _componentItem.ChainComponentItem(chainProperties));
+	        } else if (self.driver.supportedComponentActions.includes(actionType)) {
+	          self._itemsSet.push(new _componentActionItem.ChainComponentActionItem(chainProperties));
+	        } else if (self.driver.supportedActions.includes(actionType)) {
+	          self._itemsSet.push(new _actionItem.ChainActionItem(chainProperties));
+	        }
+
+	        if (self._chainRunned) {
+	          self.run();
 	        }
 
 	        return self;
@@ -6473,6 +6478,62 @@
 
 /***/ },
 /* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.MochaUI = undefined;
+
+	var _cursor = __webpack_require__(200);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var MochaUI = exports.MochaUI = function () {
+	  function MochaUI() {
+	    _classCallCheck(this, MochaUI);
+
+	    this.cursor = new _cursor.Cursor();
+	  }
+
+	  _createClass(MochaUI, [{
+	    key: 'show',
+	    value: function show() {
+	      var self = this;
+
+	      if (self.mochaElement) {
+	        self.mochaElement.style.display = 'block';
+	      }
+
+	      self.cursor.show();
+	    }
+	  }, {
+	    key: 'hide',
+	    value: function hide() {
+	      var self = this;
+
+	      if (self.mochaElement) {
+	        self.mochaElement.style.display = 'none';
+	      }
+
+	      self.cursor.hide();
+	    }
+	  }, {
+	    key: 'mochaElement',
+	    get: function get() {
+	      return window.document.getElementById('mocha');
+	    }
+	  }]);
+
+	  return MochaUI;
+	}();
+
+/***/ },
+/* 200 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6541,18 +6602,26 @@
 	        }, 50);
 	      }, self._timeout);
 	    }
+	  }, {
+	    key: 'hide',
+	    value: function hide() {
+	      this._point.style.display = 'none';
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      this._point.style.display = 'block';
+	    }
 	  }]);
 
 	  return Cursor;
 	}();
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
-	//TODO remove this dependency
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6560,8 +6629,6 @@
 	  value: true
 	});
 	exports.ExtJsDriver = undefined;
-
-	var _mochaUI = __webpack_require__(201);
 
 	var _utils = __webpack_require__(196);
 
@@ -6587,17 +6654,17 @@
 
 	var ExtJsDriver = exports.ExtJsDriver = function () {
 	  function ExtJsDriver(_ref) {
-	    var cursor = _ref.cursor;
+	    var mochaUi = _ref.mochaUi;
 
 	    _classCallCheck(this, ExtJsDriver);
 
 	    var self = this;
 
-	    if (!cursor) {
-	      throw new Error('Class ' + self.constructor.name + ' created with undefined property "cursor".');
+	    if (!mochaUi) {
+	      throw new Error('Class ' + self.constructor.name + ' created with undefined property "mochaUi".');
 	    }
 
-	    self.cursor = cursor;
+	    self.mochaUi = mochaUi;
 	  }
 
 	  _createClass(ExtJsDriver, [{
@@ -6616,18 +6683,21 @@
 	      if (!extJsComponent && type) {
 	        var titleProperties = [];
 
+	        selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
+
 	        if (type === 'button') {
-	          titleProperties = ['text'];
-	          selectors = [type + '[text~="' + titleOrSelector + '"]'];
+	          titleProperties = ['text', 'tooltip', 'xtype'];
+	          selectors.unshift(type + '[text~="' + titleOrSelector + '"]');
 	        } else if (type === 'tab' || type === 'window' || type === 'grid') {
-	          titleProperties = ['title'];
-	          selectors = [type + '[title~="' + titleOrSelector + '"]'];
+	          titleProperties = ['title', 'tooltip', 'xtype'];
+	          selectors.unshift(type + '[title~="' + titleOrSelector + '"]');
 	        } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
-	          titleProperties = ['fieldLabel'];
-	          selectors = [type + '[fieldLabel~="' + titleOrSelector + '"]'];
+	          titleProperties = ['fieldLabel', 'tooltip', 'xtype'];
+	          selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
 	        } else if (type === 'checkbox' || type === 'radio') {
-	          titleProperties = ['fieldLabel', 'boxLabel'];
-	          selectors = [type + '[fieldLabel~="' + titleOrSelector + '"]', type + '[boxLabel~="' + titleOrSelector + '"]'];
+	          titleProperties = ['fieldLabel', 'boxLabel', 'tooltip', 'xtype'];
+	          selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
+	          selectors.unshift(type + '[boxLabel~="' + titleOrSelector + '"]');
 	        } else {
 	          return callback('Type "' + type + '" not supported.');
 	        }
@@ -6670,7 +6740,7 @@
 	      var componentObject = null;
 	      var properties = {
 	        selectors: selector || selectors.join(', '),
-	        cursor: self.cursor,
+	        mochaUi: self.mochaUi,
 	        extJsComponent: extJsComponent
 	      };
 
@@ -6706,23 +6776,29 @@
 	  }, {
 	    key: 'getVisibleComponents',
 	    value: function getVisibleComponents(selector) {
-	      return Ext.ComponentQuery.query(selector).filter(function (item) {
-	        if (!item.el || !item.el.dom) {
-	          return false;
-	        }
+	      var self = this;
 
-	        var r = item.el.dom.getBoundingClientRect();
-	        var x = r.left + r.width / 2;
-	        var y = r.top + r.height / 2;
+	      try {
+	        return Ext.ComponentQuery.query(selector).filter(function (item) {
+	          if (!item.el || !item.el.dom) {
+	            return false;
+	          }
 
-	        _mochaUI.MochaUI.hide();
-	        var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
-	          return dom === item.el.dom;
+	          var r = item.el.dom.getBoundingClientRect();
+	          var x = r.left + r.width / 2;
+	          var y = r.top + r.height / 2;
+
+	          self.mochaUi.hide();
+	          var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
+	            return dom === item.el.dom;
+	          });
+	          self.mochaUi.show();
+
+	          return visible.length > 0;
 	        });
-	        _mochaUI.MochaUI.show();
-
-	        return visible.length > 0;
-	      });
+	      } catch (e) {
+	        throw e + '. Selector: ' + selector;
+	      }
 	    }
 	  }, {
 	    key: 'waitLoadMask',
@@ -6786,60 +6862,6 @@
 	}();
 
 /***/ },
-/* 201 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var MochaUI = exports.MochaUI = function () {
-	  function MochaUI() {
-	    _classCallCheck(this, MochaUI);
-	  }
-
-	  _createClass(MochaUI, null, [{
-	    key: 'show',
-	    value: function show() {
-	      if (this.mochaElement) {
-	        this.mochaElement.style.display = 'block';
-	      }
-	      if (this.pointerElement) {
-	        this.pointerElement.style.display = 'block';
-	      }
-	    }
-	  }, {
-	    key: 'hide',
-	    value: function hide() {
-	      if (this.mochaElement) {
-	        this.mochaElement.style.display = 'none';
-	      }
-	      if (this.pointerElement) {
-	        this.pointerElement.style.display = 'none';
-	      }
-	    }
-	  }, {
-	    key: 'mochaElement',
-	    get: function get() {
-	      return window.document.getElementById('mocha');
-	    }
-	  }, {
-	    key: 'pointerElement',
-	    get: function get() {
-	      return window.document.getElementById('mocha-extjs-testing-tool-pointer');
-	    }
-	  }]);
-
-	  return MochaUI;
-	}();
-
-/***/ },
 /* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6891,13 +6913,13 @@
 	  function ExtJsComponentBase(_ref) {
 	    var selectors = _ref.selectors;
 	    var extJsComponent = _ref.extJsComponent;
-	    var cursor = _ref.cursor;
+	    var mochaUi = _ref.mochaUi;
 
 	    _classCallCheck(this, ExtJsComponentBase);
 
 	    var self = this;
 
-	    self.cursor = cursor;
+	    self.mochaUi = mochaUi;
 	    self.selectors = selectors;
 	    self.extJsComponent = extJsComponent;
 
@@ -7012,7 +7034,7 @@
 
 	        if (htmlElement) {
 	          self._htmlComponent = new _base.HTMLComponentBase({
-	            cursor: self.cursor,
+	            mochaUi: self.mochaUi,
 	            htmlElement: htmlElement
 	          });
 	        }
@@ -7032,33 +7054,28 @@
 
 /***/ },
 /* 204 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
-
-	//TODO remove this dependency
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.HTMLComponentBase = undefined;
-
-	var _mochaUI = __webpack_require__(201);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var HTMLComponentBase = exports.HTMLComponentBase = function () {
 	  function HTMLComponentBase(_ref) {
 	    var htmlElement = _ref.htmlElement;
-	    var cursor = _ref.cursor;
+	    var mochaUi = _ref.mochaUi;
 
 	    _classCallCheck(this, HTMLComponentBase);
 
 	    var self = this;
 
-	    self.cursor = cursor;
+	    self.mochaUi = mochaUi;
 	    self.htmlElement = htmlElement;
 	  }
 
@@ -7077,8 +7094,8 @@
 	      var x = rect.left + rect.width / 2;
 	      var y = rect.top + rect.height / 2;
 
-	      self.cursor.moveTo(x + 1, y + 1, function () {
-	        _mochaUI.MochaUI.hide();
+	      self.mochaUi.cursor.moveTo(x + 1, y + 1, function () {
+	        self.mochaUi.hide();
 
 	        if (el.focus) {
 	          el.focus();
@@ -7101,7 +7118,7 @@
 	          }
 	        }
 
-	        _mochaUI.MochaUI.show();
+	        self.mochaUi.show();
 
 	        return callback(err ? 'cannot click on "' + el.id + '" ' + err : null);
 	      });
@@ -7145,18 +7162,21 @@
 
 	  _createClass(ExtJsComponentGrid, [{
 	    key: 'select',
-	    value: function select(callback, rowIndex) {
+	    value: function select(callback) {
+	      var rowIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	      var colIndex = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+
 	      var self = this;
 	      var cmp = self.extJsComponent;
 	      var htmlElement = null;
 
 	      try {
-	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex];
+	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
 	      } catch (e) {
 	        return callback('Failed to get element of "' + self.componentType + '" row #' + rowIndex + '": ' + err);
 	      }
 
-	      new _base.HTMLComponentBase({ htmlElement: htmlElement, cursor: self.cursor }).click(function (err) {
+	      new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: self.mochaUi }).click(function (err) {
 	        if (err) {
 	          return callback('Failed to click on item row #' + rowIndex + ' of "' + self.componentType + '" ": ' + err);
 	        } else {
@@ -7367,7 +7387,7 @@
 	          return callback('Failed to get element of "' + self.componentType + '" row #' + index + '": ' + err);
 	        }
 
-	        new _base.HTMLComponentBase({ htmlElement: htmlElement, cursor: self.cursor }).click(function (err) {
+	        new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: self.mochaUi }).click(function (err) {
 	          if (err) {
 	            return callback('Failed to click on item #' + index + ' of "' + self.componentType + '" ": ' + err);
 	          } else {

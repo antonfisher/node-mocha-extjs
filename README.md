@@ -90,6 +90,30 @@ describe('Buttons', function () {
 ```
 
 ### Supported components and methods:
+```
+eTT() -->--->|------->--->|- button ----->|- ('%title%') -------.
+        |    |       |    |- window       |- ('%fieldLabel%')   |
+        |    |- no --'    |- numberfield  |- ('%reference%')    |
+        |    |            |- textfield    |- ('%boxLabel%')     |
+        |    |            |- checkbox     |- ('%xtype%')        |
+        |    |            |- combobox     `- ('%text%')         |
+        |    |            |- radio                              |
+        |    |            |- grid         .---------------------x-------.
+        |    |            `- tab          |                             |
+        |    |                            `-->|- click -------> (...) --v
+        |    |                                |- isEnabled              |
+        |    |- waitLoadMask -- () -----.     |- isDisabled             |
+        |    |                          |     |- isHidden               |
+        |    `- waitText -- ('%text%')--v     |- isVisible              |
+        |                               |     |- select                 |
+        |                               |     |- checkRowsCount         |
+        |                               |     `- fill                   |
+        |                               |                               |
+        x-------------------------------<-------------------------------'
+        |
+        |
+        `--> done.
+```
 
 ```javascript
 eTT().button('Simple button').isEnabled().click(done);
@@ -102,7 +126,7 @@ eTT().numberfield('Count').fill(13, done);
 eTT().checkbox('include').click(done);
 eTT().radio('check B').click(done);
 eTT().combobox('Select in list').select(1, done);
-eTT().grid('Names').select(1, done);
+eTT().grid('Names').select(1, 1, done);
 eTT().grid('Names').checkRowsCount(2, done);
 eTT().waitLoadMask(done);
 eTT().waitText('Result is here!', done);
@@ -131,14 +155,18 @@ Eslint and test your code.
 
 ## Releases History
 
+* 0.1.2 Update documentation
+    * ES2015
+    * standardjs
+    * grid select rows and cells
 * 0.1.1 Update documentation
 * 0.1.0 Initial Alpha release
 
 ## ToDo
 - [x] ES2015
+- [x] Eslint
 - [ ] New components
 - [ ] Documenation
-- [ ] Eslint
 - [ ] Self tests
 
 ## License
