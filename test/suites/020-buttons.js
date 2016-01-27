@@ -13,4 +13,12 @@ describe('Buttons', function () {
   it('Click "Disable" button and wait state changed to "enabled"', function (done) {
     eTT().button('Disable').click().isDisabled().isEnabled(done)
   })
+
+  it('Click "Select me by tooltip" button and wait state changed to "disabled"', function (done) {
+    eTT().button('Button tooltip').click().isDisabled(done)
+  })
+
+  it('Click "Select me by custom xtype" button and wait state changed to "disabled"', function (done) {
+    eTT().button('customButton').click().isDisabled(done)
+  })
 })

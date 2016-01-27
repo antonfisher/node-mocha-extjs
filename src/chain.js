@@ -47,11 +47,21 @@ export class Chain {
         throw new Error('Cannot add an action after the action which calls Mocha test callback.')
       }
 
+      var actionArgs = []
+      for (let arg of args) {
+        if (typeof arg === 'function') {
+          self._chainRunned = true
+          self._chainCallback = arg
+          break
+        }
+        actionArgs.push(arg);
+      }
+
       var chainProperties = {
         type: actionType,
         chain: self,
         invert: invert,
-        callArgs: args
+        callArgs: actionArgs
       }
 
       if (self.driver.supportedComponents.includes(actionType)) {
@@ -62,13 +72,8 @@ export class Chain {
         self._itemsSet.push(new ChainActionItem(chainProperties))
       }
 
-      for (let arg of args) {
-        if (typeof arg === 'function') {
-          self._chainRunned = true
-          self._chainCallback = arg
-          self.run()
-          break
-        }
+      if (self._chainRunned) {
+        self.run()
       }
 
       return self

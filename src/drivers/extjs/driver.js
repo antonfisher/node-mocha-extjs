@@ -1,8 +1,5 @@
 'use strict'
 
-//TODO remove this dependency
-import {MochaUI} from '../../utils/mochaUI.js'
-
 import {waitForFn} from '../../utils/utils.js'
 
 import {ExtJsComponentTab} from './components/tab.js'
@@ -17,14 +14,14 @@ import {ExtJsComponentNumberField} from './components/numberField.js'
 
 export class ExtJsDriver {
 
-  constructor ({cursor}) {
+  constructor ({mochaUi}) {
     var self = this
 
-    if (!cursor) {
-      throw new Error(`Class ${self.constructor.name} created with undefined property "cursor".`)
+    if (!mochaUi) {
+      throw new Error(`Class ${self.constructor.name} created with undefined property "mochaUi".`)
     }
 
-    self.cursor = cursor
+    self.mochaUi = mochaUi
   }
 
   get supportedComponents () {
@@ -59,21 +56,25 @@ export class ExtJsDriver {
     if (!extJsComponent && type) {
       var titleProperties = []
 
+      selectors = [
+        `${type}[tooltip~="${titleOrSelector}"]`,
+        `${type}[reference="${titleOrSelector}"]`,
+        `${type}[xtype="${titleOrSelector}"]`
+      ]
+
       if (type === 'button') {
-        titleProperties = ['text']
-        selectors = [`${type}[text~="${titleOrSelector}"]`]
+        titleProperties = ['text', 'tooltip', 'xtype']
+        selectors.unshift(`${type}[text~="${titleOrSelector}"]`)
       } else if (type === 'tab' || type === 'window' || type === 'grid') {
-        titleProperties = ['title']
-        selectors = [`${type}[title~="${titleOrSelector}"]`]
+        titleProperties = ['title', 'tooltip', 'xtype']
+        selectors.unshift(`${type}[title~="${titleOrSelector}"]`)
       } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
-        titleProperties = ['fieldLabel']
-        selectors = [`${type}[fieldLabel~="${titleOrSelector}"]`]
+        titleProperties = ['fieldLabel', 'tooltip', 'xtype']
+        selectors.unshift(`${type}[fieldLabel~="${titleOrSelector}"]`)
       } else if (type === 'checkbox' || type === 'radio') {
-        titleProperties = ['fieldLabel', 'boxLabel']
-        selectors = [
-          `${type}[fieldLabel~="${titleOrSelector}"]`,
-          `${type}[boxLabel~="${titleOrSelector}"]`
-        ]
+        titleProperties = ['fieldLabel', 'boxLabel', 'tooltip', 'xtype']
+        selectors.unshift(`${type}[fieldLabel~="${titleOrSelector}"]`)
+        selectors.unshift(`${type}[boxLabel~="${titleOrSelector}"]`)
       } else {
         return callback(`Type "${type}" not supported.`)
       }
@@ -119,7 +120,7 @@ export class ExtJsDriver {
     var componentObject = null
     var properties = {
       selectors: (selector || selectors.join(', ')),
-      cursor: self.cursor,
+      mochaUi: self.mochaUi,
       extJsComponent
     }
 
@@ -152,23 +153,29 @@ export class ExtJsDriver {
 
   //BUG does not work properly
   getVisibleComponents (selector) {
-    return Ext.ComponentQuery.query(selector).filter((item) => {
-      if (!item.el || !item.el.dom) {
-        return false
-      }
+    var self = this
 
-      var r = item.el.dom.getBoundingClientRect()
-      var x = (r.left + r.width / 2)
-      var y = (r.top + r.height / 2)
+    try {
+      return Ext.ComponentQuery.query(selector).filter((item) => {
+        if (!item.el || !item.el.dom) {
+          return false
+        }
 
-      MochaUI.hide()
-      var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
-        return (dom === item.el.dom)
+        var r = item.el.dom.getBoundingClientRect()
+        var x = (r.left + r.width / 2)
+        var y = (r.top + r.height / 2)
+
+        self.mochaUi.hide()
+        var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
+          return (dom === item.el.dom)
+        })
+        self.mochaUi.show()
+
+        return (visible.length > 0)
       })
-      MochaUI.show()
-
-      return (visible.length > 0)
-    })
+    } catch (e) {
+      throw `${e}. Selector: ${selector}`;
+    }
   }
 
   waitLoadMask (callback) {

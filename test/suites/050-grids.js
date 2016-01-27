@@ -17,4 +17,8 @@ describe('Grids', function () {
   it('Rows number should be equal 2', function (done) {
     eTT().grid('Names').checkRowsCount(2, done)
   })
+
+  it('Click on cells of second grid', function (done) {
+    eTT().grid('customGridReference').select(0, 0).select(0, 1).select(1, 1).select(1, 0, done)
+  })
 })

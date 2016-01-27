@@ -29,7 +29,7 @@ export class ExtJsComponentComboBox extends ExtJsComponentBase {
         return callback(`Failed to get element of "${self.componentType}" row #${index}": ${err}`)
       }
 
-      new HTMLComponentBase({htmlElement, cursor: self.cursor}).click((err) => {
+      new HTMLComponentBase({htmlElement, mochaUi: self.mochaUi}).click((err) => {
         if (err) {
           return callback(`Failed to click on item #${index} of "${self.componentType}" ": ${err}`)
         } else {

@@ -3,7 +3,9 @@ Ext.define('Sandbox.view.main.Main', {
 
   requires: [
     'Sandbox.view.main.MainController',
-    'Sandbox.view.main.MainModel'
+    'Sandbox.view.main.MainModel',
+    'Sandbox.view.main.custom.Grid',
+    'Sandbox.view.main.custom.Button'
   ],
 
   controller: 'main',
@@ -34,6 +36,14 @@ Ext.define('Sandbox.view.main.Main', {
       }, {
         text: 'Disable',
         handler: 'onButtonsDisableButtonClick'
+      }, {
+        text: 'Select me by tooltip',
+        tooltip: 'Button tooltip',
+        handler: 'onButtonsSelectMeByTooltipButtonClick'
+      }, {
+        text: 'Select me by custom xtype',
+        xtype: 'customButton',
+        handler: 'onButtonsSelectMeByCustomXtypeButtonClick'
       }]
     }, {
       title: 'Windows',
@@ -76,29 +86,11 @@ Ext.define('Sandbox.view.main.Main', {
     }, {
       title: 'Grids',
       items: [{
-        xtype: 'grid',
-        title: 'Names',
-        width: 300,
-        height: 150,
-        border: true,
-        columns: [{
-          header: 'Name',
-          dataIndex: 'name',
-          flex: 1
-        }, {
-          header: 'Count',
-          dataIndex: 'count'
-        }],
-        store: Ext.create('Ext.data.Store', {
-          fields: ['name', 'count'],
-          data: [{
-            name: 'Aaa',
-            count: 3
-          }, {
-            name: 'Bbb',
-            count: 5
-          }]
-        })
+        xtype: 'customGrid',
+        title: 'Names'
+      }, {
+        xtype: 'customGrid',
+        reference: 'customGridReference'
       }]
     }, {
       title: 'LoadMasks',

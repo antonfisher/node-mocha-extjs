@@ -54,4 +54,12 @@ export class Cursor {
     }, self._timeout)
   }
 
+  hide () {
+    this._point.style.display = 'none'
+  }
+
+  show () {
+    this._point.style.display = 'block'
+  }
+
 }

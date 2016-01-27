@@ -1,14 +1,11 @@
 'use strict'
 
-//TODO remove this dependency
-import {MochaUI} from '../../../utils/mochaUI.js'
-
 export class HTMLComponentBase {
 
-  constructor ({htmlElement, cursor}) {
+  constructor ({htmlElement, mochaUi}) {
     var self = this
 
-    self.cursor = cursor
+    self.mochaUi = mochaUi
     self.htmlElement = htmlElement
   }
 
@@ -25,8 +22,8 @@ export class HTMLComponentBase {
     var x = (rect.left + rect.width / 2)
     var y = (rect.top + rect.height / 2)
 
-    self.cursor.moveTo(x + 1, y + 1, () => {
-      MochaUI.hide()
+    self.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
+      self.mochaUi.hide()
 
       if (el.focus) {
         el.focus()
@@ -49,7 +46,7 @@ export class HTMLComponentBase {
         }
       }
 
-      MochaUI.show()
+      self.mochaUi.show()
 
       return callback(err ? `cannot click on "${el.id}" ${err}` : null)
     })

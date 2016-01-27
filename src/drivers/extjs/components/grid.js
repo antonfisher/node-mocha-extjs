@@ -5,7 +5,7 @@ import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentGrid extends ExtJsComponentBase {
 
-  select (callback, rowIndex) {
+  select (callback, rowIndex = 0, colIndex = 0) {
     var self = this
     var cmp = self.extJsComponent
     var htmlElement = null
@@ -14,11 +14,12 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
       htmlElement = document
         .getElementById(cmp.el.id)
         .getElementsByClassName('x-grid-item')[rowIndex]
+        .getElementsByClassName('x-grid-cell')[colIndex]
     } catch (e) {
       return callback(`Failed to get element of "${self.componentType}" row #${rowIndex}": ${err}`)
     }
 
-    new HTMLComponentBase({htmlElement, cursor: self.cursor}).click((err) => {
+    new HTMLComponentBase({htmlElement, mochaUi: self.mochaUi}).click((err) => {
       if (err) {
         return callback(`Failed to click on item row #${rowIndex} of "${self.componentType}" ": ${err}`)
       } else {

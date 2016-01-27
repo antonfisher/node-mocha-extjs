@@ -22,6 +22,16 @@ Ext.define('Sandbox.view.main.MainController', {
     }, 1000)
   },
 
+  onButtonsSelectMeByTooltipButtonClick: function (btn) {
+    btn.setDisabled(true)
+    btn.setText(btn.getText() + ' [done]')
+  },
+
+  onButtonsSelectMeByCustomXtypeButtonClick: function (btn) {
+    btn.setDisabled(true)
+    btn.setText(btn.getText() + ' [done]')
+  },
+
   // windows
 
   onWindowsShowConfirmButtonClick: function (btn) {

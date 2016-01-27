@@ -3,12 +3,12 @@
 import 'babel-polyfill'
 
 import {Chain} from './src/chain.js'
-import {Cursor} from './src/cursor.js'
+import {MochaUI} from './src/mochaUI.js'
 import {ExtJsDriver} from './src/drivers/extjs/driver.js'
 
 export class MochaExtJs {
 
-  constructor ({driver: driver, cursor: cursor} = {driver: new ExtJsDriver({cursor: new Cursor()})}) {
+  constructor ({driver: driver} = {driver: new ExtJsDriver({mochaUi: new MochaUI()})}) {
     return function () {
       return new Chain({
         driver: driver
