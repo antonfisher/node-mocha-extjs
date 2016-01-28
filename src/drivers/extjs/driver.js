@@ -15,13 +15,11 @@ import {ExtJsComponentNumberField} from './components/numberField.js'
 export class ExtJsDriver {
 
   constructor ({mochaUi}) {
-    var self = this
-
     if (!mochaUi) {
-      throw new Error(`Class ${self.constructor.name} created with undefined property "mochaUi".`)
+      throw new Error(`Class ${this.constructor.name} created with undefined property "mochaUi".`)
     }
 
-    self.mochaUi = mochaUi
+    this.mochaUi = mochaUi
   }
 
   get supportedComponents () {
@@ -43,18 +41,17 @@ export class ExtJsDriver {
   }
 
   getComponent (type, titleOrSelector, callback) {
-    var self = this
-    var selector = null
-    var extJsComponent = null
-    var selectors = []
+    let selector = null
+    let selectors = []
+    let extJsComponent = null
 
     if (!type) {
       selector = titleOrSelector
-      extJsComponent = self.getVisibleComponents(selector)[0]
+      extJsComponent = this.getVisibleComponents(selector)[0]
     }
 
     if (!extJsComponent && type) {
-      var titleProperties = []
+      let titleProperties = []
 
       selectors = [
         `${type}[tooltip~="${titleOrSelector}"]`,
@@ -80,15 +77,15 @@ export class ExtJsDriver {
       }
 
       selectors.every((item) => {
-        extJsComponent = self.getVisibleComponents(item)[0]
+        extJsComponent = this.getVisibleComponents(item)[0]
         return !extJsComponent
       })
 
       if (!extJsComponent) {
         (Ext.ComponentQuery.query(type) || []).every((item) => {
           titleProperties.every((prop) => {
-            var title = item[prop]
-            var fnName = `get${prop[0].toUpperCase()}${prop.slice(1)}`
+            let title = item[prop]
+            const fnName = `get${prop[0].toUpperCase()}${prop.slice(1)}`
             if (fnName && item[fnName] && typeof item[fnName] === 'function') {
               title = item[fnName].call(item)
             }
@@ -109,7 +106,7 @@ export class ExtJsDriver {
     }
 
     //TODO to method
-    var rect = extJsComponent.el.dom.getBoundingClientRect()
+    const rect = extJsComponent.el.dom.getBoundingClientRect()
     if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
       return callback(
         `No visible HTML element for selector "${selector}", `
@@ -117,10 +114,10 @@ export class ExtJsDriver {
       )
     }
 
-    var componentObject = null
-    var properties = {
+    let componentObject = null
+    const properties = {
       selectors: (selector || selectors.join(', ')),
-      mochaUi: self.mochaUi,
+      mochaUi: this.mochaUi,
       extJsComponent
     }
 
@@ -147,29 +144,27 @@ export class ExtJsDriver {
     if (componentObject) {
       return callback(null, componentObject)
     } else {
-      throw new Error(`Component "${type}" is not supported by driver "${self.constructor.name}".`)
+      throw new Error(`Component "${type}" is not supported by driver "${this.constructor.name}".`)
     }
   }
 
   //BUG does not work properly
   getVisibleComponents (selector) {
-    var self = this
-
     try {
       return Ext.ComponentQuery.query(selector).filter((item) => {
         if (!item.el || !item.el.dom) {
           return false
         }
 
-        var r = item.el.dom.getBoundingClientRect()
-        var x = (r.left + r.width / 2)
-        var y = (r.top + r.height / 2)
+        const r = item.el.dom.getBoundingClientRect()
+        const x = (r.left + r.width / 2)
+        const y = (r.top + r.height / 2)
 
-        self.mochaUi.hide()
-        var visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
+        this.mochaUi.hide()
+        const visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
           return (dom === item.el.dom)
         })
-        self.mochaUi.show()
+        this.mochaUi.show()
 
         return (visible.length > 0)
       })
@@ -181,7 +176,7 @@ export class ExtJsDriver {
   waitLoadMask (callback) {
     return waitForFn(
       (done) => {
-        var maskDisplayed = Ext.ComponentManager.getAll()
+        const maskDisplayed = Ext.ComponentManager.getAll()
             .filter((item)=> {
               return (item.xtype === 'loadmask' && item.isHidden() === false)
             }).length > 0
@@ -205,7 +200,7 @@ export class ExtJsDriver {
     //TODO check parent
     return waitForFn(
       (done) => {
-        var textPresented = false
+        let textPresented = false
 
         if (text instanceof RegExp) {
           textPresented = text.test(window.document.body.innerText)
@@ -215,11 +210,7 @@ export class ExtJsDriver {
           textPresented = (new RegExp(text, 'g')).test(window.document.body.innerText)
         }
 
-        if (textPresented) {
-          done(null)
-        } else {
-          done(`Text pattern "${text}" not found on page.`)
-        }
+        done(textPresented ? null : `Text pattern "${text}" not found on page.`)
       },
       callback
     )

@@ -11,18 +11,14 @@ export class Set {
   }
 
   * items () {
-    var self = this
-
-    for (let item of self._items) {
+    for (let item of this._items) {
       yield item
     }
   }
 
   * reversedItems () {
-    var self = this
-
-    for (var i = self._items.length - 1; i >= 0; i--) {
-      yield self._items[i]
+    for (let i = this._items.length - 1; i >= 0; i--) {
+      yield this._items[i]
     }
   }
 

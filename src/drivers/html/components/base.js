@@ -3,27 +3,24 @@
 export class HTMLComponentBase {
 
   constructor ({htmlElement, mochaUi}) {
-    var self = this
-
-    self.mochaUi = mochaUi
-    self.htmlElement = htmlElement
+    this.mochaUi = mochaUi
+    this.htmlElement = htmlElement
   }
 
   click (callback) {
-    var self = this
-    var el = self.htmlElement
-    var err
+    const el = this.htmlElement
+    let err
 
     // for PhantomJs:
     //  ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js:116
     // add "page.sendEvent.apply(this, data.sendEvent)"
     //
-    var rect = el.getBoundingClientRect()
-    var x = (rect.left + rect.width / 2)
-    var y = (rect.top + rect.height / 2)
+    const rect = el.getBoundingClientRect()
+    const x = (rect.left + rect.width / 2)
+    const y = (rect.top + rect.height / 2)
 
-    self.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
-      self.mochaUi.hide()
+    this.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
+      this.mochaUi.hide()
 
       if (el.focus) {
         el.focus()
@@ -46,7 +43,7 @@ export class HTMLComponentBase {
         }
       }
 
-      self.mochaUi.show()
+      this.mochaUi.show()
 
       return callback(err ? `cannot click on "${el.id}" ${err}` : null)
     })

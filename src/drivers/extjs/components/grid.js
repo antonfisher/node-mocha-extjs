@@ -6,9 +6,8 @@ import {ExtJsComponentBase} from './base.js'
 export class ExtJsComponentGrid extends ExtJsComponentBase {
 
   select (callback, rowIndex = 0, colIndex = 0) {
-    var self = this
-    var cmp = self.extJsComponent
-    var htmlElement = null
+    const cmp = this.extJsComponent
+    let htmlElement = null
 
     try {
       htmlElement = document
@@ -16,33 +15,28 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
         .getElementsByClassName('x-grid-item')[rowIndex]
         .getElementsByClassName('x-grid-cell')[colIndex]
     } catch (e) {
-      return callback(`Failed to get element of "${self.componentType}" row #${rowIndex}": ${err}`)
+      return callback(`Failed to get element of "${this.componentType}" row #${rowIndex}": ${err}`)
     }
 
-    new HTMLComponentBase({htmlElement, mochaUi: self.mochaUi}).click((err) => {
-      if (err) {
-        return callback(`Failed to click on item row #${rowIndex} of "${self.componentType}" ": ${err}`)
-      } else {
-        return callback(null)
-      }
+    new HTMLComponentBase({htmlElement, mochaUi: this.mochaUi}).click((err) => {
+      return callback(err ? `Failed to click on item row #${rowIndex} of "${this.componentType}" ": ${err}` : null)
     })
   }
 
   checkRowsCount (callback, countExpected) {
-    var self = this
-    var cmp = self.extJsComponent
+    const cmp = this.extJsComponent
 
     if (!cmp.getStore || !cmp.getStore()) {
-      return callback(`No store binded to "${self.componentType}" (${self.selectors}).`)
+      return callback(`No store binded to "${this.componentType}" (${this.selectors}).`)
     }
 
-    var count = cmp.getStore().getCount()
+    const count = cmp.getStore().getCount()
 
     if (count === countExpected) {
       return callback(null)
     } else {
       return callback(
-        `No store binded to "${self.componentType}" (selectors: ${self.selectors}):`
+        `No store binded to "${this.componentType}" (selectors: ${this.selectors}):`
         + ` count of rows expected to be equal "${countExpected}" instead of "${count}".`
       )
     }

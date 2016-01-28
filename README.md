@@ -1,70 +1,60 @@
-# mocha-extjs ![Status](https://img.shields.io/badge/status-alpha-orange.svg)
+# mocha-extjs
 
+![Status](https://img.shields.io/badge/status-alpha-orange.svg)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Framework for ExtJs applications testing.
+Framework for testing ExtJs applications.
 
 ![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
 ## Getting Started:
 
-1) Add Mochajs _div_ and files to your applications test page:
+Update _index.html_:
 
 ```html
-<!-- index.html -->
 <body>
     ...
 
+    <!-- mocha ui -->
     <div id="mocha"></div>
+
+
+    <!-- mocha library -->
     <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
     <script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
     <script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
-</body>
-```
 
-2) Add _mocha-extjs_ files:
 
-```html
-<!-- index.html -->
-<body>
-    ...
-
+    <!-- mocha-extjs library -->
     <link href="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/dist/mocha-extjs.css"
           rel="stylesheet" />
     <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/dist/mocha-extjs.js"></script>
 
+
     <!-- first test suite -->
     <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/test/suites/010-environment.js"></script>
-</body>
-```
 
-3) Add run script:
 
-```html
-<!-- index.html -->
-<body>
-    ...
-
+    <!-- run script -->
     <script>
-        mocha.checkLeaks();
-        mocha.globals(['Ext', 'Sandbox']); // update name here
+            mocha.checkLeaks();
+            mocha.globals(['Ext', 'Sandbox']); // update name here
 
-        if (window.initMochaPhantomJS) {
-            window.initMochaPhantomJS();
-        }
+            if (window.initMochaPhantomJS) {
+                window.initMochaPhantomJS();
+            }
 
-        var eTT = new MochaExtJs(); // init testing framework
+            var eTT = new MochaExtJs(); // init testing framework
 
-        window.onload = function () {
-            setTimeout(function () {
-                mocha.run();
-            }, 1000);
-        };
-    </script>
+            window.onload = function () {
+                setTimeout(function () {
+                    mocha.run();
+                }, 1000);
+            };
+        </script>
 </body>
 ```
-
-4) Done. Run your application!
+Done. Run your application!
 
 ## Jenkins
 
@@ -72,7 +62,12 @@ _Cooming soon, waiting for pull request in new release version of one dependency
 
 ## Usage
 
-### Test suite example:
+### Init library before running MochaJs
+```javascript
+var eTT = new MochaExtJs(); // init testing framework
+```
+
+### Add test suite:
 ```javascript
 // tests/suites/020-buttons.js
 describe('Buttons', function () {
@@ -91,6 +86,8 @@ describe('Buttons', function () {
 
 ### Supported components and methods:
 ```
+var eTT = new MochaExtJs();
+
 eTT() -->--->|------->--->|- button ----->|- ('%title%') -------.
         |    |       |    |- window       |- ('%fieldLabel%')   |
         |    |- no --'    |- numberfield  |- ('%reference%')    |
@@ -146,7 +143,8 @@ $ cd ./mocha-extjs/test/Sandbox
 $ sencha app build 
 ```
 - install dependencies `$ npm install`
-- run _gulp_: `$ ./node_modules/.bin/gulp`.
+- run _lint_: `$ npm run lint`
+- run _gulp_: `$ npm run build`.
 
 ## Contributing
 
@@ -165,10 +163,10 @@ Eslint and test your code.
 
 ## ToDo
 - [x] ES2015
-- [x] Eslint
+- [x] StandardJs
+- [ ] Self tests
 - [ ] New components
 - [ ] Documenation
-- [ ] Self tests
 
 ## License
 Copyright (c) 2016 Anton Fisher <a.fschr@gmail.com>

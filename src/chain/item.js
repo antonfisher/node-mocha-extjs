@@ -3,20 +3,18 @@
 export class ChainItem {
 
   constructor ({chain, type, invert = false, callArgs = []}) {
-    var self = this
-
     if (!chain) {
-      throw new Error(`Class ${self.constructor.name} created with undefined property "chain".`)
+      throw new Error(`Class ${this.constructor.name} created with undefined property "chain".`)
     }
 
     if (!type) {
-      throw new Error(`Class ${self.constructor.name} created with undefined property "type".`)
+      throw new Error(`Class ${this.constructor.name} created with undefined property "type".`)
     }
 
-    self.type = type
-    self.chain = chain
-    self.invert = invert
-    self.callArgs = callArgs
+    this.type = type
+    this.chain = chain
+    this.invert = invert
+    this.callArgs = callArgs
   }
 
   run () {

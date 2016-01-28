@@ -5829,18 +5829,16 @@
 
 	    _classCallCheck(this, Chain);
 
-	    var self = this;
+	    this._itemsSet = new _set.Set();
 
-	    self._itemsSet = new _set.Set();
-
-	    self._chainRunned = false;
-	    self._chainCallback = function () {
+	    this._chainRunned = false;
+	    this._chainCallback = function () {
 	      throw new Error('Chain callback is not presented.');
 	    };
 
-	    self.driver = driver;
-	    self.itemsRunDelay = itemsRunDelay;
-	    self.no = {};
+	    this.driver = driver;
+	    this.itemsRunDelay = itemsRunDelay;
+	    this.no = {};
 
 	    // entrance actions
 
@@ -5852,8 +5850,8 @@
 	      for (var _iterator = driver.supportedComponents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	        var component = _step.value;
 
-	        self[component] = self.createActionFunction(component);
-	        self.no[component] = self.createActionFunction(component, true);
+	        this[component] = this.createActionFunction(component);
+	        this.no[component] = this.createActionFunction(component, true);
 	      }
 	    } catch (err) {
 	      _didIteratorError = true;
@@ -5878,7 +5876,7 @@
 	      for (var _iterator2 = driver.supportedComponentActions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	        var action = _step2.value;
 
-	        self[action] = self.createActionFunction(action);
+	        this[action] = this.createActionFunction(action);
 	      }
 	    } catch (err) {
 	      _didIteratorError2 = true;
@@ -5903,7 +5901,7 @@
 	      for (var _iterator3 = driver.supportedActions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
 	        var action = _step3.value;
 
-	        self[action] = self.createActionFunction(action);
+	        this[action] = this.createActionFunction(action);
 	      }
 	    } catch (err) {
 	      _didIteratorError3 = true;
@@ -5920,25 +5918,24 @@
 	      }
 	    }
 
-	    return self;
+	    return this;
 	  }
 
 	  _createClass(Chain, [{
 	    key: 'createActionFunction',
 	    value: function createActionFunction(actionType, invert) {
-	      var self = this;
+	      var _this = this;
 
 	      return function () {
-	        if (self._chainRunned) {
-	          throw new Error('Cannot add an action after the action which calls Mocha test callback.');
-	        }
-
-	        var actionArgs = [];
-
 	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 	          args[_key] = arguments[_key];
 	        }
 
+	        if (_this._chainRunned) {
+	          throw new Error('Cannot add an action after the action which calls Mocha test callback.');
+	        }
+
+	        var actionArgs = [];
 	        var _iteratorNormalCompletion4 = true;
 	        var _didIteratorError4 = false;
 	        var _iteratorError4 = undefined;
@@ -5948,8 +5945,8 @@
 	            var arg = _step4.value;
 
 	            if (typeof arg === 'function') {
-	              self._chainRunned = true;
-	              self._chainCallback = arg;
+	              _this._chainRunned = true;
+	              _this._chainCallback = arg;
 	              break;
 	            }
 	            actionArgs.push(arg);
@@ -5971,46 +5968,47 @@
 
 	        var chainProperties = {
 	          type: actionType,
-	          chain: self,
+	          chain: _this,
 	          invert: invert,
 	          callArgs: actionArgs
 	        };
 
-	        if (self.driver.supportedComponents.includes(actionType)) {
-	          self._itemsSet.push(new _componentItem.ChainComponentItem(chainProperties));
-	        } else if (self.driver.supportedComponentActions.includes(actionType)) {
-	          self._itemsSet.push(new _componentActionItem.ChainComponentActionItem(chainProperties));
-	        } else if (self.driver.supportedActions.includes(actionType)) {
-	          self._itemsSet.push(new _actionItem.ChainActionItem(chainProperties));
+	        if (_this.driver.supportedComponents.includes(actionType)) {
+	          _this._itemsSet.push(new _componentItem.ChainComponentItem(chainProperties));
+	        } else if (_this.driver.supportedComponentActions.includes(actionType)) {
+	          _this._itemsSet.push(new _componentActionItem.ChainComponentActionItem(chainProperties));
+	        } else if (_this.driver.supportedActions.includes(actionType)) {
+	          _this._itemsSet.push(new _actionItem.ChainActionItem(chainProperties));
 	        }
 
-	        if (self._chainRunned) {
-	          self.run();
+	        if (_this._chainRunned) {
+	          _this.run();
 	        }
 
-	        return self;
+	        return _this;
 	      };
 	    }
 	  }, {
 	    key: 'run',
 	    value: function run() {
-	      var self = this;
-	      var itemsGenerator = self._itemsSet.items();
+	      var _this2 = this;
+
+	      var itemsGenerator = this._itemsSet.items();
 
 	      var runNextAction = function runNextAction() {
 	        var item = itemsGenerator.next();
 
 	        if (item.done) {
-	          return self._chainCallback(null);
+	          return _this2._chainCallback(null);
 	        } else {
 	          return item.value.run(function (err) {
 	            if (err) {
-	              return self._chainCallback(new Error(err));
+	              return _this2._chainCallback(new Error(err));
 	            }
 
 	            setTimeout(function () {
 	              runNextAction();
-	            }, self.chainRunDelay);
+	            }, _this2.chainRunDelay);
 	          });
 	        }
 	      };
@@ -6020,14 +6018,12 @@
 	  }, {
 	    key: 'lastComponent',
 	    get: function get() {
-	      var self = this;
-
 	      var _iteratorNormalCompletion5 = true;
 	      var _didIteratorError5 = false;
 	      var _iteratorError5 = undefined;
 
 	      try {
-	        for (var _iterator5 = self._itemsSet.reversedItems()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	        for (var _iterator5 = this._itemsSet.reversedItems()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 	          var item = _step5.value;
 
 	          if (item.component) {
@@ -6086,101 +6082,99 @@
 	  }, {
 	    key: 'items',
 	    value: regeneratorRuntime.mark(function items() {
-	      var self, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, item;
+	      var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, item;
 
 	      return regeneratorRuntime.wrap(function items$(_context) {
 	        while (1) {
 	          switch (_context.prev = _context.next) {
 	            case 0:
-	              self = this;
 	              _iteratorNormalCompletion = true;
 	              _didIteratorError = false;
 	              _iteratorError = undefined;
-	              _context.prev = 4;
-	              _iterator = self._items[Symbol.iterator]();
+	              _context.prev = 3;
+	              _iterator = this._items[Symbol.iterator]();
 
-	            case 6:
+	            case 5:
 	              if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-	                _context.next = 13;
+	                _context.next = 12;
 	                break;
 	              }
 
 	              item = _step.value;
-	              _context.next = 10;
+	              _context.next = 9;
 	              return item;
 
-	            case 10:
+	            case 9:
 	              _iteratorNormalCompletion = true;
-	              _context.next = 6;
+	              _context.next = 5;
 	              break;
 
-	            case 13:
-	              _context.next = 19;
+	            case 12:
+	              _context.next = 18;
 	              break;
 
-	            case 15:
-	              _context.prev = 15;
-	              _context.t0 = _context['catch'](4);
+	            case 14:
+	              _context.prev = 14;
+	              _context.t0 = _context['catch'](3);
 	              _didIteratorError = true;
 	              _iteratorError = _context.t0;
 
-	            case 19:
+	            case 18:
+	              _context.prev = 18;
 	              _context.prev = 19;
-	              _context.prev = 20;
 
 	              if (!_iteratorNormalCompletion && _iterator.return) {
 	                _iterator.return();
 	              }
 
-	            case 22:
-	              _context.prev = 22;
+	            case 21:
+	              _context.prev = 21;
 
 	              if (!_didIteratorError) {
-	                _context.next = 25;
+	                _context.next = 24;
 	                break;
 	              }
 
 	              throw _iteratorError;
 
+	            case 24:
+	              return _context.finish(21);
+
 	            case 25:
-	              return _context.finish(22);
+	              return _context.finish(18);
 
 	            case 26:
-	              return _context.finish(19);
-
-	            case 27:
 	            case 'end':
 	              return _context.stop();
 	          }
 	        }
-	      }, items, this, [[4, 15, 19, 27], [20,, 22, 26]]);
+	      }, items, this, [[3, 14, 18, 26], [19,, 21, 25]]);
 	    })
 	  }, {
 	    key: 'reversedItems',
 	    value: regeneratorRuntime.mark(function reversedItems() {
-	      var self, i;
+	      var i;
 	      return regeneratorRuntime.wrap(function reversedItems$(_context2) {
 	        while (1) {
 	          switch (_context2.prev = _context2.next) {
 	            case 0:
-	              self = this;
-	              i = self._items.length - 1;
+	              i = this._items.length - 1;
 
-	            case 2:
+	            case 1:
 	              if (!(i >= 0)) {
-	                _context2.next = 8;
+	                _context2.next = 7;
 	                break;
 	              }
 
-	              _context2.next = 5;
-	              return self._items[i];
+	              _context2.next = 4;
+	              return this._items[i];
 
-	            case 5:
+	            case 4:
 	              i--;
-	              _context2.next = 2;
+	              _context2.next = 1;
 	              break;
 
-	            case 8:
+	            case 7:
 	            case 'end':
 	              return _context2.stop();
 	          }
@@ -6229,12 +6223,12 @@
 	  _createClass(ChainActionItem, [{
 	    key: 'run',
 	    value: function run(callback) {
-	      var self = this;
+	      var _this2 = this;
 
 	      return (0, _utils.waitForFn)(function (done) {
-	        var _self$chain$driver;
+	        var _chain$driver;
 
-	        (_self$chain$driver = self.chain.driver)[self.type].apply(_self$chain$driver, [done].concat(_toConsumableArray(self.callArgs)));
+	        (_chain$driver = _this2.chain.driver)[_this2.type].apply(_chain$driver, [done].concat(_toConsumableArray(_this2.callArgs)));
 	      }, callback);
 	    }
 	  }]);
@@ -6267,20 +6261,18 @@
 
 	    _classCallCheck(this, ChainItem);
 
-	    var self = this;
-
 	    if (!chain) {
-	      throw new Error('Class ' + self.constructor.name + ' created with undefined property "chain".');
+	      throw new Error('Class ' + this.constructor.name + ' created with undefined property "chain".');
 	    }
 
 	    if (!type) {
-	      throw new Error('Class ' + self.constructor.name + ' created with undefined property "type".');
+	      throw new Error('Class ' + this.constructor.name + ' created with undefined property "type".');
 	    }
 
-	    self.type = type;
-	    self.chain = chain;
-	    self.invert = invert;
-	    self.callArgs = callArgs;
+	    this.type = type;
+	    this.chain = chain;
+	    this.invert = invert;
+	    this.callArgs = callArgs;
 	  }
 
 	  _createClass(ChainItem, [{
@@ -6310,10 +6302,10 @@
 	  var timeout = _ref.timeout;
 	  var ticInterval = _ref.ticInterval;
 
-	  var interval;
+	  var startTimestamp = +new Date();
+	  var interval = undefined;
 	  var lastError = '';
 	  var exectution = false;
-	  var startTimestamp = +new Date();
 
 	  var intervalFn = function intervalFn() {
 	    if (+new Date() - startTimestamp > timeout) {
@@ -6395,20 +6387,20 @@
 	  _createClass(ChainComponentItem, [{
 	    key: 'run',
 	    value: function run(callback) {
-	      var self = this;
-	      var titleOrSelector = self.callArgs[0];
+	      var _this2 = this;
+
+	      var titleOrSelector = this.callArgs[0];
 
 	      return (0, _utils.waitForFn)(function (done) {
-	        self.chain.driver.getComponent(self.type, titleOrSelector, function (err, result) {
-	          if (self.invert) {
-	            var message = 'Component ' + self.type + ' "' + titleOrSelector + '" still presented.';
-	            return done(err ? null : message);
+	        _this2.chain.driver.getComponent(_this2.type, titleOrSelector, function (err, result) {
+	          if (_this2.invert) {
+	            return done(err ? null : 'Component ' + _this2.type + ' "' + titleOrSelector + '" still presented.');
 	          } else {
 	            return done(err, result);
 	          }
 	        });
 	      }, function (err, component) {
-	        self.component = component;
+	        _this2.component = component;
 	        return callback(err);
 	      });
 	    }
@@ -6454,21 +6446,22 @@
 	  _createClass(ChainComponentActionItem, [{
 	    key: 'run',
 	    value: function run(callback) {
-	      var self = this;
-	      var lastComponent = self.chain.lastComponent;
+	      var _this2 = this;
+
+	      var lastComponent = this.chain.lastComponent;
 
 	      if (!lastComponent) {
-	        return callback('No "' + self.type + '" action target.');
+	        return callback('No "' + this.type + '" action target.');
 	      }
 
-	      var action = lastComponent[self.type];
+	      var action = lastComponent[this.type];
 
 	      if (!action) {
-	        return callback('Component "' + lastComponent.constructor.name.replace(/.*Component/, '').toLowerCase() + '" ' + ('does not support action "' + self.type + '".'));
+	        return callback('Component "' + lastComponent.constructor.name.replace(/.*Component/, '').toLowerCase() + '" ' + ('does not support action "' + this.type + '".'));
 	      }
 
 	      return (0, _utils.waitForFn)(function (done) {
-	        lastComponent[self.type].apply(lastComponent, [done].concat(_toConsumableArray(self.callArgs)));
+	        lastComponent[_this2.type].apply(lastComponent, [done].concat(_toConsumableArray(_this2.callArgs)));
 	      }, callback);
 	    }
 	  }]);
@@ -6503,24 +6496,20 @@
 	  _createClass(MochaUI, [{
 	    key: 'show',
 	    value: function show() {
-	      var self = this;
-
-	      if (self.mochaElement) {
-	        self.mochaElement.style.display = 'block';
+	      if (this.mochaElement) {
+	        this.mochaElement.style.display = 'block';
 	      }
 
-	      self.cursor.show();
+	      this.cursor.show();
 	    }
 	  }, {
 	    key: 'hide',
 	    value: function hide() {
-	      var self = this;
-
-	      if (self.mochaElement) {
-	        self.mochaElement.style.display = 'none';
+	      if (this.mochaElement) {
+	        this.mochaElement.style.display = 'none';
 	      }
 
-	      self.cursor.hide();
+	      this.cursor.hide();
 	    }
 	  }, {
 	    key: 'mochaElement',
@@ -6550,57 +6539,56 @@
 	  function Cursor() {
 	    _classCallCheck(this, Cursor);
 
-	    var self = this;
-
-	    self._size = 14;
-	    self._timeout = 400;
-	    self._initTransition = 'all ' + self._timeout + 'ms ease-in-out';
-	    self._position = {
+	    this._size = 14;
+	    this._timeout = 400;
+	    this._initTransition = 'all ' + this._timeout + 'ms ease-in-out';
+	    this._position = {
 	      x: 0,
 	      y: 0
 	    };
 
-	    self._point = window.document.getElementById('mocha-extjs-testing-tool-pointer');
+	    this._point = window.document.getElementById('mocha-extjs-testing-tool-pointer');
 
-	    if (!self._point) {
-	      self._point = document.createElement('div');
+	    if (!this._point) {
+	      this._point = document.createElement('div');
 
-	      self._point.id = 'mocha-extjs-testing-tool-pointer';
-	      self._point.style.top = self._position.y + 'px';
-	      self._point.style.left = self._position.x + 'px';
-	      self._point.style.width = self._size + 'px';
-	      self._point.style.zIndex = '90000';
-	      self._point.style.height = self._size + 'px';
-	      self._point.style.border = '2px solid #ffffff';
-	      self._point.style.opacity = '1';
-	      self._point.style.position = 'absolute';
-	      self._point.style.transition = self._initTransition;
-	      self._point.style.borderRadius = '0 ' + self._size / 2 + 'px ' + self._size / 2 + 'px ' + self._size / 2 + 'px';
-	      self._point.style.backgroundColor = '#ee3300';
+	      this._point.id = 'mocha-extjs-testing-tool-pointer';
+	      this._point.style.top = this._position.y + 'px';
+	      this._point.style.left = this._position.x + 'px';
+	      this._point.style.width = this._size + 'px';
+	      this._point.style.zIndex = '90000';
+	      this._point.style.height = this._size + 'px';
+	      this._point.style.border = '2px solid #ffffff';
+	      this._point.style.opacity = '1';
+	      this._point.style.position = 'absolute';
+	      this._point.style.transition = this._initTransition;
+	      this._point.style.borderRadius = '0 ' + this._size / 2 + 'px ' + this._size / 2 + 'px ' + this._size / 2 + 'px';
+	      this._point.style.backgroundColor = '#ee3300';
 
-	      window.document.body.appendChild(self._point);
+	      window.document.body.appendChild(this._point);
 	    }
 	  }
 
 	  _createClass(Cursor, [{
 	    key: 'moveTo',
 	    value: function moveTo(x, y, callback) {
-	      var self = this;
+	      var _this = this;
+
 	      var translate = 'translate(' + x + 'px, ' + y + 'px)';
 
-	      self._point.style.transform = translate;
+	      this._point.style.transform = translate;
 
 	      setTimeout(function () {
-	        self._point.style.transition = 'all 50ms ease-in-out';
-	        self._point.style.transform = translate + ' scale(0.5)';
+	        _this._point.style.transition = 'all 50ms ease-in-out';
+	        _this._point.style.transform = translate + ' scale(0.5)';
 	        setTimeout(function () {
-	          self._point.style.transform = translate + ' scale(1)';
+	          _this._point.style.transform = translate + ' scale(1)';
 	          setTimeout(function () {
-	            self._point.style.transition = self._initTransition;
+	            _this._point.style.transition = _this._initTransition;
 	            return callback(null);
 	          }, 50);
 	        }, 50);
-	      }, self._timeout);
+	      }, this._timeout);
 	    }
 	  }, {
 	    key: 'hide',
@@ -6622,6 +6610,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6658,71 +6648,76 @@
 
 	    _classCallCheck(this, ExtJsDriver);
 
-	    var self = this;
-
 	    if (!mochaUi) {
-	      throw new Error('Class ' + self.constructor.name + ' created with undefined property "mochaUi".');
+	      throw new Error('Class ' + this.constructor.name + ' created with undefined property "mochaUi".');
 	    }
 
-	    self.mochaUi = mochaUi;
+	    this.mochaUi = mochaUi;
 	  }
 
 	  _createClass(ExtJsDriver, [{
 	    key: 'getComponent',
 	    value: function getComponent(type, titleOrSelector, callback) {
-	      var self = this;
+	      var _this = this;
+
 	      var selector = null;
-	      var extJsComponent = null;
 	      var selectors = [];
+	      var extJsComponent = null;
 
 	      if (!type) {
 	        selector = titleOrSelector;
-	        extJsComponent = self.getVisibleComponents(selector)[0];
+	        extJsComponent = this.getVisibleComponents(selector)[0];
 	      }
 
 	      if (!extJsComponent && type) {
-	        var titleProperties = [];
+	        var _ret = function () {
+	          var titleProperties = [];
 
-	        selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
+	          selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
 
-	        if (type === 'button') {
-	          titleProperties = ['text', 'tooltip', 'xtype'];
-	          selectors.unshift(type + '[text~="' + titleOrSelector + '"]');
-	        } else if (type === 'tab' || type === 'window' || type === 'grid') {
-	          titleProperties = ['title', 'tooltip', 'xtype'];
-	          selectors.unshift(type + '[title~="' + titleOrSelector + '"]');
-	        } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
-	          titleProperties = ['fieldLabel', 'tooltip', 'xtype'];
-	          selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
-	        } else if (type === 'checkbox' || type === 'radio') {
-	          titleProperties = ['fieldLabel', 'boxLabel', 'tooltip', 'xtype'];
-	          selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
-	          selectors.unshift(type + '[boxLabel~="' + titleOrSelector + '"]');
-	        } else {
-	          return callback('Type "' + type + '" not supported.');
-	        }
+	          if (type === 'button') {
+	            titleProperties = ['text', 'tooltip', 'xtype'];
+	            selectors.unshift(type + '[text~="' + titleOrSelector + '"]');
+	          } else if (type === 'tab' || type === 'window' || type === 'grid') {
+	            titleProperties = ['title', 'tooltip', 'xtype'];
+	            selectors.unshift(type + '[title~="' + titleOrSelector + '"]');
+	          } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
+	            titleProperties = ['fieldLabel', 'tooltip', 'xtype'];
+	            selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
+	          } else if (type === 'checkbox' || type === 'radio') {
+	            titleProperties = ['fieldLabel', 'boxLabel', 'tooltip', 'xtype'];
+	            selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
+	            selectors.unshift(type + '[boxLabel~="' + titleOrSelector + '"]');
+	          } else {
+	            return {
+	              v: callback('Type "' + type + '" not supported.')
+	            };
+	          }
 
-	        selectors.every(function (item) {
-	          extJsComponent = self.getVisibleComponents(item)[0];
-	          return !extJsComponent;
-	        });
-
-	        if (!extJsComponent) {
-	          (Ext.ComponentQuery.query(type) || []).every(function (item) {
-	            titleProperties.every(function (prop) {
-	              var title = item[prop];
-	              var fnName = 'get' + prop[0].toUpperCase() + prop.slice(1);
-	              if (fnName && item[fnName] && typeof item[fnName] === 'function') {
-	                title = item[fnName].call(item);
-	              }
-	              if (new RegExp(titleOrSelector, 'g').test(title)) {
-	                extJsComponent = item;
-	              }
-	              return !extJsComponent;
-	            });
+	          selectors.every(function (item) {
+	            extJsComponent = _this.getVisibleComponents(item)[0];
 	            return !extJsComponent;
 	          });
-	        }
+
+	          if (!extJsComponent) {
+	            (Ext.ComponentQuery.query(type) || []).every(function (item) {
+	              titleProperties.every(function (prop) {
+	                var title = item[prop];
+	                var fnName = 'get' + prop[0].toUpperCase() + prop.slice(1);
+	                if (fnName && item[fnName] && typeof item[fnName] === 'function') {
+	                  title = item[fnName].call(item);
+	                }
+	                if (new RegExp(titleOrSelector, 'g').test(title)) {
+	                  extJsComponent = item;
+	                }
+	                return !extJsComponent;
+	              });
+	              return !extJsComponent;
+	            });
+	          }
+	        }();
+
+	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	      }
 
 	      if (!extJsComponent) {
@@ -6740,7 +6735,7 @@
 	      var componentObject = null;
 	      var properties = {
 	        selectors: selector || selectors.join(', '),
-	        mochaUi: self.mochaUi,
+	        mochaUi: this.mochaUi,
 	        extJsComponent: extJsComponent
 	      };
 
@@ -6767,7 +6762,7 @@
 	      if (componentObject) {
 	        return callback(null, componentObject);
 	      } else {
-	        throw new Error('Component "' + type + '" is not supported by driver "' + self.constructor.name + '".');
+	        throw new Error('Component "' + type + '" is not supported by driver "' + this.constructor.name + '".');
 	      }
 	    }
 
@@ -6776,7 +6771,7 @@
 	  }, {
 	    key: 'getVisibleComponents',
 	    value: function getVisibleComponents(selector) {
-	      var self = this;
+	      var _this2 = this;
 
 	      try {
 	        return Ext.ComponentQuery.query(selector).filter(function (item) {
@@ -6788,11 +6783,11 @@
 	          var x = r.left + r.width / 2;
 	          var y = r.top + r.height / 2;
 
-	          self.mochaUi.hide();
+	          _this2.mochaUi.hide();
 	          var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
 	            return dom === item.el.dom;
 	          });
-	          self.mochaUi.show();
+	          _this2.mochaUi.show();
 
 	          return visible.length > 0;
 	        });
@@ -6834,11 +6829,7 @@
 	            textPresented = new RegExp(text, 'g').test(window.document.body.innerText);
 	          }
 
-	        if (textPresented) {
-	          done(null);
-	        } else {
-	          done('Text pattern "' + text + '" not found on page.');
-	        }
+	        done(textPresented ? null : 'Text pattern "' + text + '" not found on page.');
 	      }, callback);
 	    }
 	  }, {
@@ -6917,23 +6908,21 @@
 
 	    _classCallCheck(this, ExtJsComponentBase);
 
-	    var self = this;
+	    this.mochaUi = mochaUi;
+	    this.selectors = selectors;
+	    this.extJsComponent = extJsComponent;
 
-	    self.mochaUi = mochaUi;
-	    self.selectors = selectors;
-	    self.extJsComponent = extJsComponent;
-
-	    self._htmlComponent = null;
+	    this._htmlComponent = null;
 	  }
 
 	  _createClass(ExtJsComponentBase, [{
 	    key: 'click',
 	    value: function click(callback) {
-	      var self = this;
+	      var _this = this;
 
-	      self.htmlComponent.click(function (err) {
+	      this.htmlComponent.click(function (err) {
 	        if (err) {
-	          return callback('cannot click on component "' + self.componentType + '": ' + err);
+	          return callback('cannot click on component "' + _this.componentType + '": ' + err);
 	        } else {
 	          return callback(null);
 	        }
@@ -6942,23 +6931,19 @@
 	  }, {
 	    key: 'fill',
 	    value: function fill(callback, value) {
-	      var self = this;
+	      var _this2 = this;
 
-	      self.click(function (err) {
+	      this.click(function (err) {
 	        if (!err) {
 	          try {
-	            self.extJsComponent.setValue(value);
+	            _this2.extJsComponent.setValue(value);
 	            err = false;
 	          } catch (e) {
 	            err = 'failed to call setValue() method';
 	          }
 	        }
 
-	        if (err) {
-	          return callback('cannot fill component "' + self.componentType + '": ' + err);
-	        } else {
-	          return callback(null);
-	        }
+	        return callback(err ? 'cannot fill component "' + _this2.componentType + '": ' + err : null);
 	      });
 	    }
 	  }, {
@@ -6968,18 +6953,16 @@
 	      var expectedValue = _ref2.expectedValue;
 	      var callback = _ref2.callback;
 
-	      var self = this;
-
-	      if (!self.extJsComponent[stateFnName]) {
+	      if (!this.extJsComponent[stateFnName]) {
 	        return callback('ExtJs component does not have function "' + stateFnName + '".');
 	      }
 
-	      var result = self.extJsComponent[stateFnName]();
+	      var result = this.extJsComponent[stateFnName]();
 
 	      if (result === expectedValue) {
 	        return callback(null);
 	      } else {
-	        return callback('state of "' + self.componentType + '" function "' + stateFnName + '" expected to be "' + expectedValue + '" ' + ('instead of "' + result + '"'));
+	        return callback('state of "' + this.componentType + '" function "' + stateFnName + '" expected to be "' + expectedValue + '" ' + ('instead of "' + result + '"'));
 	      }
 	    }
 	  }, {
@@ -7021,26 +7004,24 @@
 	  }, {
 	    key: 'htmlComponent',
 	    get: function get() {
-	      var self = this;
-
-	      if (!self._htmlComponent && self.extJsComponent) {
+	      if (!this._htmlComponent && this.extJsComponent) {
 	        var htmlElement = null;
 
-	        if (self.extJsComponent.inputEl) {
-	          htmlElement = self.extJsComponent.inputEl.dom;
-	        } else if (self.extJsComponent.el) {
-	          htmlElement = self.extJsComponent.el.dom;
+	        if (this.extJsComponent.inputEl) {
+	          htmlElement = this.extJsComponent.inputEl.dom;
+	        } else if (this.extJsComponent.el) {
+	          htmlElement = this.extJsComponent.el.dom;
 	        }
 
 	        if (htmlElement) {
-	          self._htmlComponent = new _base.HTMLComponentBase({
-	            mochaUi: self.mochaUi,
+	          this._htmlComponent = new _base.HTMLComponentBase({
+	            mochaUi: this.mochaUi,
 	            htmlElement: htmlElement
 	          });
 	        }
 	      }
 
-	      return self._htmlComponent;
+	      return this._htmlComponent;
 	    }
 	  }, {
 	    key: 'componentType',
@@ -7073,18 +7054,17 @@
 
 	    _classCallCheck(this, HTMLComponentBase);
 
-	    var self = this;
-
-	    self.mochaUi = mochaUi;
-	    self.htmlElement = htmlElement;
+	    this.mochaUi = mochaUi;
+	    this.htmlElement = htmlElement;
 	  }
 
 	  _createClass(HTMLComponentBase, [{
 	    key: 'click',
 	    value: function click(callback) {
-	      var self = this;
-	      var el = self.htmlElement;
-	      var err;
+	      var _this = this;
+
+	      var el = this.htmlElement;
+	      var err = undefined;
 
 	      // for PhantomJs:
 	      //  ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js:116
@@ -7094,8 +7074,8 @@
 	      var x = rect.left + rect.width / 2;
 	      var y = rect.top + rect.height / 2;
 
-	      self.mochaUi.cursor.moveTo(x + 1, y + 1, function () {
-	        self.mochaUi.hide();
+	      this.mochaUi.cursor.moveTo(x + 1, y + 1, function () {
+	        _this.mochaUi.hide();
 
 	        if (el.focus) {
 	          el.focus();
@@ -7118,7 +7098,7 @@
 	          }
 	        }
 
-	        self.mochaUi.show();
+	        _this.mochaUi.show();
 
 	        return callback(err ? 'cannot click on "' + el.id + '" ' + err : null);
 	      });
@@ -7163,35 +7143,31 @@
 	  _createClass(ExtJsComponentGrid, [{
 	    key: 'select',
 	    value: function select(callback) {
+	      var _this2 = this;
+
 	      var rowIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 	      var colIndex = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
-	      var self = this;
-	      var cmp = self.extJsComponent;
+	      var cmp = this.extJsComponent;
 	      var htmlElement = null;
 
 	      try {
 	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
 	      } catch (e) {
-	        return callback('Failed to get element of "' + self.componentType + '" row #' + rowIndex + '": ' + err);
+	        return callback('Failed to get element of "' + this.componentType + '" row #' + rowIndex + '": ' + err);
 	      }
 
-	      new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: self.mochaUi }).click(function (err) {
-	        if (err) {
-	          return callback('Failed to click on item row #' + rowIndex + ' of "' + self.componentType + '" ": ' + err);
-	        } else {
-	          return callback(null);
-	        }
+	      new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: this.mochaUi }).click(function (err) {
+	        return callback(err ? 'Failed to click on item row #' + rowIndex + ' of "' + _this2.componentType + '" ": ' + err : null);
 	      });
 	    }
 	  }, {
 	    key: 'checkRowsCount',
 	    value: function checkRowsCount(callback, countExpected) {
-	      var self = this;
-	      var cmp = self.extJsComponent;
+	      var cmp = this.extJsComponent;
 
 	      if (!cmp.getStore || !cmp.getStore()) {
-	        return callback('No store binded to "' + self.componentType + '" (' + self.selectors + ').');
+	        return callback('No store binded to "' + this.componentType + '" (' + this.selectors + ').');
 	      }
 
 	      var count = cmp.getStore().getCount();
@@ -7199,7 +7175,7 @@
 	      if (count === countExpected) {
 	        return callback(null);
 	      } else {
-	        return callback('No store binded to "' + self.componentType + '" (selectors: ' + self.selectors + '):' + (' count of rows expected to be equal "' + countExpected + '" instead of "' + count + '".'));
+	        return callback('No store binded to "' + this.componentType + '" (selectors: ' + this.selectors + '):' + (' count of rows expected to be equal "' + countExpected + '" instead of "' + count + '".'));
 	      }
 	    }
 	  }]);
@@ -7366,17 +7342,18 @@
 	  _createClass(ExtJsComponentComboBox, [{
 	    key: 'select',
 	    value: function select(callback, index) {
-	      var self = this;
-	      var cmp = self.extJsComponent;
+	      var _this2 = this;
 
-	      self.click(function (err) {
+	      var cmp = this.extJsComponent;
+
+	      this.click(function (err) {
 	        if (err) {
-	          return callback('cannot select item #' + index + ' in component "' + self.componentType + '": ' + err);
+	          return callback('cannot select item #' + index + ' in component "' + _this2.componentType + '": ' + err);
 	        }
 
 	        //TODO add validation method
 	        if (!cmp || !cmp.picker || !cmp.picker.el || !cmp.picker.el.id) {
-	          return callback('cannot find picker of component "' + self.componentType + '": ' + err);
+	          return callback('cannot find picker of component "' + _this2.componentType + '": ' + err);
 	        }
 
 	        var htmlElement = null;
@@ -7384,15 +7361,11 @@
 	        try {
 	          htmlElement = document.getElementById(cmp.picker.el.id).getElementsByClassName('x-boundlist-item')[index];
 	        } catch (e) {
-	          return callback('Failed to get element of "' + self.componentType + '" row #' + index + '": ' + err);
+	          return callback('Failed to get element of "' + _this2.componentType + '" row #' + index + '": ' + err);
 	        }
 
-	        new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: self.mochaUi }).click(function (err) {
-	          if (err) {
-	            return callback('Failed to click on item #' + index + ' of "' + self.componentType + '" ": ' + err);
-	          } else {
-	            return callback(null);
-	          }
+	        new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: _this2.mochaUi }).click(function (err) {
+	          return callback(err ? 'Failed to click on item #' + index + ' of "' + _this2.componentType + '" ": ' + err : null);
 	        });
 	      });
 	    }

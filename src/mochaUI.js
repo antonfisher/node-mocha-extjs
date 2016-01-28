@@ -13,23 +13,19 @@ export class MochaUI {
   }
 
   show () {
-    var self = this
-
-    if (self.mochaElement) {
-      self.mochaElement.style.display = 'block'
+    if (this.mochaElement) {
+      this.mochaElement.style.display = 'block'
     }
 
-    self.cursor.show()
+    this.cursor.show()
   }
 
   hide () {
-    var self = this
-
-    if (self.mochaElement) {
-      self.mochaElement.style.display = 'none'
+    if (this.mochaElement) {
+      this.mochaElement.style.display = 'none'
     }
 
-    self.cursor.hide()
+    this.cursor.hide()
   }
 
 }

@@ -66,7 +66,7 @@ Ext.define('Sandbox.view.main.MainController', {
   // content
 
   onTextsShowTextButtonClick: function (btn) {
-    var self = this
+    var self = this;
     Ext.getBody().mask('Wait for text appears...')
     btn.setText('Wait for text appears...')
     setTimeout(function () {

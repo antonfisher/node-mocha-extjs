@@ -8,107 +8,100 @@ import {ChainComponentActionItem} from './chain/componentActionItem.js'
 export class Chain {
 
   constructor ({driver, itemsRunDelay = 200}) {
-    var self = this
+    this._itemsSet = new Set()
 
-    self._itemsSet = new Set()
-
-    self._chainRunned = false
-    self._chainCallback = function () {
+    this._chainRunned = false
+    this._chainCallback = (() => {
       throw new Error('Chain callback is not presented.')
-    }
+    })
 
-    self.driver = driver
-    self.itemsRunDelay = itemsRunDelay
-    self.no = {}
+    this.driver = driver
+    this.itemsRunDelay = itemsRunDelay
+    this.no = {}
 
     // entrance actions
 
     for (let component of driver.supportedComponents) {
-      self[component] = self.createActionFunction(component)
-      self.no[component] = self.createActionFunction(component, true)
+      this[component] = this.createActionFunction(component)
+      this.no[component] = this.createActionFunction(component, true)
     }
 
     for (let action of driver.supportedComponentActions) {
-      self[action] = self.createActionFunction(action)
+      this[action] = this.createActionFunction(action)
     }
 
     for (let action of driver.supportedActions) {
-      self[action] = self.createActionFunction(action)
+      this[action] = this.createActionFunction(action)
     }
 
-    return self
+    return this
   }
 
   createActionFunction (actionType, invert) {
-    var self = this
-
-    return function (...args) {
-      if (self._chainRunned) {
+    return ((...args) => {
+      if (this._chainRunned) {
         throw new Error('Cannot add an action after the action which calls Mocha test callback.')
       }
 
-      var actionArgs = []
+      let actionArgs = []
       for (let arg of args) {
         if (typeof arg === 'function') {
-          self._chainRunned = true
-          self._chainCallback = arg
+          this._chainRunned = true
+          this._chainCallback = arg
           break
         }
         actionArgs.push(arg);
       }
 
-      var chainProperties = {
+      const chainProperties = {
         type: actionType,
-        chain: self,
+        chain: this,
         invert: invert,
         callArgs: actionArgs
       }
 
-      if (self.driver.supportedComponents.includes(actionType)) {
-        self._itemsSet.push(new ChainComponentItem(chainProperties))
-      } else if (self.driver.supportedComponentActions.includes(actionType)) {
-        self._itemsSet.push(new ChainComponentActionItem(chainProperties))
-      } else if (self.driver.supportedActions.includes(actionType)) {
-        self._itemsSet.push(new ChainActionItem(chainProperties))
+      if (this.driver.supportedComponents.includes(actionType)) {
+        this._itemsSet.push(new ChainComponentItem(chainProperties))
+      } else if (this.driver.supportedComponentActions.includes(actionType)) {
+        this._itemsSet.push(new ChainComponentActionItem(chainProperties))
+      } else if (this.driver.supportedActions.includes(actionType)) {
+        this._itemsSet.push(new ChainActionItem(chainProperties))
       }
 
-      if (self._chainRunned) {
-        self.run()
+      if (this._chainRunned) {
+        this.run()
       }
 
-      return self
-    }
+      return this
+    })
   }
 
   run () {
-    var self = this
-    var itemsGenerator = self._itemsSet.items()
+    const itemsGenerator = this._itemsSet.items()
 
-    var runNextAction = function () {
-      var item = itemsGenerator.next()
+    const runNextAction = (() => {
+      const item = itemsGenerator.next()
 
       if (item.done) {
-        return self._chainCallback(null)
+        return this._chainCallback(null)
       } else {
         return item.value.run((err) => {
           if (err) {
-            return self._chainCallback(new Error(err))
+            return this._chainCallback(new Error(err))
           }
 
-          setTimeout(function () {
+          setTimeout(() => {
             runNextAction()
-          }, self.chainRunDelay)
+          }, this.chainRunDelay)
         })
       }
-    }
+    })
 
     runNextAction()
   }
 
   get lastComponent () {
-    var self = this
-
-    for (let item of self._itemsSet.reversedItems()) {
+    for (let item of this._itemsSet.reversedItems()) {
       if (item.component) {
         return item.component
         break

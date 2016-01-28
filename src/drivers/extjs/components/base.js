@@ -5,36 +5,32 @@ import {HTMLComponentBase} from '../../html/components/base.js'
 export class ExtJsComponentBase {
 
   constructor ({selectors, extJsComponent, mochaUi}) {
-    var self = this
+    this.mochaUi = mochaUi
+    this.selectors = selectors
+    this.extJsComponent = extJsComponent
 
-    self.mochaUi = mochaUi
-    self.selectors = selectors
-    self.extJsComponent = extJsComponent
-
-    self._htmlComponent = null
+    this._htmlComponent = null
   }
 
   get htmlComponent () {
-    var self = this
-
-    if (!self._htmlComponent && self.extJsComponent) {
+    if (!this._htmlComponent && this.extJsComponent) {
       let htmlElement = null
 
-      if (self.extJsComponent.inputEl) {
-        htmlElement = self.extJsComponent.inputEl.dom
-      } else if (self.extJsComponent.el) {
-        htmlElement = self.extJsComponent.el.dom
+      if (this.extJsComponent.inputEl) {
+        htmlElement = this.extJsComponent.inputEl.dom
+      } else if (this.extJsComponent.el) {
+        htmlElement = this.extJsComponent.el.dom
       }
 
       if (htmlElement) {
-        self._htmlComponent = new HTMLComponentBase({
-          mochaUi: self.mochaUi,
+        this._htmlComponent = new HTMLComponentBase({
+          mochaUi: this.mochaUi,
           htmlElement
         })
       }
     }
 
-    return self._htmlComponent
+    return this._htmlComponent
   }
 
   get componentType () {
@@ -42,11 +38,9 @@ export class ExtJsComponentBase {
   }
 
   click (callback) {
-    var self = this
-
-    self.htmlComponent.click((err) => {
+    this.htmlComponent.click((err) => {
       if (err) {
-        return callback(`cannot click on component "${self.componentType}": ${err}`)
+        return callback(`cannot click on component "${this.componentType}": ${err}`)
       } else {
         return callback(null)
       }
@@ -54,40 +48,32 @@ export class ExtJsComponentBase {
   }
 
   fill (callback, value) {
-    var self = this
-
-    self.click((err) => {
+    this.click((err) => {
       if (!err) {
         try {
-          self.extJsComponent.setValue(value)
+          this.extJsComponent.setValue(value)
           err = false
         } catch (e) {
           err = 'failed to call setValue() method'
         }
       }
 
-      if (err) {
-        return callback(`cannot fill component "${self.componentType}": ${err}`)
-      } else {
-        return callback(null)
-      }
+      return callback(err ? `cannot fill component "${this.componentType}": ${err}` : null)
     })
   }
 
   checkState ({stateFnName, expectedValue, callback}) {
-    var self = this
-
-    if (!self.extJsComponent[stateFnName]) {
+    if (!this.extJsComponent[stateFnName]) {
       return callback(`ExtJs component does not have function "${stateFnName}".`)
     }
 
-    var result = self.extJsComponent[stateFnName]()
+    const result = this.extJsComponent[stateFnName]()
 
     if (result === expectedValue) {
       return callback(null)
     } else {
       return callback(
-        `state of "${self.componentType}" function "${stateFnName}" expected to be "${expectedValue}" `
+        `state of "${this.componentType}" function "${stateFnName}" expected to be "${expectedValue}" `
         + `instead of "${result}"`
       )
     }

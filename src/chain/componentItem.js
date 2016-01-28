@@ -12,22 +12,20 @@ export class ChainComponentItem extends ChainItem {
   }
 
   run (callback) {
-    var self = this
-    var titleOrSelector = self.callArgs[0]
+    const titleOrSelector = this.callArgs[0]
 
     return waitForFn(
       (done) => {
-        self.chain.driver.getComponent(self.type, titleOrSelector, (err, result) => {
-          if (self.invert) {
-            let message = `Component ${self.type} "${titleOrSelector}" still presented.`
-            return done(err ? null : message)
+        this.chain.driver.getComponent(this.type, titleOrSelector, (err, result) => {
+          if (this.invert) {
+            return done(err ? null : `Component ${this.type} "${titleOrSelector}" still presented.`)
           } else {
             return done(err, result)
           }
         })
       },
       (err, component) => {
-        self.component = component
+        this.component = component
         return callback(err)
       }
     )
