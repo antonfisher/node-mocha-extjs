@@ -3,7 +3,7 @@
 ![Status](https://img.shields.io/badge/status-alpha-orange.svg)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Framework for testing ExtJs applications.
+Framework for testing ExtJs applications which simulates user actions.
 
 ![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
@@ -38,11 +38,7 @@ Update _index.html_:
     <!-- run script -->
     <script>
             mocha.checkLeaks();
-            mocha.globals(['Ext', 'Sandbox']); // update name here
-
-            if (window.initMochaPhantomJS) {
-                window.initMochaPhantomJS();
-            }
+            mocha.globals(['Ext', 'Sandbox']); // update name here!
 
             var eTT = new MochaExtJs(); // init testing framework
 
