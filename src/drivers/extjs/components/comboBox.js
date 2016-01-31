@@ -15,7 +15,7 @@ export class ExtJsComponentComboBox extends ExtJsComponentBase {
 
       //TODO add validation method
       if (!cmp || !cmp.picker || !cmp.picker.el || !cmp.picker.el.id) {
-        return callback(`cannot find picker of component "${this.componentType}": ${err}`)
+        return callback(`cannot find picker of component "${this.componentType}"`)
       }
 
       let htmlElement = null
@@ -25,10 +25,10 @@ export class ExtJsComponentComboBox extends ExtJsComponentBase {
           .getElementById(cmp.picker.el.id)
           .getElementsByClassName('x-boundlist-item')[index]
       } catch (e) {
-        return callback(`Failed to get element of "${this.componentType}" row #${index}": ${err}`)
+        return callback(`Failed to get element of "${this.componentType}" row #${index}": ${e}`)
       }
 
-      new HTMLComponentBase({htmlElement, mochaUi: this.mochaUi}).click((err) => {
+      new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
         return callback(err ? `Failed to click on item #${index} of "${this.componentType}" ": ${err}` : null)
       })
     })

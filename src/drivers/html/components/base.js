@@ -2,8 +2,8 @@
 
 export class HTMLComponentBase {
 
-  constructor ({htmlElement, mochaUi}) {
-    this.mochaUi = mochaUi
+  constructor ({htmlElement, driver}) {
+    this.driver = driver
     this.htmlElement = htmlElement
   }
 
@@ -19,8 +19,8 @@ export class HTMLComponentBase {
     const x = (rect.left + rect.width / 2)
     const y = (rect.top + rect.height / 2)
 
-    this.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
-      this.mochaUi.hide()
+    this.driver.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
+      this.driver.mochaUi.hide()
 
       if (el.focus) {
         el.focus()
@@ -43,7 +43,7 @@ export class HTMLComponentBase {
         }
       }
 
-      this.mochaUi.show()
+      this.driver.mochaUi.show()
 
       return callback(err ? `cannot click on "${el.id}" ${err}` : null)
     })

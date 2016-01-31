@@ -6626,15 +6626,15 @@
 
 	var _grid = __webpack_require__(205);
 
-	var _radio = __webpack_require__(206);
+	var _radio = __webpack_require__(207);
 
-	var _button = __webpack_require__(207);
+	var _button = __webpack_require__(208);
 
-	var _window = __webpack_require__(208);
+	var _window = __webpack_require__(209);
 
-	var _checkBox = __webpack_require__(209);
+	var _checkBox = __webpack_require__(210);
 
-	var _comboBox = __webpack_require__(210);
+	var _comboBox = __webpack_require__(206);
 
 	var _textField = __webpack_require__(211);
 
@@ -6664,16 +6664,21 @@
 	      var selectors = [];
 	      var extJsComponent = null;
 
-	      if (!type) {
-	        selector = titleOrSelector;
-	        extJsComponent = this.getVisibleComponents(selector)[0];
-	      }
+	      //FIX ME
+	      //if (!type) {
+	      //  selector = titleOrSelector
+	      //  extJsComponent = this.getVisibleComponents(selector)[0]
+	      //}
 
 	      if (!extJsComponent && type) {
 	        var _ret = function () {
 	          var titleProperties = [];
 
-	          selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
+	          if (titleOrSelector[0] === '#') {
+	            selectors = [titleOrSelector];
+	          } else {
+	            selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
+	          }
 
 	          if (type === 'button') {
 	            titleProperties = ['text', 'tooltip', 'xtype'];
@@ -6734,8 +6739,8 @@
 
 	      var componentObject = null;
 	      var properties = {
+	        driver: this,
 	        selectors: selector || selectors.join(', '),
-	        mochaUi: this.mochaUi,
 	        extJsComponent: extJsComponent
 	      };
 
@@ -6840,7 +6845,7 @@
 	  }, {
 	    key: 'supportedComponentActions',
 	    get: function get() {
-	      return ['click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount'];
+	      return ['click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount', 'edit'];
 	    }
 	  }, {
 	    key: 'supportedActions',
@@ -6904,11 +6909,11 @@
 	  function ExtJsComponentBase(_ref) {
 	    var selectors = _ref.selectors;
 	    var extJsComponent = _ref.extJsComponent;
-	    var mochaUi = _ref.mochaUi;
+	    var driver = _ref.driver;
 
 	    _classCallCheck(this, ExtJsComponentBase);
 
-	    this.mochaUi = mochaUi;
+	    this.driver = driver;
 	    this.selectors = selectors;
 	    this.extJsComponent = extJsComponent;
 
@@ -7015,7 +7020,7 @@
 
 	        if (htmlElement) {
 	          this._htmlComponent = new _base.HTMLComponentBase({
-	            mochaUi: this.mochaUi,
+	            driver: this.driver,
 	            htmlElement: htmlElement
 	          });
 	        }
@@ -7050,11 +7055,11 @@
 	var HTMLComponentBase = exports.HTMLComponentBase = function () {
 	  function HTMLComponentBase(_ref) {
 	    var htmlElement = _ref.htmlElement;
-	    var mochaUi = _ref.mochaUi;
+	    var driver = _ref.driver;
 
 	    _classCallCheck(this, HTMLComponentBase);
 
-	    this.mochaUi = mochaUi;
+	    this.driver = driver;
 	    this.htmlElement = htmlElement;
 	  }
 
@@ -7074,8 +7079,8 @@
 	      var x = rect.left + rect.width / 2;
 	      var y = rect.top + rect.height / 2;
 
-	      this.mochaUi.cursor.moveTo(x + 1, y + 1, function () {
-	        _this.mochaUi.hide();
+	      this.driver.mochaUi.cursor.moveTo(x + 1, y + 1, function () {
+	        _this.driver.mochaUi.hide();
 
 	        if (el.focus) {
 	          el.focus();
@@ -7098,7 +7103,7 @@
 	          }
 	        }
 
-	        _this.mochaUi.show();
+	        _this.driver.mochaUi.show();
 
 	        return callback(err ? 'cannot click on "' + el.id + '" ' + err : null);
 	      });
@@ -7124,6 +7129,8 @@
 	var _base = __webpack_require__(204);
 
 	var _base2 = __webpack_require__(203);
+
+	var _comboBox = __webpack_require__(206);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7154,11 +7161,53 @@
 	      try {
 	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
 	      } catch (e) {
-	        return callback('Failed to get element of "' + this.componentType + '" row #' + rowIndex + '": ' + err);
+	        return callback('Failed to get element of "' + this.componentType + '" row #' + rowIndex + '": ' + e);
 	      }
 
-	      new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: this.mochaUi }).click(function (err) {
+	      new _base.HTMLComponentBase({ htmlElement: htmlElement, driver: this.driver }).click(function (err) {
 	        return callback(err ? 'Failed to click on item row #' + rowIndex + ' of "' + _this2.componentType + '" ": ' + err : null);
+	      });
+	    }
+	  }, {
+	    key: 'edit',
+	    value: function edit(callback) {
+	      var rowIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+	      var _this3 = this;
+
+	      var colIndex = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+	      var valueIndex = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
+
+	      var cmp = this.extJsComponent;
+	      var htmlElement = null;
+
+	      try {
+	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
+	      } catch (e) {
+	        return callback('Failed to get element of "' + this.componentType + '" row #' + rowIndex + '": ' + e);
+	      }
+
+	      //TODO update error messages
+	      new _base.HTMLComponentBase({ htmlElement: htmlElement, driver: this.driver }).click(function (err) {
+	        if (err) {
+	          return callback('Failed to click on item row #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err);
+	        }
+
+	        try {
+	          var editorElement = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')[0].getElementsByClassName('x-field')[0];
+
+	          _this3.driver.getComponent('combobox', '#' + editorElement.id, function (err, editorComponent) {
+	            if (err) {
+	              return callback(err ? 'Failed: #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err : null);
+	            }
+
+	            editorComponent.select(function (err) {
+	              return callback(err ? 'Failed: #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err : null);
+	            }, valueIndex);
+	          });
+	        } catch (e) {
+	          return callback('Failed to get editor element of "' + _this3.componentType + '" row #' + rowIndex + '": ' + e);
+	        }
 	      });
 	    }
 	  }, {
@@ -7185,130 +7234,6 @@
 
 /***/ },
 /* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.ExtJsComponentRadio = undefined;
-
-	var _base = __webpack_require__(203);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ExtJsComponentRadio = exports.ExtJsComponentRadio = function (_ExtJsComponentBase) {
-	  _inherits(ExtJsComponentRadio, _ExtJsComponentBase);
-
-	  function ExtJsComponentRadio() {
-	    _classCallCheck(this, ExtJsComponentRadio);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentRadio).apply(this, arguments));
-	  }
-
-	  return ExtJsComponentRadio;
-	}(_base.ExtJsComponentBase);
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.ExtJsComponentButton = undefined;
-
-	var _base = __webpack_require__(203);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ExtJsComponentButton = exports.ExtJsComponentButton = function (_ExtJsComponentBase) {
-	  _inherits(ExtJsComponentButton, _ExtJsComponentBase);
-
-	  function ExtJsComponentButton() {
-	    _classCallCheck(this, ExtJsComponentButton);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentButton).apply(this, arguments));
-	  }
-
-	  return ExtJsComponentButton;
-	}(_base.ExtJsComponentBase);
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.ExtJsComponentWindow = undefined;
-
-	var _base = __webpack_require__(203);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ExtJsComponentWindow = exports.ExtJsComponentWindow = function (_ExtJsComponentBase) {
-	  _inherits(ExtJsComponentWindow, _ExtJsComponentBase);
-
-	  function ExtJsComponentWindow() {
-	    _classCallCheck(this, ExtJsComponentWindow);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentWindow).apply(this, arguments));
-	  }
-
-	  return ExtJsComponentWindow;
-	}(_base.ExtJsComponentBase);
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.ExtJsComponentCheckBox = undefined;
-
-	var _base = __webpack_require__(203);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ExtJsComponentCheckBox = exports.ExtJsComponentCheckBox = function (_ExtJsComponentBase) {
-	  _inherits(ExtJsComponentCheckBox, _ExtJsComponentBase);
-
-	  function ExtJsComponentCheckBox() {
-	    _classCallCheck(this, ExtJsComponentCheckBox);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentCheckBox).apply(this, arguments));
-	  }
-
-	  return ExtJsComponentCheckBox;
-	}(_base.ExtJsComponentBase);
-
-/***/ },
-/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7353,7 +7278,7 @@
 
 	        //TODO add validation method
 	        if (!cmp || !cmp.picker || !cmp.picker.el || !cmp.picker.el.id) {
-	          return callback('cannot find picker of component "' + _this2.componentType + '": ' + err);
+	          return callback('cannot find picker of component "' + _this2.componentType + '"');
 	        }
 
 	        var htmlElement = null;
@@ -7361,10 +7286,10 @@
 	        try {
 	          htmlElement = document.getElementById(cmp.picker.el.id).getElementsByClassName('x-boundlist-item')[index];
 	        } catch (e) {
-	          return callback('Failed to get element of "' + _this2.componentType + '" row #' + index + '": ' + err);
+	          return callback('Failed to get element of "' + _this2.componentType + '" row #' + index + '": ' + e);
 	        }
 
-	        new _base.HTMLComponentBase({ htmlElement: htmlElement, mochaUi: _this2.mochaUi }).click(function (err) {
+	        new _base.HTMLComponentBase({ htmlElement: htmlElement, driver: _this2.driver }).click(function (err) {
 	          return callback(err ? 'Failed to click on item #' + index + ' of "' + _this2.componentType + '" ": ' + err : null);
 	        });
 	      });
@@ -7373,6 +7298,130 @@
 
 	  return ExtJsComponentComboBox;
 	}(_base2.ExtJsComponentBase);
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ExtJsComponentRadio = undefined;
+
+	var _base = __webpack_require__(203);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ExtJsComponentRadio = exports.ExtJsComponentRadio = function (_ExtJsComponentBase) {
+	  _inherits(ExtJsComponentRadio, _ExtJsComponentBase);
+
+	  function ExtJsComponentRadio() {
+	    _classCallCheck(this, ExtJsComponentRadio);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentRadio).apply(this, arguments));
+	  }
+
+	  return ExtJsComponentRadio;
+	}(_base.ExtJsComponentBase);
+
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ExtJsComponentButton = undefined;
+
+	var _base = __webpack_require__(203);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ExtJsComponentButton = exports.ExtJsComponentButton = function (_ExtJsComponentBase) {
+	  _inherits(ExtJsComponentButton, _ExtJsComponentBase);
+
+	  function ExtJsComponentButton() {
+	    _classCallCheck(this, ExtJsComponentButton);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentButton).apply(this, arguments));
+	  }
+
+	  return ExtJsComponentButton;
+	}(_base.ExtJsComponentBase);
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ExtJsComponentWindow = undefined;
+
+	var _base = __webpack_require__(203);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ExtJsComponentWindow = exports.ExtJsComponentWindow = function (_ExtJsComponentBase) {
+	  _inherits(ExtJsComponentWindow, _ExtJsComponentBase);
+
+	  function ExtJsComponentWindow() {
+	    _classCallCheck(this, ExtJsComponentWindow);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentWindow).apply(this, arguments));
+	  }
+
+	  return ExtJsComponentWindow;
+	}(_base.ExtJsComponentBase);
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ExtJsComponentCheckBox = undefined;
+
+	var _base = __webpack_require__(203);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ExtJsComponentCheckBox = exports.ExtJsComponentCheckBox = function (_ExtJsComponentBase) {
+	  _inherits(ExtJsComponentCheckBox, _ExtJsComponentBase);
+
+	  function ExtJsComponentCheckBox() {
+	    _classCallCheck(this, ExtJsComponentCheckBox);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentCheckBox).apply(this, arguments));
+	  }
+
+	  return ExtJsComponentCheckBox;
+	}(_base.ExtJsComponentBase);
 
 /***/ },
 /* 211 */

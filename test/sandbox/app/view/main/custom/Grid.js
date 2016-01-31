@@ -5,6 +5,12 @@ Ext.define('Sandbox.view.main.custom.Grid', {
   width: 300,
   height: 150,
   border: true,
+  selModel: 'cellmodel',
+  plugins: {
+    ptype: 'cellediting',
+    clicksToEdit: 1
+  },
+
   columns: [{
     header: 'Name',
     dataIndex: 'name',
@@ -13,6 +19,7 @@ Ext.define('Sandbox.view.main.custom.Grid', {
     header: 'Count',
     dataIndex: 'count'
   }],
+
   store: Ext.create('Ext.data.Store', {
     fields: ['name', 'count'],
     data: [{

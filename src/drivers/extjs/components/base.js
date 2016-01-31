@@ -4,8 +4,8 @@ import {HTMLComponentBase} from '../../html/components/base.js'
 
 export class ExtJsComponentBase {
 
-  constructor ({selectors, extJsComponent, mochaUi}) {
-    this.mochaUi = mochaUi
+  constructor ({selectors, extJsComponent, driver}) {
+    this.driver = driver
     this.selectors = selectors
     this.extJsComponent = extJsComponent
 
@@ -24,7 +24,7 @@ export class ExtJsComponentBase {
 
       if (htmlElement) {
         this._htmlComponent = new HTMLComponentBase({
-          mochaUi: this.mochaUi,
+          driver: this.driver,
           htmlElement
         })
       }

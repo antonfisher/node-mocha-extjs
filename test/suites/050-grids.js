@@ -21,4 +21,12 @@ describe('Grids', function () {
   it('Click on cells of second grid', function (done) {
     eTT().grid('customGridReference').select(0, 0).select(0, 1).select(1, 1).select(1, 0, done)
   })
+
+  it('Edit "Cell editing" grid #2 row, select item #1', function (done) {
+    eTT().grid('Cell editing').edit(1, 0, 0, done)
+  })
+
+  it('Edit "Cell editing" grid #1 row, select item #3', function (done) {
+    eTT().grid('Cell editing').edit(0, 0, 2, done)
+  })
 })

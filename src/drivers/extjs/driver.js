@@ -30,7 +30,7 @@ export class ExtJsDriver {
 
   get supportedComponentActions () {
     return [
-      'click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount'
+      'click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount', 'edit'
     ]
   }
 
@@ -45,19 +45,24 @@ export class ExtJsDriver {
     let selectors = []
     let extJsComponent = null
 
-    if (!type) {
-      selector = titleOrSelector
-      extJsComponent = this.getVisibleComponents(selector)[0]
-    }
+    //FIX ME
+    //if (!type) {
+    //  selector = titleOrSelector
+    //  extJsComponent = this.getVisibleComponents(selector)[0]
+    //}
 
     if (!extJsComponent && type) {
       let titleProperties = []
 
-      selectors = [
-        `${type}[tooltip~="${titleOrSelector}"]`,
-        `${type}[reference="${titleOrSelector}"]`,
-        `${type}[xtype="${titleOrSelector}"]`
-      ]
+      if (titleOrSelector[0] === '#') {
+        selectors = [titleOrSelector]
+      } else {
+        selectors = [
+          `${type}[tooltip~="${titleOrSelector}"]`,
+          `${type}[reference="${titleOrSelector}"]`,
+          `${type}[xtype="${titleOrSelector}"]`
+        ]
+      }
 
       if (type === 'button') {
         titleProperties = ['text', 'tooltip', 'xtype']
@@ -116,8 +121,8 @@ export class ExtJsDriver {
 
     let componentObject = null
     const properties = {
+      driver: this,
       selectors: (selector || selectors.join(', ')),
-      mochaUi: this.mochaUi,
       extJsComponent
     }
 

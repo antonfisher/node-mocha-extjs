@@ -91,6 +91,22 @@ Ext.define('Sandbox.view.main.Main', {
       }, {
         xtype: 'customGrid',
         reference: 'customGridReference'
+      }, {
+        title: 'Cell editing',
+        xtype: 'customGrid',
+        columns: [{
+          header: 'Name',
+          dataIndex: 'name',
+          flex: 1,
+          editor: {
+            xtype: 'combobox',
+            store: [['Aaa', 'Aaa'], ['Bbb', 'Bbb'], ['Ccc', 'Ccc']],
+            editable: false
+          }
+        }, {
+          header: 'Count',
+          dataIndex: 'count'
+        }]
       }]
     }, {
       title: 'LoadMasks',
