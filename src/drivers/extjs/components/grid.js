@@ -34,13 +34,16 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
         .getElementsByClassName('x-grid-item')[rowIndex]
         .getElementsByClassName('x-grid-cell')[colIndex]
     } catch (e) {
-      return callback(`Failed to get element of "${this.componentType}" row #${rowIndex}": ${e}`)
+      return callback(
+        `Failed to get cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
+      )
     }
 
-    //TODO update error messages
     new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
       if (err) {
-        return callback(`Failed to click on item row #${rowIndex} of "${this.componentType}" ": ${err}`)
+        return callback(
+          `Failed to click on cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${err}`
+        )
       }
 
       try {
@@ -51,7 +54,10 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
 
         this.driver.getComponent('combobox', `#${editorElement.id}`, (err, editorComponent) => {
           if (err) {
-            return callback(err ? `Failed: #${rowIndex} of "${this.componentType}" ": ${err}` : null)
+            return callback(
+              `Failed to get editor combobox component of "${this.componentType}" `
+              + `row:#${rowIndex}", col:#${rowIndex}": ${err}`
+            )
           }
 
           editorComponent.select((err) => {
@@ -59,7 +65,9 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           }, valueIndex)
         })
       } catch (e) {
-        return callback(`Failed to get editor element of "${this.componentType}" row #${rowIndex}": ${e}`)
+        return callback(
+          `Failed to get editor combobox element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
+        )
       }
     })
   }
