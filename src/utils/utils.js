@@ -7,7 +7,7 @@ export function waitForFn (waitFn, callback,
   let lastError = ''
   let exectution = false
 
-  const intervalFn = (() => {
+  const intervalFn = () => {
     if ((+new Date() - startTimestamp) > timeout) {
       exectution = false
       clearInterval(interval)
@@ -35,7 +35,7 @@ export function waitForFn (waitFn, callback,
         throw e
       }
     }
-  })
+  }
 
   setTimeout(() => {
     interval = setInterval(intervalFn, ticInterval)
