@@ -5,6 +5,8 @@
 
 Framework for testing ExtJs applications which simulates user actions.
 
+[Online demo](http://antonfisher.com/demo/mocha-extjs/)
+
 ![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
 ## Getting Started:
