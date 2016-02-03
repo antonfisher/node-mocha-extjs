@@ -9,7 +9,8 @@
   "scripts": {
     "build": "./node_modules/.bin/gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/.bin/standard mocha-extjs.js gulpfile.js ./src/**/*.js ./test/suites/**/*.js ./test/sandbox/app/**/*.js | ./node_modules/.bin/snazzy"
+    "lint": "./scripts/lint.sh",
+    "copy-demo": "./scripts/copy-demo.sh"
   },
   "standard": {
     "globals": [
