@@ -41,9 +41,12 @@
     var eTT = new MochaExtJs();
 
     window.onload = function () {
-        setTimeout(function () {
-            mocha.run();
-        }, 1000);
+        var interval = setInterval(function () {
+            if (typeof Ext !== 'undefined' && typeof Sandbox !== 'undefined') {
+                clearInterval(interval);
+                mocha.run();
+            }
+        }, 200);
     };
 </script>
 
