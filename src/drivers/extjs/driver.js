@@ -178,6 +178,11 @@ export class ExtJsDriver {
     }
   }
 
+  isVisibleElement (element) {
+    const style = window.getComputedStyle(element)
+    return (style.opacity !== 0 && style.display !== 'none' && style.visibility !== 'hidden')
+  }
+
   waitLoadMask (callback) {
     return waitForFn(
       (done) => {

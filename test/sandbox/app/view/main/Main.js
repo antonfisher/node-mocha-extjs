@@ -106,6 +106,12 @@ Ext.define('Sandbox.view.main.Main', {
         }, {
           header: 'Count',
           dataIndex: 'count'
+        }, {
+          header: 'Comment',
+          dataIndex: 'comment',
+          editor: {
+            xtype: 'textfield'
+          }
         }]
       }]
     }, {
