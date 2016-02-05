@@ -24,55 +24,75 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
     })
   }
 
-  edit (callback, rowIndex = 0, colIndex = 0, valueIndex = 0) {
-    const cmp = this.extJsComponent
-    let htmlElement = null
+  editorSelect (callback, rowIndex = 0, colIndex = 0, valueIndex = 0) {
+    this._getEditor(
+      (err, fieldElement) => {
+        if (err) {
+          return callback(err)
+        }
 
-    try {
-      htmlElement = document
-        .getElementById(cmp.el.id)
-        .getElementsByClassName('x-grid-item')[rowIndex]
-        .getElementsByClassName('x-grid-cell')[colIndex]
-    } catch (e) {
-      return callback(
-        `Failed to get cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
-      )
-    }
-
-    new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
-      if (err) {
-        return callback(
-          `Failed to click on cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${err}`
-        )
-      }
-
-      try {
-        let editorElement = document
-          .getElementById(cmp.el.id)
-          .getElementsByClassName('x-editor')[0]
-          .getElementsByClassName('x-field')[0]
-
-        this.driver.getComponent('combobox', `#${editorElement.id}`, (err, editorComponent) => {
+        this.driver.getComponent('combobox', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
-            return callback(
+            return callback(new Error(
               `Failed to get editor combobox component of "${this.componentType}" `
-              + `row:#${rowIndex}", col:#${rowIndex}": ${err}`
-            )
+              + `row: #${rowIndex}", col: #${colIndex}"`,
+              err
+            ))
           }
 
-          editorComponent.select((err) => {
-            return callback(err ? `Failed: #${rowIndex} of "${this.componentType}" ": ${err}` : null)
+          fieldComponent.select((err) => {
+            if (err) {
+              return callback(new Error(
+                `Failed to get editor combobox component of "${this.componentType}" `
+                + `row: #${rowIndex}", col: #${colIndex}"`,
+                err
+              ))
+            }
+
+            return callback(null)
           }, valueIndex)
         })
-      } catch (e) {
-        return callback(
-          `Failed to get editor combobox element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
-        )
-      }
-    })
+      },
+      rowIndex,
+      colIndex
+    )
   }
 
-  fill (callback, rowIndex = 0, colIndex = 0, value = '') {
+  editorFill (callback, rowIndex = 0, colIndex = 0, value = '') {
+    this._getEditor(
+      (err, fieldElement) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.driver.getComponent('textfield', `#${fieldElement.id}`, (err, fieldComponent) => {
+          if (err) {
+            return callback(new Error(
+              `Failed to get editor component for "${this.componentType}" `
+              + `row: #${rowIndex}", col: #${colIndex}"`,
+              err
+            ))
+          }
+
+          fieldComponent.fill((err) => {
+            if (err) {
+              return callback(new Error(
+                `Failed to get editor component for "${this.componentType}" `
+                + `row: #${rowIndex}", col: #${colIndex}"`,
+                err
+              ))
+            }
+
+            return callback(null)
+          }, value)
+        })
+      },
+      rowIndex,
+      colIndex
+    )
+  }
+
+  _getEditor (callback, rowIndex, colIndex) {
     const cmp = this.extJsComponent
     let htmlElement = null
 
@@ -82,21 +102,21 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
         .getElementsByClassName('x-grid-item')[rowIndex]
         .getElementsByClassName('x-grid-cell')[colIndex]
     } catch (e) {
-      return callback(
-        `Failed to get cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
-      )
+      return callback(new Error(
+        `Failed to find cell element of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}"`,
+        e
+      ))
     }
 
     new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
       if (err) {
-        return callback(
-          `Failed to click on cell element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${err}`
-        )
+        return callback(new Error(
+          `Failed to click on cell element of "${this.componentType}" row: #${rowIndex}", col: #${colIndex}": ${err}`
+        ))
       }
 
+      let fieldElement = null
       try {
-        let fieldElement = null
-
         for (let editorElement of document.getElementById(cmp.el.id).getElementsByClassName('x-editor')) {
           if (this.driver.isVisibleElement(editorElement)) {
             fieldElement = editorElement.getElementsByClassName('x-field')[0]
@@ -105,29 +125,15 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
         }
 
         if (!fieldElement) {
-          throw new Error(
-            `Failed to get editor field of textfield component of "${this.componentType}" `
-            + `row:#${rowIndex}", col:#${rowIndex}": ${err}`
-          )
+          throw new Error(`no "x-field" element found`)
         }
-
-        this.driver.getComponent('textfield', `#${fieldElement.id}`, (err, editorComponent) => {
-          if (err) {
-            return callback(
-              `Failed to get editor textfield component of "${this.componentType}" `
-              + `row:#${rowIndex}", col:#${rowIndex}": ${err}`
-            )
-          }
-
-          editorComponent.fill((err) => {
-            return callback(err ? `Failed: #${rowIndex} of "${this.componentType}" ": ${err}` : null)
-          }, value)
-        })
       } catch (e) {
-        return callback(
-          `Failed to get editor textfield element of "${this.componentType}" row:#${rowIndex}", col:#${rowIndex}": ${e}`
-        )
+        return callback(new Error(
+          `Failed to get editor element of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}": ${e}`
+        ))
       }
+
+      return callback(null, fieldElement);
     })
   }
 

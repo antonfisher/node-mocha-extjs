@@ -23,18 +23,18 @@ describe('Grids', function () {
   })
 
   it('Edit "Cell editing" grid #2 row, select item #1', function (done) {
-    eTT().grid('Cell editing').edit(1, 0, 0, done)
+    eTT().grid('Cell editing').editorSelect(1, 0, 0, done)
   })
 
   it('Edit "Cell editing" grid #1 row, select item #3', function (done) {
-    eTT().grid('Cell editing').edit(0, 0, 2, done)
+    eTT().grid('Cell editing').editorSelect(0, 0, 2, done)
   })
 
   it('Edit "Cell editing" grid #1 row, fill column #3 with "test1"', function (done) {
-    eTT().grid('Cell editing').fill(0, 2, 'test1', done)
+    eTT().grid('Cell editing').editorFill(0, 2, 'test1', done)
   })
 
   it('Edit "Cell editing" grid #2 row, fill column #3 with "test2"', function (done) {
-    eTT().grid('Cell editing').fill(1, 2, 'test2', done)
+    eTT().grid('Cell editing').editorFill(1, 2, 'test2', done)
   })
 })
