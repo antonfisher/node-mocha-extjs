@@ -94,6 +94,7 @@ Ext.define('Sandbox.view.main.Main', {
       }, {
         title: 'Cell editing',
         xtype: 'customGrid',
+        width: 400,
         columns: [{
           header: 'Name',
           dataIndex: 'name',
@@ -111,6 +112,12 @@ Ext.define('Sandbox.view.main.Main', {
           dataIndex: 'comment',
           editor: {
             xtype: 'textfield'
+          }
+        }, {
+          header: 'Enabled',
+          dataIndex: 'enabled',
+          editor: {
+            xtype: 'checkbox'
           }
         }]
       }]

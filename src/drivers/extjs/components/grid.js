@@ -92,6 +92,40 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
     )
   }
 
+  editorClick (callback, rowIndex = 0, colIndex = 0) {
+    this._getEditor(
+      (err, fieldElement) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.driver.getComponent('checkbox', `#${fieldElement.id}`, (err, fieldComponent) => {
+          if (err) {
+            return callback(new Error(
+              `Failed to get editor component for "${this.componentType}" `
+              + `row: #${rowIndex}", col: #${colIndex}"`,
+              err
+            ))
+          }
+
+          fieldComponent.click((err) => {
+            if (err) {
+              return callback(new Error(
+                `Failed to get editor component for "${this.componentType}" `
+                + `row: #${rowIndex}", col: #${colIndex}"`,
+                err
+              ))
+            }
+
+            return callback(null)
+          })
+        })
+      },
+      rowIndex,
+      colIndex
+    )
+  }
+
   _getEditor (callback, rowIndex, colIndex) {
     const cmp = this.extJsComponent
     let htmlElement = null

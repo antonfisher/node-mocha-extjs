@@ -37,4 +37,12 @@ describe('Grids', function () {
   it('Edit "Cell editing" grid #2 row, fill column #3 with "test2"', function (done) {
     eTT().grid('Cell editing').editorFill(1, 2, 'test2', done)
   })
+
+  it('Edit "Cell editing" grid #1 row, check column #3', function (done) {
+    eTT().grid('Cell editing').editorClick(0, 3, done)
+  })
+
+  it('Edit "Cell editing" grid #2 row, check column #3', function (done) {
+    eTT().grid('Cell editing').editorClick(1, 3, done)
+  })
 })
