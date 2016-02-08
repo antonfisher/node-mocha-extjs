@@ -7,15 +7,15 @@ describe('Fields', function () {
   })
 
   it('Fill "Text" filed', function (done) {
-    eTT().textfield('Name').fill('my text', done)
+    eTT().textField('Name').fill('my text', done)
   })
 
   it('Fill "Number" filed', function (done) {
-    eTT().numberfield('Count').fill(13, done)
+    eTT().numberField('Count').fill(13, done)
   })
 
   it('Click on checkbox "include"', function (done) {
-    eTT().checkbox('include').click(done)
+    eTT().checkBox('include').click(done)
   })
 
   it('Click on radio "check B"', function (done) {
@@ -27,6 +27,6 @@ describe('Fields', function () {
   })
 
   it('Click on combobox "Select in list"', function (done) {
-    eTT().combobox('Select in list').select(1, done)
+    eTT().comboBox('Select in list').select(1, done)
   })
 })

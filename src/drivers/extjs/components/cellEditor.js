@@ -12,10 +12,10 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('combobox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('comboBox', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
-              `Failed to get editor combobox component of "${this.componentType}" `
+              `Failed to get editor comboBox component of "${this.componentType}" `
               + `row: #${rowIndex}", col: #${colIndex}"`,
               err
             ))
@@ -24,7 +24,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
           fieldComponent.select((err) => {
             if (err) {
               return callback(new Error(
-                `Failed to get editor combobox component of "${this.componentType}" `
+                `Failed to get editor comboBox component of "${this.componentType}" `
                 + `row: #${rowIndex}", col: #${colIndex}"`,
                 err
               ))
@@ -46,7 +46,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('textfield', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('textField', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
               `Failed to get editor component for "${this.componentType}" `
@@ -80,7 +80,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('checkbox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('checkBox', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
               `Failed to get editor component for "${this.componentType}" `

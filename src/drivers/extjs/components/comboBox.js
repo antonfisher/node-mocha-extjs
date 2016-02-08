@@ -5,6 +5,17 @@ import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentComboBox extends ExtJsComponentBase {
 
+  get titleProperties () {
+    return ['fieldLabel', ...super.titleProperties];
+  }
+
+  generateSelectors (titleOrSelector) {
+    return [
+      `${this.componentType}[fieldLabel~="${titleOrSelector}"]`,
+      ...super.generateSelectors(titleOrSelector)
+    ]
+  }
+
   select (callback, index) {
     const cmp = this.extJsComponent
 

@@ -7,7 +7,7 @@ import {ChainComponentActionItem} from './chain/componentActionItem.js'
 
 export class Chain {
 
-  constructor ({driver, itemsRunDelay = 200}) {
+  constructor ({driver, itemsRunDelay = 50}) {
     this._itemsSet = new Set()
 
     this._chainRunned = false
@@ -87,12 +87,12 @@ export class Chain {
       } else {
         return item.value.run((err) => {
           if (err) {
-            return this._chainCallback(new Error(err))
+            return this._chainCallback(err)
           }
 
           setTimeout(() => {
             runNextAction()
-          }, this.chainRunDelay)
+          }, this.itemsRunDelay)
         })
       }
     })

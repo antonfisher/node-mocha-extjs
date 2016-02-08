@@ -25,7 +25,7 @@ export class ExtJsDriver {
 
   get supportedComponents () {
     return [
-      'tab', 'grid', 'radio', 'button', 'window', 'checkbox', 'combobox', 'textfield', 'numberfield',
+      'tab', 'grid', 'radio', 'button', 'window', 'checkBox', 'comboBox', 'textField', 'numberField',
       'cellEditor'
     ]
   }
@@ -46,7 +46,7 @@ export class ExtJsDriver {
     let componentObject = null
     const properties = {
       driver: this
-    };
+    }
 
     if (type === 'tab') {
       componentObject = new ExtJsComponentTab(properties)
@@ -58,15 +58,15 @@ export class ExtJsDriver {
       componentObject = new ExtJsComponentButton(properties)
     } else if (type === 'window') {
       componentObject = new ExtJsComponentWindow(properties)
-    } else if (type === 'checkbox') {
+    } else if (type === 'checkBox') {
       componentObject = new ExtJsComponentCheckBox(properties)
-    } else if (type === 'combobox') {
+    } else if (type === 'comboBox') {
       componentObject = new ExtJsComponentComboBox(properties)
-    } else if (type === 'textfield') {
+    } else if (type === 'textField') {
       componentObject = new ExtJsComponentTextField(properties)
     } else if (type === 'cellEditor') {
       componentObject = new ExtJsComponentCellEditor(properties)
-    } else if (type === 'numberfield') {
+    } else if (type === 'numberField') {
       componentObject = new ExtJsComponentNumberField(properties)
     }
 
@@ -74,7 +74,7 @@ export class ExtJsDriver {
       return callback(new Error(`Type "${type}" is not supported by driver`))
     }
 
-    return componentObject.getComponent(type, titleOrSelector, callback);
+    return componentObject.getComponent(titleOrSelector, callback);
   }
 
   isVisibleElement (element) {

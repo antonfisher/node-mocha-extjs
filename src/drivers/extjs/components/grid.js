@@ -6,6 +6,17 @@ import {ExtJsComponentComboBox} from './comboBox.js'
 
 export class ExtJsComponentGrid extends ExtJsComponentBase {
 
+  get titleProperties () {
+    return ['title', ...super.titleProperties];
+  }
+
+  generateSelectors (titleOrSelector) {
+    return [
+      `${this.componentType}[text~="${titleOrSelector}"]`,
+      ...super.generateSelectors(titleOrSelector)
+    ]
+  }
+
   select (callback, rowIndex = 0, colIndex = 0) {
     const cmp = this.extJsComponent
     let htmlElement = null
@@ -31,10 +42,10 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('combobox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('comboBox', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
-              `Failed to get editor combobox component of "${this.componentType}" `
+              `Failed to get editor comboBox component of "${this.componentType}" `
               + `row: #${rowIndex}", col: #${colIndex}"`,
               err
             ))
@@ -43,7 +54,7 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           fieldComponent.select((err) => {
             if (err) {
               return callback(new Error(
-                `Failed to get editor combobox component of "${this.componentType}" `
+                `Failed to get editor comboBox component of "${this.componentType}" `
                 + `row: #${rowIndex}", col: #${colIndex}"`,
                 err
               ))
@@ -65,7 +76,7 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('textfield', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('textField', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
               `Failed to get editor component for "${this.componentType}" `
@@ -99,7 +110,7 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           return callback(err)
         }
 
-        this.driver.getComponent('checkbox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        this.driver.getComponent('checkBox', `#${fieldElement.id}`, (err, fieldComponent) => {
           if (err) {
             return callback(new Error(
               `Failed to get editor component for "${this.componentType}" `

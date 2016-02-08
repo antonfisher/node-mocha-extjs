@@ -2,7 +2,6 @@
 
 import {ChainItem} from './item.js'
 import {waitForFn} from '../utils/utils.js'
-import {ExtJsComponentTab} from '../drivers/extjs/components/tab.js'
 
 export class ChainComponentItem extends ChainItem {
 
