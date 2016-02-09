@@ -12,17 +12,22 @@ export class ChainComponentItem extends ChainItem {
   }
 
   run (callback) {
-    const titleOrSelector = this.callArgs[0]
+    const type = this.type
+    const callArgs = this.callArgs
+    const lastComponent = this.chain.lastComponent
 
     return waitForFn(
       (done) => {
-        this.chain.driver.getComponent(this.type, titleOrSelector, (err, result) => {
-          if (this.invert) {
-            return done(err ? null : `Component ${this.type} "${titleOrSelector}" still presented.`)
-          } else {
-            return done(err, result)
-          }
-        })
+        this.chain.driver.getComponent(
+          (err, result) => {
+            if (this.invert) {
+              return done(err ? null : `Component ${this.type} "${this.callArgs[0]}" still presented.`)
+            } else {
+              return done(err, result)
+            }
+          },
+          {type, callArgs, lastComponent}
+        )
       },
       (err, component) => {
         this.component = component

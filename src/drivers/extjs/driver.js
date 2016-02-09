@@ -42,7 +42,7 @@ export class ExtJsDriver {
     ]
   }
 
-  getComponent (type, titleOrSelector, callback) {
+  getComponent (callback, {type, callArgs, lastComponent}) {
     let componentObject = null
     const properties = {
       driver: this
@@ -74,7 +74,7 @@ export class ExtJsDriver {
       return callback(new Error(`Type "${type}" is not supported by driver`))
     }
 
-    return componentObject.getComponent(titleOrSelector, callback);
+    return componentObject.getComponent(callback, {callArgs, lastComponent});
   }
 
   isVisibleElement (element) {

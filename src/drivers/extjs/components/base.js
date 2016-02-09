@@ -48,9 +48,10 @@ export class ExtJsComponentBase {
     ]
   }
 
-  getComponent (titleOrSelector, callback) {
+  getComponent (callback, {callArgs, lastComponent}) {
     let selectors = []
     let extJsComponent = null
+    const titleOrSelector = callArgs[0]
 
     if (titleOrSelector[0] === '#') {
       selectors = [titleOrSelector]
