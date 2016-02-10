@@ -48,45 +48,46 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
         ))
       }
 
-      //this.selectors = selectors
-      //this.extJsComponent = extJsComponent
-      //
-      //return callback(null, this)
-      return callback(null, fieldElement);
+      this.selectors = `#${fieldElement.id}`
+      this.extJsComponent = Ext.ComponentQuery.query(this.selectors)[0]
+
+      if (!this.selectors) {
+        return callback(new Error(
+          `Failed to get editor component of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}": ${e}`
+        ))
+      }
+
+      return callback(null, this)
     })
   }
 
-  select (callback, rowIndex = 0, colIndex = 0, valueIndex = 0) {
-    this._getCellEditor(
-      (err, fieldElement) => {
+  select (callback, index = 0) {
+    this.driver.getComponent(
+      (err, fieldComponent) => {
+        console.log('-- field component', this.extJsComponent.id, err, fieldComponent);
         if (err) {
-          return callback(err)
+          return callback(new Error(
+            `Failed to get editor comboBox component of "${this.componentType}"`,
+            err
+          ))
         }
 
-        this.driver.getComponent('comboBox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        fieldComponent.select((err) => {
           if (err) {
             return callback(new Error(
-              `Failed to get editor comboBox component of "${this.componentType}" `
-              + `row: #${rowIndex}", col: #${colIndex}"`,
+              `Failed to get editor comboBox component of "${this.componentType}"`,
               err
             ))
           }
 
-          fieldComponent.select((err) => {
-            if (err) {
-              return callback(new Error(
-                `Failed to get editor comboBox component of "${this.componentType}" `
-                + `row: #${rowIndex}", col: #${colIndex}"`,
-                err
-              ))
-            }
-
-            return callback(null)
-          }, valueIndex)
-        })
+          return callback(null)
+        }, index)
       },
-      rowIndex,
-      colIndex
+      {
+        type: 'comboBox',
+        callArgs: [`#${this.extJsComponent.id}`],
+        lastComponent: this.extJsComponent
+      }
     )
   }
 
