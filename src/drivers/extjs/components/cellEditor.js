@@ -64,20 +64,13 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
   select (callback, index = 0) {
     this.driver.getComponent(
       (err, fieldComponent) => {
-        console.log('-- field component', this.extJsComponent.id, err, fieldComponent);
         if (err) {
-          return callback(new Error(
-            `Failed to get editor comboBox component of "${this.componentType}"`,
-            err
-          ))
+          return callback(new Error(`Failed to get editor combobox component of "${this.componentType}"`, err))
         }
 
         fieldComponent.select((err) => {
           if (err) {
-            return callback(new Error(
-              `Failed to get editor comboBox component of "${this.componentType}"`,
-              err
-            ))
+            return callback(new Error(`Failed to select editor combobox of "${this.componentType}"`, err))
           }
 
           return callback(null)
@@ -85,77 +78,52 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       },
       {
         type: 'comboBox',
-        callArgs: [`#${this.extJsComponent.id}`],
-        lastComponent: this.extJsComponent
+        callArgs: [`#${this.extJsComponent.id}`]
       }
     )
   }
 
-  fill (callback, rowIndex = 0, colIndex = 0, value = '') {
-    this._getCellEditor(
-      (err, fieldElement) => {
+  fill (callback, value = '') {
+    this.driver.getComponent(
+      (err, fieldComponent) => {
         if (err) {
-          return callback(err)
+          return callback(new Error(`Failed to fill editor textfield component of "${this.componentType}"`, err))
         }
 
-        this.driver.getComponent('textField', `#${fieldElement.id}`, (err, fieldComponent) => {
+        fieldComponent.fill((err) => {
           if (err) {
-            return callback(new Error(
-              `Failed to get editor component for "${this.componentType}" `
-              + `row: #${rowIndex}", col: #${colIndex}"`,
-              err
-            ))
+            return callback(new Error(`Failed to fill editor textfield component of "${this.componentType}"`, err))
           }
 
-          fieldComponent.fill((err) => {
-            if (err) {
-              return callback(new Error(
-                `Failed to get editor component for "${this.componentType}" `
-                + `row: #${rowIndex}", col: #${colIndex}"`,
-                err
-              ))
-            }
-
-            return callback(null)
-          }, value)
-        })
+          return callback(null)
+        }, value)
       },
-      rowIndex,
-      colIndex
+      {
+        type: 'textField',
+        callArgs: [`#${this.extJsComponent.id}`]
+      }
     )
   }
 
-  click (callback, rowIndex = 0, colIndex = 0) {
-    this._getCellEditor(
-      (err, fieldElement) => {
+  click (callback) {
+    this.driver.getComponent(
+      (err, fieldComponent) => {
         if (err) {
-          return callback(err)
+          return callback(new Error(`Failed to click editor checkbox component of "${this.componentType}"`, err))
         }
 
-        this.driver.getComponent('checkBox', `#${fieldElement.id}`, (err, fieldComponent) => {
+        fieldComponent.click((err) => {
           if (err) {
-            return callback(new Error(
-              `Failed to get editor component for "${this.componentType}" `
-              + `row: #${rowIndex}", col: #${colIndex}"`,
-              err
-            ))
+            return callback(new Error(`Failed to click editor checkbox component of "${this.componentType}"`, err))
           }
 
-          fieldComponent.click((err) => {
-            if (err) {
-              return callback(new Error(
-                `Failed to get editor component for "${this.componentType}" `
-                + `row: #${rowIndex}", col: #${colIndex}"`,
-                err
-              ))
-            }
-
-            return callback(null)
-          })
+          return callback(null)
         })
       },
-      rowIndex,
-      colIndex
+      {
+        type: 'checkBox',
+        callArgs: [`#${this.extJsComponent.id}`]
+      }
     )
   }
 
