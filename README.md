@@ -9,6 +9,16 @@ Framework for testing ExtJs applications which simulates user actions.
 
 ![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
+Component search by _title_, _fieldLabel_, _reference_, _boxLabel_, _xtype_, _text_ properties:
+
+```javascript
+// click on button "Save"
+eTT().button('Save').click(done)
+
+// select first item in combobox with "Country" fieldLabel.
+eTT().combobox('Country').select(1, done)
+```
+
 ## Getting Started:
 
 Update _index.html_:
