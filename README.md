@@ -86,26 +86,30 @@ describe('Buttons', function () {
 ```
 var eTT = new MochaExtJs();
 
-eTT() -->--->|------->--->|- button ----->|- ('%title%') -------.
-        |    |       |    |- window       |- ('%fieldLabel%')   |
-        |    |- no --'    |- numberfield  |- ('%reference%')    |
-        |    |            |- textfield    |- ('%boxLabel%')     |
-        |    |            |- checkbox     |- ('%xtype%')        |
-        |    |            |- combobox     `- ('%text%')         |
+eTT() -->--->|------->--->|- button ---> (|- '%title%'     )----.
+        |    |       |    |- window       |- '%fieldLabel%'     |
+        |    |- no --'    |- numberfield  |- '%reference%'      |
+        |    |            |- textfield    |- '%boxLabel%'       |
+        |    |            |- checkbox     |- '%xtype%'          |
+        |    |            |- combobox     `- '%text%'           |
         |    |            |- radio                              |
-        |    |            |- grid         .---------------------x-------.
-        |    |            `- tab          |                             |
-        |    |                            `-->|- click -------> (...) --v
-        |    |                                |- isEnabled              |
-        |    |- waitLoadMask -- () -----.     |- isDisabled             |
-        |    |                          |     |- isHidden               |
-        |    `- waitText -- ('%text%')--v     |- isVisible              |
-        |                               |     |- select                 |
-        |                               |     |- checkRowsCount         |
-        |                               |     |- edit                   |
-        |                               |     `- fill                   |
-        |                               |                               |
-        x-------------------------------<-------------------------------'
+        |    |            |- grid        .----------------------x----------------------.
+        |    |            `- tab         |                                             |
+        |    |                           |-->|- click -------> (...) ------------------v
+        |    |                           |   |- isEnabled                              |
+        |    |- waitLoadMask() ------.   |   |- isDisabled                             |
+        |    |                       |   |   |- isHidden                               |
+        |    `- waitText('%text%')---v   |   |- isVisible                              |
+        |                            |   |   |- select                                 |
+        |                            |   |   |- checkRowsCount                         |
+        |                            |   |   |- edit                                   |
+        |                            |   |   `- fill                                   |
+        |                            |   |                                             |
+        |                            |   `--> cellEditor() --->|- select ---> (...) ---v
+        |                            |                         |- click                |
+        |                            |                         `- fill                 |
+        |                            |                                                 |
+        x----------------------------<-------------------------------------------------'
         |
         |
         `--> done.
@@ -126,7 +130,9 @@ eTT().radio('check B').click(done)
 eTT().combobox('Select in list').select(1, done)
 eTT().grid('Names').select(1, 1, done)
 eTT().grid('Names').checkRowsCount(2, done)
-eTT().grid('Cell editing').edit(1, 0, 0, done)
+eTT().grid('Cell editing').cellEditor(1, 0).select(0, done)
+eTT().grid('Cell editing').cellEditor(0, 2).fill('test1', done)
+eTT().grid('Cell editing').cellEditor(0, 3).click(done)
 eTT().waitLoadMask(done)
 eTT().waitText('Result is here!', done)
 ```
@@ -155,6 +161,7 @@ Eslint and test your code.
 
 ## Releases History
 
+* 0.1.4 New grid cell editor methods
 * 0.1.3 Fix previous release trouble
 * 0.1.2 Update documentation
     * ES2015

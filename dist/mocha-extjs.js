@@ -5825,7 +5825,7 @@
 	  function Chain(_ref) {
 	    var driver = _ref.driver;
 	    var _ref$itemsRunDelay = _ref.itemsRunDelay;
-	    var itemsRunDelay = _ref$itemsRunDelay === undefined ? 200 : _ref$itemsRunDelay;
+	    var itemsRunDelay = _ref$itemsRunDelay === undefined ? 50 : _ref$itemsRunDelay;
 
 	    _classCallCheck(this, Chain);
 
@@ -6003,12 +6003,12 @@
 	        } else {
 	          return item.value.run(function (err) {
 	            if (err) {
-	              return _this2._chainCallback(new Error(err));
+	              return _this2._chainCallback(err);
 	            }
 
 	            setTimeout(function () {
 	              runNextAction();
-	            }, _this2.chainRunDelay);
+	            }, _this2.itemsRunDelay);
 	          });
 	        }
 	      };
@@ -6389,16 +6389,18 @@
 	    value: function run(callback) {
 	      var _this2 = this;
 
-	      var titleOrSelector = this.callArgs[0];
+	      var type = this.type;
+	      var callArgs = this.callArgs;
+	      var lastComponent = this.chain.lastComponent;
 
 	      return (0, _utils.waitForFn)(function (done) {
-	        _this2.chain.driver.getComponent(_this2.type, titleOrSelector, function (err, result) {
+	        _this2.chain.driver.getComponent(function (err, result) {
 	          if (_this2.invert) {
-	            return done(err ? null : 'Component ' + _this2.type + ' "' + titleOrSelector + '" still presented.');
+	            return done(err ? null : 'Component ' + _this2.type + ' "' + _this2.callArgs[0] + '" still presented.');
 	          } else {
 	            return done(err, result);
 	          }
-	        });
+	        }, { type: type, callArgs: callArgs, lastComponent: lastComponent });
 	      }, function (err, component) {
 	        _this2.component = component;
 	        return callback(err);
@@ -6611,8 +6613,6 @@
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	Object.defineProperty(exports, "__esModule", {
@@ -6638,7 +6638,9 @@
 
 	var _textField = __webpack_require__(211);
 
-	var _numberField = __webpack_require__(212);
+	var _cellEditor = __webpack_require__(212);
+
+	var _numberField = __webpack_require__(213);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6657,91 +6659,14 @@
 
 	  _createClass(ExtJsDriver, [{
 	    key: 'getComponent',
-	    value: function getComponent(type, titleOrSelector, callback) {
-	      var _this = this;
-
-	      var selector = null;
-	      var selectors = [];
-	      var extJsComponent = null;
-
-	      //FIX ME
-	      //if (!type) {
-	      //  selector = titleOrSelector
-	      //  extJsComponent = this.getVisibleComponents(selector)[0]
-	      //}
-
-	      if (!extJsComponent && type) {
-	        var _ret = function () {
-	          var titleProperties = [];
-
-	          if (titleOrSelector[0] === '#') {
-	            selectors = [titleOrSelector];
-	          } else {
-	            selectors = [type + '[tooltip~="' + titleOrSelector + '"]', type + '[reference="' + titleOrSelector + '"]', type + '[xtype="' + titleOrSelector + '"]'];
-	          }
-
-	          if (type === 'button') {
-	            titleProperties = ['text', 'tooltip', 'xtype'];
-	            selectors.unshift(type + '[text~="' + titleOrSelector + '"]');
-	          } else if (type === 'tab' || type === 'window' || type === 'grid') {
-	            titleProperties = ['title', 'tooltip', 'xtype'];
-	            selectors.unshift(type + '[title~="' + titleOrSelector + '"]');
-	          } else if (type === 'textfield' || type === 'numberfield' || type === 'combobox') {
-	            titleProperties = ['fieldLabel', 'tooltip', 'xtype'];
-	            selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
-	          } else if (type === 'checkbox' || type === 'radio') {
-	            titleProperties = ['fieldLabel', 'boxLabel', 'tooltip', 'xtype'];
-	            selectors.unshift(type + '[fieldLabel~="' + titleOrSelector + '"]');
-	            selectors.unshift(type + '[boxLabel~="' + titleOrSelector + '"]');
-	          } else {
-	            return {
-	              v: callback('Type "' + type + '" not supported.')
-	            };
-	          }
-
-	          selectors.every(function (item) {
-	            extJsComponent = _this.getVisibleComponents(item)[0];
-	            return !extJsComponent;
-	          });
-
-	          if (!extJsComponent) {
-	            (Ext.ComponentQuery.query(type) || []).every(function (item) {
-	              titleProperties.every(function (prop) {
-	                var title = item[prop];
-	                var fnName = 'get' + prop[0].toUpperCase() + prop.slice(1);
-	                if (fnName && item[fnName] && typeof item[fnName] === 'function') {
-	                  title = item[fnName].call(item);
-	                }
-	                if (new RegExp(titleOrSelector, 'g').test(title)) {
-	                  extJsComponent = item;
-	                }
-	                return !extJsComponent;
-	              });
-	              return !extJsComponent;
-	            });
-	          }
-	        }();
-
-	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-	      }
-
-	      if (!extJsComponent) {
-	        return callback('Selector "' + (selector || selectors.join(', ')) + '" not found.');
-	      } else if (!extJsComponent.el || !extJsComponent.el.dom) {
-	        return callback('No existing HTML element for selector "' + (selector || selectors.join(', ')) + '".');
-	      }
-
-	      //TODO to method
-	      var rect = extJsComponent.el.dom.getBoundingClientRect();
-	      if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
-	        return callback('No visible HTML element for selector "' + selector + '", ' + ('offset: ' + rect.left + ',' + rect.top + ', size: ' + rect.width + ',' + rect.height + '.'));
-	      }
+	    value: function getComponent(callback, _ref2) {
+	      var type = _ref2.type;
+	      var callArgs = _ref2.callArgs;
+	      var lastComponent = _ref2.lastComponent;
 
 	      var componentObject = null;
 	      var properties = {
-	        driver: this,
-	        selectors: selector || selectors.join(', '),
-	        extJsComponent: extJsComponent
+	        driver: this
 	      };
 
 	      if (type === 'tab') {
@@ -6754,51 +6679,29 @@
 	        componentObject = new _button.ExtJsComponentButton(properties);
 	      } else if (type === 'window') {
 	        componentObject = new _window.ExtJsComponentWindow(properties);
-	      } else if (type === 'checkbox') {
+	      } else if (type === 'checkBox') {
 	        componentObject = new _checkBox.ExtJsComponentCheckBox(properties);
-	      } else if (type === 'combobox') {
+	      } else if (type === 'comboBox') {
 	        componentObject = new _comboBox.ExtJsComponentComboBox(properties);
-	      } else if (type === 'textfield') {
+	      } else if (type === 'textField') {
 	        componentObject = new _textField.ExtJsComponentTextField(properties);
-	      } else if (type === 'numberfield') {
+	      } else if (type === 'cellEditor') {
+	        componentObject = new _cellEditor.ExtJsComponentCellEditor(properties);
+	      } else if (type === 'numberField') {
 	        componentObject = new _numberField.ExtJsComponentNumberField(properties);
 	      }
 
-	      if (componentObject) {
-	        return callback(null, componentObject);
-	      } else {
-	        throw new Error('Component "' + type + '" is not supported by driver "' + this.constructor.name + '".');
+	      if (!componentObject) {
+	        return callback(new Error('Type "' + type + '" is not supported by driver'));
 	      }
+
+	      return componentObject.getComponent(callback, { callArgs: callArgs, lastComponent: lastComponent });
 	    }
-
-	    //BUG does not work properly
-
 	  }, {
-	    key: 'getVisibleComponents',
-	    value: function getVisibleComponents(selector) {
-	      var _this2 = this;
-
-	      try {
-	        return Ext.ComponentQuery.query(selector).filter(function (item) {
-	          if (!item.el || !item.el.dom) {
-	            return false;
-	          }
-
-	          var r = item.el.dom.getBoundingClientRect();
-	          var x = r.left + r.width / 2;
-	          var y = r.top + r.height / 2;
-
-	          _this2.mochaUi.hide();
-	          var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
-	            return dom === item.el.dom;
-	          });
-	          _this2.mochaUi.show();
-
-	          return visible.length > 0;
-	        });
-	      } catch (e) {
-	        throw e + '. Selector: ' + selector;
-	      }
+	    key: 'isVisibleElement',
+	    value: function isVisibleElement(element) {
+	      var style = window.getComputedStyle(element);
+	      return style.opacity !== 0 && style.display !== 'none' && style.visibility !== 'hidden';
 	    }
 	  }, {
 	    key: 'waitLoadMask',
@@ -6840,7 +6743,7 @@
 	  }, {
 	    key: 'supportedComponents',
 	    get: function get() {
-	      return ['tab', 'grid', 'radio', 'button', 'window', 'checkbox', 'combobox', 'textfield', 'numberfield'];
+	      return ['tab', 'grid', 'radio', 'button', 'window', 'checkBox', 'comboBox', 'textField', 'numberField', 'cellEditor'];
 	    }
 	  }, {
 	    key: 'supportedComponentActions',
@@ -6863,12 +6766,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentTab = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6884,6 +6793,18 @@
 
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentTab).apply(this, arguments));
 	  }
+
+	  _createClass(ExtJsComponentTab, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[title~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentTab.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['title'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentTab.prototype), 'titleProperties', this)));
+	    }
+	  }]);
 
 	  return ExtJsComponentTab;
 	}(_base.ExtJsComponentBase);
@@ -6907,27 +6828,118 @@
 
 	var ExtJsComponentBase = exports.ExtJsComponentBase = function () {
 	  function ExtJsComponentBase(_ref) {
-	    var selectors = _ref.selectors;
-	    var extJsComponent = _ref.extJsComponent;
 	    var driver = _ref.driver;
 
 	    _classCallCheck(this, ExtJsComponentBase);
 
 	    this.driver = driver;
-	    this.selectors = selectors;
-	    this.extJsComponent = extJsComponent;
+	    this.selectors = [];
 
 	    this._htmlComponent = null;
 	  }
 
 	  _createClass(ExtJsComponentBase, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[tooltip~="' + titleOrSelector + '"]', this.componentType + '[reference="' + titleOrSelector + '"]', this.componentType + '[xtype="' + titleOrSelector + '"]'];
+	    }
+	  }, {
+	    key: 'getComponent',
+	    value: function getComponent(callback, _ref2) {
+	      var _this = this;
+
+	      var callArgs = _ref2.callArgs;
+	      var lastComponent = _ref2.lastComponent;
+
+	      var selectors = [];
+	      var extJsComponent = null;
+	      var titleOrSelector = callArgs[0];
+
+	      if (titleOrSelector[0] === '#') {
+	        selectors = [titleOrSelector];
+	      } else {
+	        selectors = this.generateSelectors(titleOrSelector);
+	      }
+
+	      selectors.every(function (item) {
+	        extJsComponent = _this.getVisibleComponents(item)[0];
+	        return !extJsComponent;
+	      });
+
+	      if (!extJsComponent) {
+	        (Ext.ComponentQuery.query(this.componentType) || []).every(function (item) {
+	          _this.titleProperties.every(function (prop) {
+	            var title = item[prop];
+	            var fnName = 'get' + prop[0].toUpperCase() + prop.slice(1);
+	            if (fnName && item[fnName] && typeof item[fnName] === 'function') {
+	              title = item[fnName].call(item);
+	            }
+	            if (new RegExp(titleOrSelector, 'g').test(title)) {
+	              extJsComponent = item;
+	            }
+	            return !extJsComponent;
+	          });
+	          return !extJsComponent;
+	        });
+	      }
+
+	      if (!extJsComponent) {
+	        return callback(new Error('Selector "' + selectors.join(', ') + '" not found.'));
+	      } else if (!extJsComponent.el || !extJsComponent.el.dom) {
+	        return callback(new Error('No existing HTML element for selector "' + selectors.join(', ') + '".'));
+	      }
+
+	      //TODO to method
+	      var rect = extJsComponent.el.dom.getBoundingClientRect();
+	      if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
+	        return callback(new Error('No visible HTML element for selector "' + selectors.join(', ') + '", ' + ('offset: ' + rect.left + ',' + rect.top + ', size: ' + rect.width + ',' + rect.height + '.')));
+	      }
+
+	      this.selectors = selectors;
+	      this.extJsComponent = extJsComponent;
+
+	      return callback(null, this);
+	    }
+
+	    //BUG does not work properly
+
+	  }, {
+	    key: 'getVisibleComponents',
+	    value: function getVisibleComponents(selector) {
+	      var _this2 = this;
+
+	      try {
+	        return Ext.ComponentQuery.query(selector).filter(function (item) {
+	          if (!item.el || !item.el.dom) {
+	            return false;
+	          }
+
+	          var r = item.el.dom.getBoundingClientRect();
+	          var x = r.left + r.width / 2;
+	          var y = r.top + r.height / 2;
+
+	          //this.mochaUi.hide()
+	          _this2.driver.mochaUi.hide();
+	          var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
+	            return dom === item.el.dom;
+	          });
+	          //this.mochaUi.show()
+	          _this2.driver.mochaUi.show();
+
+	          return visible.length > 0;
+	        });
+	      } catch (e) {
+	        throw e + '. Selector: ' + selector;
+	      }
+	    }
+	  }, {
 	    key: 'click',
 	    value: function click(callback) {
-	      var _this = this;
+	      var _this3 = this;
 
 	      this.htmlComponent.click(function (err) {
 	        if (err) {
-	          return callback('cannot click on component "' + _this.componentType + '": ' + err);
+	          return callback('cannot click on component "' + _this3.componentType + '": ' + err);
 	        } else {
 	          return callback(null);
 	        }
@@ -6936,30 +6948,30 @@
 	  }, {
 	    key: 'fill',
 	    value: function fill(callback, value) {
-	      var _this2 = this;
+	      var _this4 = this;
 
 	      this.click(function (err) {
 	        if (!err) {
 	          try {
-	            _this2.extJsComponent.setValue(value);
+	            _this4.extJsComponent.setValue(value);
 	            err = false;
 	          } catch (e) {
 	            err = 'failed to call setValue() method';
 	          }
 	        }
 
-	        return callback(err ? 'cannot fill component "' + _this2.componentType + '": ' + err : null);
+	        return callback(err ? new Error('cannot fill component "' + _this4.componentType + '": ' + err) : null);
 	      });
 	    }
 	  }, {
 	    key: 'checkState',
-	    value: function checkState(_ref2) {
-	      var stateFnName = _ref2.stateFnName;
-	      var expectedValue = _ref2.expectedValue;
-	      var callback = _ref2.callback;
+	    value: function checkState(_ref3) {
+	      var stateFnName = _ref3.stateFnName;
+	      var expectedValue = _ref3.expectedValue;
+	      var callback = _ref3.callback;
 
 	      if (!this.extJsComponent[stateFnName]) {
-	        return callback('ExtJs component does not have function "' + stateFnName + '".');
+	        return callback(new Error('ExtJs component does not have function "' + stateFnName + '".'));
 	      }
 
 	      var result = this.extJsComponent[stateFnName]();
@@ -6967,7 +6979,7 @@
 	      if (result === expectedValue) {
 	        return callback(null);
 	      } else {
-	        return callback('state of "' + this.componentType + '" function "' + stateFnName + '" expected to be "' + expectedValue + '" ' + ('instead of "' + result + '"'));
+	        return callback(new Error('state of "' + this.componentType + '" function "' + stateFnName + '" expected to be "' + expectedValue + '" ' + ('instead of "' + result + '"')));
 	      }
 	    }
 	  }, {
@@ -7032,6 +7044,11 @@
 	    key: 'componentType',
 	    get: function get() {
 	      return this.constructor.name.replace(/.*Component/, '').toLowerCase();
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['tooltip', 'xtype'];
 	    }
 	  }]);
 
@@ -7121,6 +7138,8 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -7131,6 +7150,8 @@
 	var _base2 = __webpack_require__(203);
 
 	var _comboBox = __webpack_require__(206);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7148,6 +7169,11 @@
 	  }
 
 	  _createClass(ExtJsComponentGrid, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[text~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentGrid.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
 	    key: 'select',
 	    value: function select(callback) {
 	      var _this2 = this;
@@ -7169,48 +7195,6 @@
 	      });
 	    }
 	  }, {
-	    key: 'edit',
-	    value: function edit(callback) {
-	      var rowIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-
-	      var _this3 = this;
-
-	      var colIndex = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-	      var valueIndex = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
-
-	      var cmp = this.extJsComponent;
-	      var htmlElement = null;
-
-	      try {
-	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
-	      } catch (e) {
-	        return callback('Failed to get element of "' + this.componentType + '" row #' + rowIndex + '": ' + e);
-	      }
-
-	      //TODO update error messages
-	      new _base.HTMLComponentBase({ htmlElement: htmlElement, driver: this.driver }).click(function (err) {
-	        if (err) {
-	          return callback('Failed to click on item row #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err);
-	        }
-
-	        try {
-	          var editorElement = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')[0].getElementsByClassName('x-field')[0];
-
-	          _this3.driver.getComponent('combobox', '#' + editorElement.id, function (err, editorComponent) {
-	            if (err) {
-	              return callback(err ? 'Failed: #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err : null);
-	            }
-
-	            editorComponent.select(function (err) {
-	              return callback(err ? 'Failed: #' + rowIndex + ' of "' + _this3.componentType + '" ": ' + err : null);
-	            }, valueIndex);
-	          });
-	        } catch (e) {
-	          return callback('Failed to get editor element of "' + _this3.componentType + '" row #' + rowIndex + '": ' + e);
-	        }
-	      });
-	    }
-	  }, {
 	    key: 'checkRowsCount',
 	    value: function checkRowsCount(callback, countExpected) {
 	      var cmp = this.extJsComponent;
@@ -7227,6 +7211,11 @@
 	        return callback('No store binded to "' + this.componentType + '" (selectors: ' + this.selectors + '):' + (' count of rows expected to be equal "' + countExpected + '" instead of "' + count + '".'));
 	      }
 	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['title'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentGrid.prototype), 'titleProperties', this)));
+	    }
 	  }]);
 
 	  return ExtJsComponentGrid;
@@ -7240,6 +7229,8 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -7248,6 +7239,8 @@
 	var _base = __webpack_require__(204);
 
 	var _base2 = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7265,6 +7258,11 @@
 	  }
 
 	  _createClass(ExtJsComponentComboBox, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[fieldLabel~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentComboBox.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
 	    key: 'select',
 	    value: function select(callback, index) {
 	      var _this2 = this;
@@ -7294,6 +7292,11 @@
 	        });
 	      });
 	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['fieldLabel'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentComboBox.prototype), 'titleProperties', this)));
+	    }
 	  }]);
 
 	  return ExtJsComponentComboBox;
@@ -7305,12 +7308,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentRadio = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7327,6 +7336,18 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentRadio).apply(this, arguments));
 	  }
 
+	  _createClass(ExtJsComponentRadio, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[boxLabel~="' + titleOrSelector + '"]', this.componentType + '[fieldLabel~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentRadio.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['fieldLabel', 'boxLabel'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentRadio.prototype), 'titleProperties', this)));
+	    }
+	  }]);
+
 	  return ExtJsComponentRadio;
 	}(_base.ExtJsComponentBase);
 
@@ -7336,12 +7357,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentButton = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7358,6 +7385,18 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentButton).apply(this, arguments));
 	  }
 
+	  _createClass(ExtJsComponentButton, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[text~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentButton.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['text'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentButton.prototype), 'titleProperties', this)));
+	    }
+	  }]);
+
 	  return ExtJsComponentButton;
 	}(_base.ExtJsComponentBase);
 
@@ -7367,12 +7406,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentWindow = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7389,6 +7434,18 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentWindow).apply(this, arguments));
 	  }
 
+	  _createClass(ExtJsComponentWindow, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[text~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentWindow.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['title'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentWindow.prototype), 'titleProperties', this)));
+	    }
+	  }]);
+
 	  return ExtJsComponentWindow;
 	}(_base.ExtJsComponentBase);
 
@@ -7398,12 +7455,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentCheckBox = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7420,6 +7483,18 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentCheckBox).apply(this, arguments));
 	  }
 
+	  _createClass(ExtJsComponentCheckBox, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[boxLabel~="' + titleOrSelector + '"]', this.componentType + '[fieldLabel~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentCheckBox.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['fieldLabel', 'boxLabel'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentCheckBox.prototype), 'titleProperties', this)));
+	    }
+	  }]);
+
 	  return ExtJsComponentCheckBox;
 	}(_base.ExtJsComponentBase);
 
@@ -7429,12 +7504,18 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentTextField = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7451,6 +7532,18 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentTextField).apply(this, arguments));
 	  }
 
+	  _createClass(ExtJsComponentTextField, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[fieldLabel~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentTextField.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['fieldLabel'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentTextField.prototype), 'titleProperties', this)));
+	    }
+	  }]);
+
 	  return ExtJsComponentTextField;
 	}(_base.ExtJsComponentBase);
 
@@ -7460,12 +7553,196 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ExtJsComponentCellEditor = undefined;
+
+	var _base = __webpack_require__(204);
+
+	var _base2 = __webpack_require__(203);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ExtJsComponentCellEditor = exports.ExtJsComponentCellEditor = function (_ExtJsComponentBase) {
+	  _inherits(ExtJsComponentCellEditor, _ExtJsComponentBase);
+
+	  function ExtJsComponentCellEditor() {
+	    _classCallCheck(this, ExtJsComponentCellEditor);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentCellEditor).apply(this, arguments));
+	  }
+
+	  _createClass(ExtJsComponentCellEditor, [{
+	    key: 'getComponent',
+	    value: function getComponent(callback, _ref) {
+	      var _this2 = this;
+
+	      var callArgs = _ref.callArgs;
+	      var lastComponent = _ref.lastComponent;
+
+	      var rowIndex = callArgs[0];
+	      var colIndex = callArgs[1];
+	      var cmp = lastComponent.extJsComponent;
+	      var htmlElement = null;
+
+	      try {
+	        htmlElement = document.getElementById(cmp.el.id).getElementsByClassName('x-grid-item')[rowIndex].getElementsByClassName('x-grid-cell')[colIndex];
+	      } catch (e) {
+	        return callback(new Error('Failed to find cell element of "' + this.componentType + '" row:#' + rowIndex + '", col:#' + colIndex + '"', e));
+	      }
+
+	      new _base.HTMLComponentBase({ htmlElement: htmlElement, driver: this.driver }).click(function (err) {
+	        if (err) {
+	          return callback(new Error('Failed to click on cell element of "' + _this2.componentType + '" row: #' + rowIndex + '", col: #' + colIndex + '": ' + err));
+	        }
+
+	        var fieldElement = null;
+	        try {
+	          var _iteratorNormalCompletion = true;
+	          var _didIteratorError = false;
+	          var _iteratorError = undefined;
+
+	          try {
+	            for (var _iterator = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	              var editorElement = _step.value;
+
+	              if (_this2.driver.isVisibleElement(editorElement)) {
+	                fieldElement = editorElement.getElementsByClassName('x-field')[0];
+	                break;
+	              }
+	            }
+	          } catch (err) {
+	            _didIteratorError = true;
+	            _iteratorError = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	              }
+	            } finally {
+	              if (_didIteratorError) {
+	                throw _iteratorError;
+	              }
+	            }
+	          }
+
+	          if (!fieldElement) {
+	            throw new Error('no "x-field" element found');
+	          }
+	        } catch (e) {
+	          return callback(new Error('Failed to get editor element of "' + _this2.componentType + '" row:#' + rowIndex + '", col:#' + colIndex + '": ' + e));
+	        }
+
+	        _this2.selectors = '#' + fieldElement.id;
+	        _this2.extJsComponent = Ext.ComponentQuery.query(_this2.selectors)[0];
+
+	        if (!_this2.selectors) {
+	          return callback(new Error('Failed to get editor component of "' + _this2.componentType + '" row:#' + rowIndex + '", col:#' + colIndex + '": ' + e));
+	        }
+
+	        return callback(null, _this2);
+	      });
+	    }
+	  }, {
+	    key: 'select',
+	    value: function select(callback) {
+	      var _this3 = this;
+
+	      var index = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+	      this.driver.getComponent(function (err, fieldComponent) {
+	        if (err) {
+	          return callback(new Error('Failed to get editor combobox component of "' + _this3.componentType + '"', err));
+	        }
+
+	        fieldComponent.select(function (err) {
+	          if (err) {
+	            return callback(new Error('Failed to select editor combobox of "' + _this3.componentType + '"', err));
+	          }
+
+	          return callback(null);
+	        }, index);
+	      }, {
+	        type: 'comboBox',
+	        callArgs: ['#' + this.extJsComponent.id]
+	      });
+	    }
+	  }, {
+	    key: 'fill',
+	    value: function fill(callback) {
+	      var _this4 = this;
+
+	      var value = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+	      this.driver.getComponent(function (err, fieldComponent) {
+	        if (err) {
+	          return callback(new Error('Failed to fill editor textfield component of "' + _this4.componentType + '"', err));
+	        }
+
+	        fieldComponent.fill(function (err) {
+	          if (err) {
+	            return callback(new Error('Failed to fill editor textfield component of "' + _this4.componentType + '"', err));
+	          }
+
+	          return callback(null);
+	        }, value);
+	      }, {
+	        type: 'textField',
+	        callArgs: ['#' + this.extJsComponent.id]
+	      });
+	    }
+	  }, {
+	    key: 'click',
+	    value: function click(callback) {
+	      var _this5 = this;
+
+	      this.driver.getComponent(function (err, fieldComponent) {
+	        if (err) {
+	          return callback(new Error('Failed to click editor checkbox component of "' + _this5.componentType + '"', err));
+	        }
+
+	        fieldComponent.click(function (err) {
+	          if (err) {
+	            return callback(new Error('Failed to click editor checkbox component of "' + _this5.componentType + '"', err));
+	          }
+
+	          return callback(null);
+	        });
+	      }, {
+	        type: 'checkBox',
+	        callArgs: ['#' + this.extJsComponent.id]
+	      });
+	    }
+	  }]);
+
+	  return ExtJsComponentCellEditor;
+	}(_base2.ExtJsComponentBase);
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.ExtJsComponentNumberField = undefined;
 
 	var _base = __webpack_require__(203);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7481,6 +7758,18 @@
 
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExtJsComponentNumberField).apply(this, arguments));
 	  }
+
+	  _createClass(ExtJsComponentNumberField, [{
+	    key: 'generateSelectors',
+	    value: function generateSelectors(titleOrSelector) {
+	      return [this.componentType + '[fieldLabel~="' + titleOrSelector + '"]'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentNumberField.prototype), 'generateSelectors', this).call(this, titleOrSelector)));
+	    }
+	  }, {
+	    key: 'titleProperties',
+	    get: function get() {
+	      return ['fieldLabel'].concat(_toConsumableArray(_get(Object.getPrototypeOf(ExtJsComponentNumberField.prototype), 'titleProperties', this)));
+	    }
+	  }]);
 
 	  return ExtJsComponentNumberField;
 	}(_base.ExtJsComponentBase);
