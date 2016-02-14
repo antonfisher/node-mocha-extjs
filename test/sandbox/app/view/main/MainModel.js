@@ -5,4 +5,5 @@ Ext.define('Sandbox.view.main.MainModel', {
   data: {
     buttonResultText: ''
   }
+
 })

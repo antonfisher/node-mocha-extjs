@@ -2,10 +2,16 @@ Ext.define('Sandbox.view.main.Main', {
   extend: 'Ext.container.Container',
 
   requires: [
-    'Sandbox.view.main.MainController',
+    'Ext.layout.container.VBox',
+    'Ext.layout.container.HBox',
     'Sandbox.view.main.MainModel',
-    'Sandbox.view.main.custom.Grid',
-    'Sandbox.view.main.custom.Button'
+    'Sandbox.view.main.MainController',
+    'Sandbox.view.main.tab.LoadMasks',
+    'Sandbox.view.main.tab.Buttons',
+    'Sandbox.view.main.tab.Windows',
+    'Sandbox.view.main.tab.Content',
+    'Sandbox.view.main.tab.Fields',
+    'Sandbox.view.main.tab.Grids'
   ],
 
   controller: 'main',
@@ -24,128 +30,21 @@ Ext.define('Sandbox.view.main.Main', {
       xtype: 'container',
       layout: 'vbox',
       defaults: {
-        xtype: 'button',
         margin: 5
       }
     },
     items: [{
-      title: 'Buttons',
-      items: [{
-        text: 'Simple button',
-        handler: 'onButtonsSimpleButtonClick'
-      }, {
-        text: 'Disable',
-        handler: 'onButtonsDisableButtonClick'
-      }, {
-        text: 'Select me by tooltip',
-        tooltip: 'Button tooltip',
-        handler: 'onButtonsSelectMeByTooltipButtonClick'
-      }, {
-        text: 'Select me by custom xtype',
-        xtype: 'customButton',
-        handler: 'onButtonsSelectMeByCustomXtypeButtonClick'
-      }]
+      xtype: 'tabButtons'
     }, {
-      title: 'Windows',
-      items: [{
-        text: 'Show confirm',
-        handler: 'onWindowsShowConfirmButtonClick'
-      }, {
-        text: 'Yes'
-      }]
+      xtype: 'tabWindows'
     }, {
-      title: 'Fields',
-      items: [{
-        xtype: 'textfield',
-        fieldLabel: 'Name'
-      }, {
-        xtype: 'numberfield',
-        fieldLabel: 'Count'
-      }, {
-        xtype: 'checkbox',
-        boxLabel: 'include'
-      }, {
-        xtype: 'radio',
-        boxLabel: 'check A',
-        name: 'checkMe',
-        value: 'a'
-      }, {
-        xtype: 'radio',
-        boxLabel: 'check B',
-        name: 'checkMe',
-        value: 'b'
-      }, {
-        xtype: 'combobox',
-        fieldLabel: 'Select in list',
-        editable: false,
-        store: [
-          ['a', 'Position A'],
-          ['b', 'Position B']
-        ]
-      }]
+      xtype: 'tabFields'
     }, {
-      title: 'Grids',
-      items: [{
-        xtype: 'customGrid',
-        title: 'Names'
-      }, {
-        xtype: 'customGrid',
-        reference: 'customGridReference'
-      }, {
-        title: 'Cell editing',
-        xtype: 'customGrid',
-        width: 400,
-        columns: [{
-          header: 'Name',
-          dataIndex: 'name',
-          flex: 1,
-          editor: {
-            xtype: 'combobox',
-            store: [['Aaa', 'Aaa'], ['Bbb', 'Bbb'], ['Ccc', 'Ccc']],
-            editable: false
-          }
-        }, {
-          header: 'Count',
-          dataIndex: 'count'
-        }, {
-          header: 'Comment',
-          dataIndex: 'comment',
-          editor: {
-            xtype: 'textfield'
-          }
-        }, {
-          header: 'Enabled',
-          dataIndex: 'enabled',
-          editor: {
-            xtype: 'checkbox'
-          }
-        }]
-      }]
+      xtype: 'tabGrids'
     }, {
-      title: 'LoadMasks',
-      items: [{
-        text: 'Show global',
-        handler: 'onLoadMasksShowGlobalButtonClick'
-      }, {
-        text: 'Show component',
-        handler: 'onLoadMasksShowComponentButtonClick'
-      }]
+      xtype: 'tabLoadMasks'
     }, {
-      title: 'Content',
-      items: [{
-        text: 'Show result',
-        handler: 'onTextsShowTextButtonClick'
-      }, {
-        xtype: 'displayfield',
-        labelWidth: 145,
-        fieldLabel: 'Wait new content here',
-        bind: {
-          value: '{buttonResultText}'
-        }
-      }, {
-        text: 'Hide me',
-        handler: 'onContentHideMeButtonClick'
-      }]
+      xtype: 'tabContent'
     }]
   }
 })
