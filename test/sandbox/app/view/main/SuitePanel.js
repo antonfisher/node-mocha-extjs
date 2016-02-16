@@ -14,8 +14,6 @@ Ext.define('Sandbox.view.main.SuitePanel', {
 
     self.suiteWidth = (self.suiteWidth || 250)
 
-    console.log('-- self.suiteWidth', self.suiteWidth);
-
     self.items = [{
       width: self.suiteWidth,
       defaults: {
