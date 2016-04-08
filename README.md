@@ -71,11 +71,13 @@ _Cooming soon, waiting for pull request in new release version of one dependency
 ## Usage
 
 ### Init library before running MochaJs
+
 ```javascript
 var eTT = new MochaExtJs(); // init testing framework
 ```
 
 ### Add test suite:
+
 ```javascript
 // tests/suites/020-buttons.js
 describe('Buttons', function () {
@@ -93,6 +95,7 @@ describe('Buttons', function () {
 ```
 
 ### Supported components and methods:
+
 ```
 var eTT = new MochaExtJs();
 
@@ -148,10 +151,12 @@ eTT().waitText('Result is here!', done)
 ```
 
 ## Installation
+
 - `$ npm install mocha-extjs`
 - use files from `./dist` folder.
 
 ## Development
+
 - install _NodeJs v5.3_ or newer
 - clone repository `$ git clone git@github.com:antonfisher/mocha-extjs.git`
 - copy _ExtJs v5_ or _v6_ framework to `./test/Sandbox/ext` folder
@@ -181,6 +186,7 @@ Eslint and test your code.
 * 0.1.0 Initial Alpha release
 
 ## ToDo
+
 - [x] ES2015
 - [x] StandardJs
 - [x] Grid Cell Editing
@@ -189,6 +195,7 @@ Eslint and test your code.
 - [ ] Documenation
 
 ## License
+
 Copyright (c) 2016 Anton Fisher <a.fschr@gmail.com>
 
 MIT License. Free use and change.
