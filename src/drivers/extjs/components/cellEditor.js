@@ -32,7 +32,10 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
 
       let fieldElement = null
       try {
-        for (let editorElement of document.getElementById(cmp.el.id).getElementsByClassName('x-editor')) {
+        const editorElements = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')
+        // TODO why "of" does not work
+        for (let i in editorElements) {
+          const editorElement = editorElements[i]
           if (this.driver.isVisibleElement(editorElement)) {
             fieldElement = editorElement.getElementsByClassName('x-field')[0]
             break

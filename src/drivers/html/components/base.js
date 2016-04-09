@@ -16,8 +16,8 @@ export class HTMLComponentBase {
     // add "page.sendEvent.apply(this, data.sendEvent)"
     //
     const rect = el.getBoundingClientRect()
-    const x = (rect.left + rect.width / 2)
-    const y = (rect.top + rect.height / 2)
+    const x = Math.round(rect.left + rect.width / 2)
+    const y = Math.round(rect.top + rect.height / 2)
 
     this.driver.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
       this.driver.mochaUi.hide()

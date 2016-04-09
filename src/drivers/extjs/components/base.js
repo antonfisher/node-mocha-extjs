@@ -114,6 +114,10 @@ export class ExtJsComponentBase {
         const x = (r.left + r.width / 2)
         const y = (r.top + r.height / 2)
 
+        if (!window.document.elementsFromPoint) {
+          return true
+        }
+
         //this.mochaUi.hide()
         this.driver.mochaUi.hide()
         const visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
