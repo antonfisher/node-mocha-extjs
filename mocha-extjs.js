@@ -18,6 +18,7 @@ export class MochaExtJs {
 
 }
 
+// browserify
 if (window) {
   window.MochaExtJs = MochaExtJs
 }

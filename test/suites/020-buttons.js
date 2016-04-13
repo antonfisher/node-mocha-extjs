@@ -2,7 +2,7 @@ describe('Buttons', function () {
   this.bail(true)
   this.timeout(20 * 1000)
 
-  it('Switch ot "Buttons" tab', function (done) {
+  it('Switch to "Buttons" tab', function (done) {
     eTT().tab('Buttons').click(done)
   })
 

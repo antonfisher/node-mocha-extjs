@@ -2,7 +2,7 @@ describe('Windows', function () {
   this.bail(true)
   this.timeout(20 * 1000)
 
-  it('Switch ot "Windows" tab', function (done) {
+  it('Switch to "Windows" tab', function (done) {
     eTT().tab('Windows').click(done)
   })
 

@@ -74,12 +74,17 @@ export class ExtJsDriver {
       return callback(new Error(`Type "${type}" is not supported by driver`))
     }
 
-    return componentObject.getComponent(callback, {callArgs, lastComponent});
+    return componentObject.getComponent(callback, {callArgs, lastComponent})
   }
 
   isVisibleElement (element) {
     const style = window.getComputedStyle(element)
-    return (style.opacity !== 0 && style.display !== 'none' && style.visibility !== 'hidden')
+    return (
+      Boolean(style)
+      && (typeof style.opacity === 'undefined' || style.opacity !== 0)
+      && (typeof style.display === 'undefined' || style.display !== 'none')
+      && (typeof style.visibility === 'undefined' || style.visibility !== 'hidden')
+    )
   }
 
   waitLoadMask (callback) {
