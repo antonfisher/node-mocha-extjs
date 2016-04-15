@@ -31,9 +31,11 @@ export class HTMLComponentBase {
       }
 
       if (window.callPhantom) {
-        err = !window.callPhantom({
-          sendEvent: ['click', x, y]
-        })
+        window.callPhantom({sendEvent: ['mousemove', x-1, y-1]})
+        window.callPhantom({sendEvent: ['mousemove', x, y]})
+        window.callPhantom({sendEvent: ['mousedown', x, y]})
+        err = !window.callPhantom({sendEvent: ['click', x, y]})
+        window.callPhantom({sendEvent: ['mouseup', x, y]})
       } else {
         try {
           window.document.elementFromPoint(x, y).click()
