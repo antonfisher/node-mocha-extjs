@@ -22,7 +22,7 @@ describe('Grids', function () {
     eTT().grid('customGridReference').select(0, 0).select(0, 1).select(1, 1).select(1, 0, done)
   })
 
-  it('Edit "Cell editing" grid #2 row, select item #1', function (done) {
+  it('Edit "Cell editing" grid row #2, select item #1', function (done) {
     eTT().grid('Cell editing').cellEditor(1, 0).select(0, done)
   })
 

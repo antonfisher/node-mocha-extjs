@@ -49,7 +49,7 @@
     "gulp-sourcemaps": "1.x",
     "gulp-webpack": "1.x",
     "mocha-phantomjs": "4.0.2",
-    "phantomjs": "2.1.3",
+    "phantomjs": "2.1.7",
     "snazzy": "3.x",
     "standard": "6.x"
   }
