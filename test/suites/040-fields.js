@@ -2,7 +2,7 @@ describe('Fields', function () {
   this.bail(true)
   this.timeout(20 * 1000)
 
-  it('Switch ot "Fields" tab', function (done) {
+  it('Switch to "Fields" tab', function (done) {
     eTT().tab('Fields').click(done)
   })
 

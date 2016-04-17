@@ -16,6 +16,14 @@ export class MochaExtJs {
     }
   }
 
+  screenshot () {
+    if (window.callPhantom) {
+      var filename = ('/tmp/' + (new Date()).getTime());
+      console.log('Taking screenshot: ' + filename);
+      window.callPhantom({'screenshot': filename});
+    }
+  }
+
 }
 
 // browserify

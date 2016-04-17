@@ -2,7 +2,7 @@ describe('LoadMasks', function () {
   this.bail(true)
   this.timeout(20 * 1000)
 
-  it('Switch ot "LoadMasks" tab', function (done) {
+  it('Switch to "LoadMasks" tab', function (done) {
     eTT().tab('LoadMasks').click(done)
   })
 
