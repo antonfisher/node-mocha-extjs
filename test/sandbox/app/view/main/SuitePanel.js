@@ -6,7 +6,7 @@ Ext.define('Sandbox.view.main.SuitePanel', {
   minHeight: 40,
 
   initComponent: function () {
-    var self = this;
+    var self = this
 
     if (Ext.isArray(self.suiteCode)) {
       self.suiteCode = self.suiteCode.join('\n')

@@ -32,19 +32,23 @@ Update _index.html_:
 
 
     <!-- mocha library -->
-    <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
-    <script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
-    <script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+    <link href="http://cdn.rawgit.com/mochajs/mocha/2.3.0/mocha.css" rel="stylesheet"/>
+    <script src="http://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+    <script src="http://cdn.rawgit.com/mochajs/mocha/2.3.0/mocha.js"></script>
 
 
     <!-- mocha-extjs library -->
-    <link href="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/dist/mocha-extjs.css"
+    <link href="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.css"
           rel="stylesheet" />
-    <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/dist/mocha-extjs.js"></script>
+    <script src="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.js"></script>
 
+    <!-- setup mocha -->
+    <script>
+        mocha.setup('bdd')
+    </script>
 
     <!-- first test suite -->
-    <script src="https://raw.githubusercontent.com/antonfisher/mocha-extjs/master/test/suites/010-environment.js"></script>
+    <script src="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/test/suites/010-environment.js"></script>
 
 
     <!-- run script -->
@@ -157,17 +161,17 @@ eTT().waitText('Result is here!', done)
 
 ## Development
 
-- install _NodeJs v5.3_ or newer
-- clone repository `$ git clone git@github.com:antonfisher/mocha-extjs.git`
+- install _NodeJs v5.10.1_ or newer
+- clone repository `$ git clone git@github.com:antonfisher/node-mocha-extjs.git`
 - copy _ExtJs v5_ or _v6_ framework to `./test/Sandbox/ext` folder
 - build _Sandbox_ application
 ```bash
-$ cd ./mocha-extjs/test/Sandbox
+$ cd ./node-mocha-extjs/test/Sandbox
 $ sencha app build 
 ```
 - install dependencies `$ npm install`
 - run _lint_: `$ npm run lint`
-- run _gulp_: `$ npm run build`.
+- run _gulp_: `$ npm start`.
 
 ## Contributing
 
@@ -176,6 +180,7 @@ Eslint and test your code.
 
 ## Releases History
 
+* 0.1.5 Update click method, minor fixes
 * 0.1.4 New grid cell editor methods
 * 0.1.3 Fix previous release trouble
 * 0.1.2 Update documentation
