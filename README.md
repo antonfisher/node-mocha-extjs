@@ -38,9 +38,8 @@ Update _index.html_:
 
 
     <!-- mocha-extjs library -->
-    <link href="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.css"
-          rel="stylesheet" />
-    <script src="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.js"></script>
+    <link href="https://cdn.rawgit.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.css" rel="stylesheet" />
+    <script src="https://cdn.rawgit.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.js"></script>
 
     <!-- setup mocha -->
     <script>
@@ -48,7 +47,7 @@ Update _index.html_:
     </script>
 
     <!-- first test suite -->
-    <script src="https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/master/test/suites/010-environment.js"></script>
+    <script src="https://cdn.rawgit.com/antonfisher/node-mocha-extjs/master/test/suites/010-environment.js"></script>
 
 
     <!-- run script -->
