@@ -7,7 +7,7 @@ Framework for testing ExtJs applications which simulates user actions.
 
 [Online demo](http://antonfisher.com/demo/mocha-extjs/)
 
-![Demo](https://raw.githubusercontent.com/antonfisher/mocha-extjs/docs/images/mocha-extjs-v1.gif)
+![Demo](https://raw.githubusercontent.com/antonfisher/node-mocha-extjs/docs/images/mocha-extjs-v1.gif)
 
 Component search by _title_, _fieldLabel_, _reference_, _boxLabel_, _xtype_, _text_ properties:
 
