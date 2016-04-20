@@ -163,10 +163,10 @@ eTT().waitText('Result is here!', done)
 
 - install _NodeJs v5.10.1_ or newer
 - clone repository `$ git clone git@github.com:antonfisher/node-mocha-extjs.git`
-- copy _ExtJs v5_ or _v6_ framework to `./test/Sandbox/ext` folder
+- copy _ExtJs v5_ or _v6_ framework to `./test/sandbox/ext` folder
 - build _Sandbox_ application
 ```bash
-$ cd ./node-mocha-extjs/test/Sandbox
+$ cd ./node-mocha-extjs/test/sandbox
 $ sencha app build 
 ```
 - install dependencies `$ npm install`
