@@ -47,10 +47,9 @@
     "gulp": "3.x",
     "gulp-sass": "2.x",
     "gulp-sourcemaps": "1.x",
-    "gulp-webpack": "1.x",
     "mocha-phantomjs": "4.0.2",
-    "phantomjs": "2.1.7",
     "snazzy": "3.x",
-    "standard": "6.x"
+    "standard": "6.x",
+    "webpack-stream": "3.x"
   }
 }

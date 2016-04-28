@@ -2,7 +2,7 @@
 
 var gulp = require('gulp')
 var sass = require('gulp-sass')
-var webpack = require('gulp-webpack')
+var webpack = require('webpack-stream')
 var sourcemaps = require('gulp-sourcemaps')
 var browserSync = require('browser-sync').create()
 
@@ -24,7 +24,12 @@ gulp.task('js', () => {
       },
       module: {
         loaders: [{
-          loader: 'babel-loader'
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader',
+          query: {
+            presets: ['es2015']
+          }
         }]
       },
       output: {
