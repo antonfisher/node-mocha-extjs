@@ -2,7 +2,6 @@
 
 import {HTMLComponentBase} from '../../html/components/base.js'
 import {ExtJsComponentBase} from './base.js'
-import {ExtJsComponentComboBox} from './comboBox.js'
 
 export class ExtJsComponentGrid extends ExtJsComponentBase {
 
@@ -11,10 +10,7 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
   }
 
   generateSelectors (titleOrSelector) {
-    return [
-      `${this.componentType}[text~="${titleOrSelector}"]`,
-      ...super.generateSelectors(titleOrSelector)
-    ]
+    return [`${this.componentType}[text~="${titleOrSelector}"]`, ...super.generateSelectors(titleOrSelector)]
   }
 
   select (callback, rowIndex = 0, colIndex = 0) {

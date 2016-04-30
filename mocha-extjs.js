@@ -16,9 +16,9 @@ export class MochaExtJs {
     }
   }
 
-  screenshot () {
+  static screenshot (path = '/tmp/') {
     if (window.callPhantom) {
-      var filename = ('/tmp/' + (new Date()).getTime())
+      const filename = (path + (new Date()).getTime())
       console.log('Taking screenshot: ' + filename)
       window.callPhantom({'screenshot': filename})
     }

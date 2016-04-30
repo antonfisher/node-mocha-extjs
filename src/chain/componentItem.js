@@ -13,8 +13,8 @@ export class ChainComponentItem extends ChainItem {
 
   run (callback) {
     const type = this.type
+    const chain = this.chain
     const callArgs = this.callArgs
-    const lastComponent = this.chain.lastComponent
 
     return waitForFn(
       (done) => {
@@ -26,7 +26,7 @@ export class ChainComponentItem extends ChainItem {
               return done(err, result)
             }
           },
-          {type, callArgs, lastComponent}
+          {type, callArgs, chain}
         )
       },
       (err, component) => {

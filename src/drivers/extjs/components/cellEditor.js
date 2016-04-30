@@ -5,10 +5,10 @@ import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentCellEditor extends ExtJsComponentBase {
 
-  getComponent (callback, {callArgs, lastComponent}) {
+  getComponent (callback, {callArgs}) {
     const rowIndex = callArgs[0]
     const colIndex = callArgs[1]
-    const cmp = lastComponent.extJsComponent
+    const cmp = this.chain.lastComponent.extJsComponent
     let htmlElement = null
 
     try {
@@ -33,13 +33,14 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       let fieldElement = null
       try {
         const editorElements = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')
-        // TODO why "of" does not work
-        for (let i in editorElements) {
-          const editorElement = editorElements[i]
+        let i = 0;
+        while (editorElements && editorElements.item(i)) {
+          const editorElement = editorElements.item(i)
           if (this.driver.isVisibleElement(editorElement)) {
             fieldElement = editorElement.getElementsByClassName('x-field')[0]
             break
           }
+          i++
         }
 
         if (!fieldElement) {
@@ -81,7 +82,8 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       },
       {
         type: 'comboBox',
-        callArgs: [`#${this.extJsComponent.id}`]
+        callArgs: [`#${this.extJsComponent.id}`],
+        chain: this.chain
       }
     )
   }
@@ -103,7 +105,8 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       },
       {
         type: 'textField',
-        callArgs: [`#${this.extJsComponent.id}`]
+        callArgs: [`#${this.extJsComponent.id}`],
+        chain: this.chain
       }
     )
   }
@@ -125,7 +128,8 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       },
       {
         type: 'checkBox',
-        callArgs: [`#${this.extJsComponent.id}`]
+        callArgs: [`#${this.extJsComponent.id}`],
+        chain: this.chain
       }
     )
   }

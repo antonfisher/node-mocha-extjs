@@ -42,10 +42,11 @@ export class ExtJsDriver {
     ]
   }
 
-  getComponent (callback, {type, callArgs, lastComponent}) {
+  getComponent (callback, {type, callArgs, chain}) {
     let componentObject = null
     const properties = {
-      driver: this
+      driver: this,
+      chain: chain
     }
 
     if (type === 'tab') {
@@ -74,7 +75,7 @@ export class ExtJsDriver {
       return callback(new Error(`Type "${type}" is not supported by driver`))
     }
 
-    return componentObject.getComponent(callback, {callArgs, lastComponent})
+    return componentObject.getComponent(callback, {callArgs})
   }
 
   isVisibleElement (element) {
@@ -96,11 +97,12 @@ export class ExtJsDriver {
             }).length > 0
 
         if (maskDisplayed) {
-          done('Load mask still presents.')
+          done('Load mask is still presented.')
         } else {
+          // LoadMask need sone time to be hidden
           setTimeout(() => {
             done(null)
-          }, 300)
+          }, 500)
         }
       },
       callback,

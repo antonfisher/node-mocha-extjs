@@ -10,10 +10,7 @@ export class ExtJsComponentComboBox extends ExtJsComponentBase {
   }
 
   generateSelectors (titleOrSelector) {
-    return [
-      `${this.componentType}[fieldLabel~="${titleOrSelector}"]`,
-      ...super.generateSelectors(titleOrSelector)
-    ]
+    return [`${this.componentType}[fieldLabel~="${titleOrSelector}"]`, ...super.generateSelectors(titleOrSelector)]
   }
 
   select (callback, index) {

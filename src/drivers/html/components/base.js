@@ -9,7 +9,6 @@ export class HTMLComponentBase {
 
   click (callback) {
     const el = this.htmlElement
-    let err
 
     // for PhantomJs:
     //  ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js:116
@@ -20,22 +19,23 @@ export class HTMLComponentBase {
     const y = Math.round(rect.top + rect.height / 2)
 
     this.driver.mochaUi.cursor.moveTo(x + 1, y + 1, () => {
+      let err
+
       this.driver.mochaUi.hide()
 
-      if (el.focus) {
-        el.focus()
-      }
+      // BUG hide cellEditor in PhantomJs
+      // if (el.focus) {
+      //   el.focus()
+      // }
 
       if (el.scrollIntoView) {
         el.scrollIntoView()
       }
 
       if (window.callPhantom) {
-        window.callPhantom({sendEvent: ['mousemove', x-1, y-1]})
+        window.callPhantom({sendEvent: ['mousemove', x - 1, y - 1]})
         window.callPhantom({sendEvent: ['mousemove', x, y]})
-        window.callPhantom({sendEvent: ['mousedown', x, y]})
         err = !window.callPhantom({sendEvent: ['click', x, y]})
-        window.callPhantom({sendEvent: ['mouseup', x, y]})
       } else {
         try {
           window.document.elementFromPoint(x, y).click()

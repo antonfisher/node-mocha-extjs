@@ -4,7 +4,8 @@ import {HTMLComponentBase} from '../../html/components/base.js'
 
 export class ExtJsComponentBase {
 
-  constructor ({driver}) {
+  constructor ({driver, chain}) {
+    this.chain = chain
     this.driver = driver
     this.selectors = []
 
@@ -48,7 +49,7 @@ export class ExtJsComponentBase {
     ]
   }
 
-  getComponent (callback, {callArgs, lastComponent}) {
+  getComponent (callback, {callArgs}) {
     let selectors = []
     let extJsComponent = null
     const titleOrSelector = callArgs[0]
