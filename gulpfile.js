@@ -46,7 +46,7 @@ gulp.task('default', ['css', 'js'], () => {
     }
   })
 
-  gulp.watch(['./mocha-extjs.js', './src/**/*', './test/**/*'], ['js'])
+  gulp.watch(['./mocha-extjs.js', './src/**/*', './test/suites/**/*', './test/sandbox/app/**/*'], ['js'])
   gulp.watch('./scss/*.scss', ['css'])
   gulp.watch(['./dist/*'], browserSync.reload)
 })
