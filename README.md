@@ -30,12 +30,10 @@ Update _index.html_:
     <!-- mocha ui -->
     <div id="mocha"></div>
 
-
     <!-- mocha library -->
     <link href="http://cdn.rawgit.com/mochajs/mocha/2.3.0/mocha.css" rel="stylesheet"/>
     <script src="http://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
     <script src="http://cdn.rawgit.com/mochajs/mocha/2.3.0/mocha.js"></script>
-
 
     <!-- mocha-extjs library -->
     <link href="https://cdn.rawgit.com/antonfisher/node-mocha-extjs/master/dist/mocha-extjs.css" rel="stylesheet" />
@@ -48,7 +46,6 @@ Update _index.html_:
 
     <!-- first test suite -->
     <script src="https://cdn.rawgit.com/antonfisher/node-mocha-extjs/master/test/suites/010-environment.js"></script>
-
 
     <!-- run script -->
     <script>
@@ -67,9 +64,28 @@ Update _index.html_:
 ```
 Done. Run your application!
 
-## Jenkins
+## PhantomJs
 
-_Cooming soon, waiting for pull request in new release version of one dependency..._
+It works now, but some hack needed. Just upgrade one of `mocha-phantomjs` dependencies to latest version:
+
+```bash
+$ npm install
+$ cd ./node_modules/mocha-phantomjs
+$ npm install mocha-phantomjs-core@2.0.1
+```
+
+Self library check:
+
+```bash
+$ npm test
+```
+
+Run tests on console:
+
+```bash
+# http://localhost:3000 - application address
+$ ./node_modules/mocha-phantomjs/bin/mocha-phantomjs --timeout 15000 --path ./node_modules/phantomjs/bin/phantomjs --view 1024x768 http://localhost:3000
+```
 
 ## Usage
 
@@ -153,6 +169,13 @@ eTT().waitLoadMask(done)
 eTT().waitText('Result is here!', done)
 ```
 
+### Taking screenshots
+
+```javascript
+MochaExtJs.screenshot()
+MochaExtJs.screenshot('./mypath/')
+```
+
 ## Installation
 
 - `$ npm install mocha-extjs`
@@ -194,6 +217,7 @@ Eslint and test your code.
 - [x] ES2015
 - [x] StandardJs
 - [x] Grid Cell Editing
+- [ ] Migrate to WebPack
 - [ ] Self tests
 - [ ] New components
 - [ ] Documenation
