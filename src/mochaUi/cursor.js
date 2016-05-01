@@ -34,21 +34,25 @@ export class Cursor {
   }
 
   moveTo (x, y, callback) {
-    const translate = `translate(${x}px, ${y}px)`
-
-    this._point.style.transform = translate
-
-    setTimeout(() => {
-      this._point.style.transition = 'all 50ms ease-in-out'
-      this._point.style.transform = `${translate} scale(0.5)`
+    if (window.callPhantom) {
+      this._point.style.left = `${x}px`
+      this._point.style.top = `${y}px`
+      return callback(null)
+    } else {
+      const translate = `translate(${x}px, ${y}px)`
+      this._point.style.transform = translate
       setTimeout(() => {
-        this._point.style.transform = `${translate} scale(1)`
+        this._point.style.transition = 'all 50ms ease-in-out'
+        this._point.style.transform = `${translate} scale(0.5)`
         setTimeout(() => {
-          this._point.style.transition = this._initTransition
-          return callback(null)
+          this._point.style.transform = `${translate} scale(1)`
+          setTimeout(() => {
+            this._point.style.transition = this._initTransition
+            return callback(null)
+          }, 50)
         }, 50)
-      }, 50)
-    }, this._timeout)
+      }, this._timeout)
+    }
   }
 
   hide () {
