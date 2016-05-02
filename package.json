@@ -1,6 +1,6 @@
 {
   "name": "mocha-extjs",
-  "version": "0.1.6",
+  "version": "0.1.61",
   "description": "ExtJs Test Framework for Mocha",
   "main": "mocha-extjs.js",
   "directories": {
@@ -39,6 +39,9 @@
     "url": "https://github.com/antonfisher/node-mocha-extjs/issues"
   },
   "homepage": "https://github.com/antonfisher/node-mocha-extjs",
+  "dependencies": {
+    "mocha-phantomjs": "4.0.2"
+  },
   "devDependencies": {
     "babel-core": "6.x",
     "babel-loader": "6.x",
@@ -48,7 +51,6 @@
     "gulp": "3.x",
     "gulp-sass": "2.x",
     "gulp-sourcemaps": "1.x",
-    "mocha-phantomjs": "4.0.2",
     "snazzy": "3.x",
     "standard": "6.x",
     "webpack-stream": "3.x"
