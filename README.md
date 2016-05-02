@@ -184,7 +184,7 @@ MochaExtJs.screenshot('./mypath/')
 ## Development
 
 - install _NodeJs v5.10.1_ or newer
-- clone repository `$ git clone git@github.com:antonfisher/node-mocha-extjs.git`
+- clone repository `$ git clone https://github.com/antonfisher/node-mocha-extjs.git`
 - copy _ExtJs v5_ or _v6_ framework to `./test/sandbox/ext` folder
 - build _Sandbox_ application
 ```bash
@@ -202,6 +202,7 @@ Eslint and test your code.
 
 ## Releases History
 
+* 0.1.6 CellEditing plugin support in PhantomJs
 * 0.1.5 Update click method, minor fixes
 * 0.1.4 New grid cell editor methods
 * 0.1.3 Fix previous release trouble
@@ -218,6 +219,7 @@ Eslint and test your code.
 - [x] StandardJs
 - [x] Grid Cell Editing
 - [ ] Migrate to WebPack
+- [ ] Use sencha test env
 - [ ] Self tests
 - [ ] New components
 - [ ] Documenation
