@@ -13,10 +13,10 @@ Component search by _title_, _fieldLabel_, _reference_, _boxLabel_, _xtype_, _te
 
 ```javascript
 // click on button "Save"
-eTT().button('Save').click(done)
+eTT().button('Save').click(done);
 
 // select first item in combobox with "Country" fieldLabel.
-eTT().combobox('Country').select(1, done)
+eTT().combobox('Country').select(1, done);
 ```
 
 ## Getting Started:
@@ -41,7 +41,7 @@ Update _index.html_:
 
     <!-- setup mocha -->
     <script>
-        mocha.setup('bdd')
+        mocha.setup('bdd');
     </script>
 
     <!-- first test suite -->
@@ -150,30 +150,30 @@ eTT() -->--->|------->--->|- button ---> (|- '%title%'     )----.
 Examples:
 
 ```javascript
-eTT().button('Simple button').isEnabled().click(done)
-eTT().button('Hide me').click().isHidden(done)
-eTT().tab('Windows').click(done)
-eTT().window('Confirm').button('Yes').isEnabled().click(done)
-eTT().no.window('Confirm', done)
-eTT().textfield('Name').fill('my text', done)
-eTT().numberfield('Count').fill(13, done)
-eTT().checkbox('include').click(done)
-eTT().radio('check B').click(done)
-eTT().combobox('Select in list').select(1, done)
-eTT().grid('Names').select(1, 1, done)
-eTT().grid('Names').checkRowsCount(2, done)
-eTT().grid('Cell editing').cellEditor(1, 0).select(0, done)
-eTT().grid('Cell editing').cellEditor(0, 2).fill('test1', done)
-eTT().grid('Cell editing').cellEditor(0, 3).click(done)
-eTT().waitLoadMask(done)
-eTT().waitText('Result is here!', done)
+eTT().button('Simple button').isEnabled().click(done);
+eTT().button('Hide me').click().isHidden(done);
+eTT().tab('Windows').click(done);
+eTT().window('Confirm').button('Yes').isEnabled().click(done);
+eTT().no.window('Confirm', done);
+eTT().textfield('Name').fill('my text', done);
+eTT().numberfield('Count').fill(13, done);
+eTT().checkbox('include').click(done);
+eTT().radio('check B').click(done);
+eTT().combobox('Select in list').select(1, done);
+eTT().grid('Names').select(1, 1, done);
+eTT().grid('Names').checkRowsCount(2, done);
+eTT().grid('Cell editing').cellEditor(1, 0).select(0, done);
+eTT().grid('Cell editing').cellEditor(0, 2).fill('test1', done);
+eTT().grid('Cell editing').cellEditor(0, 3).click(done);
+eTT().waitLoadMask(done);
+eTT().waitText('Result is here!', done);
 ```
 
 ### Taking screenshots
 
 ```javascript
-MochaExtJs.screenshot()
-MochaExtJs.screenshot('./mypath/')
+MochaExtJs.screenshot();
+MochaExtJs.screenshot('./mypath/');
 ```
 
 ## Installation
