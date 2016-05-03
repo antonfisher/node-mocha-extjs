@@ -66,25 +66,24 @@ Done. Run your application!
 
 ## PhantomJs
 
-It works now, but some hack needed. Just upgrade one of `mocha-phantomjs` dependencies to latest version:
+It works now, but some hack needed. Just install `mocha-phantomjs` and upgrade one of its dependency to latest version:
 
 ```bash
-$ npm install
-$ cd ./node_modules/mocha-phantomjs
-$ npm install mocha-phantomjs-core@2.0.1
+$ npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1
+$ rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core
 ```
 
-Self library check:
-
-```bash
-$ npm test
-```
-
-Run tests on console:
+Run tests in console:
 
 ```bash
 # http://localhost:3000 - application address
-$ ./node_modules/mocha-phantomjs/bin/mocha-phantomjs --timeout 15000 --path ./node_modules/phantomjs/bin/phantomjs --view 1024x768 http://localhost:3000
+$ ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --view 1024x768 http://localhost:3000
+```
+
+Self library test with _PhantonJs_:
+
+```bash
+$ npm test
 ```
 
 ## Usage
@@ -202,7 +201,7 @@ Eslint and test your code.
 
 ## Releases History
 
-* 0.1.6 CellEditing plugin support in PhantomJs
+* 0.1.6 CellEditing plugin support in _PhantomJs_
 * 0.1.5 Update click method, minor fixes
 * 0.1.4 New grid cell editor methods
 * 0.1.3 Fix previous release trouble

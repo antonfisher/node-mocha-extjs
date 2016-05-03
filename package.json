@@ -1,6 +1,6 @@
 {
   "name": "mocha-extjs",
-  "version": "0.1.61",
+  "version": "0.1.62",
   "description": "ExtJs Test Framework for Mocha",
   "main": "mocha-extjs.js",
   "directories": {
@@ -8,8 +8,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp",
-    "test": "./node_modules/mocha-phantomjs/bin/mocha-phantomjs --timeout 15000 --path ./node_modules/phantomjs/bin/phantomjs --view 1024x768 http://localhost:3000",
-    "test-remote": "./node_modules/mocha-phantomjs/bin/mocha-phantomjs --timeout 15000 --path ./node_modules/phantomjs/bin/phantomjs --view 1024x768 http://antonfisher.com/demo/mocha-extjs/",
+    "test": "./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --view 1024x768 http://localhost:3000",
+    "test-remote": "./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --view 1024x768 http://antonfisher.com/demo/mocha-extjs/",
     "lint": "./node_modules/.bin/standard gulpfile.js mocha-extjs.js ./src/**/*.js ./test/suites/**/*.js ./test/sandbox/app/**/*.js | ./node_modules/.bin/snazzy",
     "copy-demo": "./scripts/copy-demo.sh"
   },
@@ -39,9 +39,6 @@
     "url": "https://github.com/antonfisher/node-mocha-extjs/issues"
   },
   "homepage": "https://github.com/antonfisher/node-mocha-extjs",
-  "dependencies": {
-    "mocha-phantomjs": "4.0.2"
-  },
   "devDependencies": {
     "babel-core": "6.x",
     "babel-loader": "6.x",
@@ -51,6 +48,8 @@
     "gulp": "3.x",
     "gulp-sass": "2.x",
     "gulp-sourcemaps": "1.x",
+    "mocha-phantomjs": "4.0.2",
+    "mocha-phantomjs-core": "2.0.1",
     "snazzy": "3.x",
     "standard": "6.x",
     "webpack-stream": "3.x"
