@@ -1,6 +1,6 @@
 # mocha-extjs
 
-![Status](https://img.shields.io/badge/status-alpha-orange.svg)
+![Status](https://img.shields.io/badge/status-alpha-lightgray.svg)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Build Status](https://travis-ci.org/antonfisher/node-mocha-extjs.svg?branch=master)](https://travis-ci.org/antonfisher/node-mocha-extjs)
 
