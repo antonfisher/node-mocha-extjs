@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+ - "5.10.1"
+before_script:
+  - npm install
+  - npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1
+  - rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core
+  - npm start &
+  - sleep 10
