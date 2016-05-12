@@ -1,9 +1,9 @@
 # mocha-extjs
 
-![Status](https://img.shields.io/badge/status-alpha-lightgray.svg)
+[![build](https://travis-ci.org/antonfisher/node-mocha-extjs.svg?branch=master)](https://travis-ci.org/antonfisher/node-mocha-extjs)
+[![npm](https://img.shields.io/npm/dt/mocha-extjs.svg?maxAge=86400)](https://www.npmjs.com/package/mocha-extjs)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![npm](https://img.shields.io/npm/dt/mocha-extjs.svg?maxAge=86400)]()
-[![Build Status](https://travis-ci.org/antonfisher/node-mocha-extjs.svg?branch=master)](https://travis-ci.org/antonfisher/node-mocha-extjs)
+![status](https://img.shields.io/badge/status-alpha-lightgray.svg)
 
 Framework for testing ExtJs applications which simulates user actions.
 
