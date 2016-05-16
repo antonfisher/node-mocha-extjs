@@ -4,6 +4,7 @@ import {waitForFn} from '../../utils/utils.js'
 
 import {ExtJsComponentTab} from './components/tab.js'
 import {ExtJsComponentGrid} from './components/grid.js'
+import {ExtJsComponentDataView} from './components/dataview.js'
 import {ExtJsComponentRadio} from './components/radio.js'
 import {ExtJsComponentButton} from './components/button.js'
 import {ExtJsComponentWindow} from './components/window.js'
@@ -26,7 +27,7 @@ export class ExtJsDriver {
   get supportedComponents () {
     return [
       'tab', 'grid', 'radio', 'button', 'window', 'checkBox', 'comboBox', 'textField', 'numberField',
-      'cellEditor'
+      'cellEditor', 'dataview'
     ]
   }
 
@@ -69,6 +70,8 @@ export class ExtJsDriver {
       componentObject = new ExtJsComponentCellEditor(properties)
     } else if (type === 'numberField') {
       componentObject = new ExtJsComponentNumberField(properties)
+    } else if (type === 'dataview') {
+      componentObject = new ExtJsComponentDataView(properties)
     }
 
     if (!componentObject) {
