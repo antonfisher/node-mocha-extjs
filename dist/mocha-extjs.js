@@ -9616,14 +9616,14 @@
 
 	    _createClass(ExtJsComponentDataView, [{
 	        key: 'select',
-	        value: function select(callback, index, itemCls) {
+	        value: function select(callback, index) {
 	            var _this2 = this;
 
 	            var cmp = this.extJsComponent;
 	            var htmlElement = null;
 
 	            try {
-	                htmlElement = document.getElementById(cmp.el.id).getElementsByClassName(itemCls || 'x-dataview-item')[index];
+	                htmlElement = document.getElementById(cmp.el.id).getElementsByClassName(cmp.itemCls)[index];
 	            } catch (e) {
 	                return callback('Failed to get element of "' + this.componentType + '" index #' + index + '": ' + e);
 	            }
