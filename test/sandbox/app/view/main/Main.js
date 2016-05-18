@@ -11,7 +11,8 @@ Ext.define('Sandbox.view.main.Main', {
     'Sandbox.view.main.tab.Windows',
     'Sandbox.view.main.tab.Content',
     'Sandbox.view.main.tab.Fields',
-    'Sandbox.view.main.tab.Grids'
+    'Sandbox.view.main.tab.Grids',
+    'Sandbox.view.main.tab.Dataview'
   ],
 
   controller: 'main',
@@ -45,6 +46,8 @@ Ext.define('Sandbox.view.main.Main', {
       xtype: 'tabLoadMasks'
     }, {
       xtype: 'tabContent'
+    },{
+      xtype: 'tabDataview'
     }]
   }
 })
