@@ -14,7 +14,7 @@ Ext.define('Sandbox.view.main.tab.Dataview', {
         title: 'customDataview with default itemCls',
         suiteWidth: 400,
         suiteCode: [
-            'eTT().grid(\'customDataviewReference\').select(done, 1)'
+            'eTT().grid(\'customDataviewReference\').select(1, done)'
         ],
         suiteItems: {
             xtype: 'customDataview',
@@ -25,7 +25,7 @@ Ext.define('Sandbox.view.main.tab.Dataview', {
         title: 'customDataview with itemCls = "name-item"',
         suiteWidth: 400,
         suiteCode: [
-            'eTT().grid(\'customDataviewReference1\').select(done, 0)'
+            'eTT().grid(\'customDataviewReference1\').select(0, done)'
         ],
         suiteItems: {
             xtype: 'customDataview',
