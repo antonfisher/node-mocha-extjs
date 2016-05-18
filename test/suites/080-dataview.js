@@ -11,7 +11,7 @@ describe('Dataview', function () {
     })
 
     it('Click on first "customDataviewReference1" dataview item with itemCls', function (done) {
-        eTT().dataview('customDataviewReference1').select(0, done, 'name-item');
+        eTT().dataview('customDataviewReference1').select(0, done);
     })
 })
 
