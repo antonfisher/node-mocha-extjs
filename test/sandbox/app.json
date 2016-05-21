@@ -51,12 +51,10 @@
    * For example,
    *
    *      "requires": [
-   *          "charts"
+   *          "charts",
+   *          "font-awesome"
    *      ]
    */
-  "requires": [
-    "font-awesome"
-  ],
 
   /**
    * Fashion build configuration properties.
@@ -207,6 +205,11 @@
    */
   "js": [
     {
+      "path": "${framework.dir}/build/ext-all-debug.js"
+      //"path": "https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.1/ext-all-debug.js",
+      //"remote": true
+    },
+    {
       "path": "app.js",
       "bundle": true
     }
@@ -216,26 +219,26 @@
   /**
    * Settings specific to classic toolkit builds.
    */
-  "classic": {
-    "js": [
-      // Remove this entry to individually load sources from the framework.
-      {
-        "path": "${framework.dir}/build/ext-all-rtl-debug.js"
-      }
-    ]
-  },
+//  "classic": {
+//    "js": [
+//      // Remove this entry to individually load sources from the framework.
+//      {
+//        "path": "${framework.dir}/build/ext-all-rtl-debug.js"
+//      }
+//    ]
+//  },
 
   /**
    * Settings specific to modern toolkit builds.
    */
-  "modern": {
-    "js": [
-      // Remove this entry to individually load sources from the framework.
-      {
-        "path": "${framework.dir}/build/ext-modern-all-debug.js"
-      }
-    ]
-  },
+//  "modern": {
+//    "js": [
+//      // Remove this entry to individually load sources from the framework.
+//      {
+//        "path": "${framework.dir}/build/ext-modern-all-debug.js"
+//      }
+//    ]
+//  },
 
   /**
    * List of all CSS assets in the right inclusion order.
@@ -576,5 +579,5 @@
    * Uniquely generated id for this application, used as prefix for localStorage keys.
    * Normally you should never change this value.
    */
-  "id": "2afda357-f450-492c-a287-79bdcccf29b1"
+  "id": "f7f558e3-d885-4b67-9b73-52bbd50052b2"
 }
