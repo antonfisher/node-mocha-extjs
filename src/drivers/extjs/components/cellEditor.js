@@ -18,7 +18,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
         .getElementsByClassName('x-grid-cell')[colIndex]
     } catch (e) {
       return callback(new Error(
-        `Failed to find cell element of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}"`,
+        `Failed to find cell element of "${this.componentType}" row:#${rowIndex}, col:#${colIndex}`,
         e
       ))
     }
@@ -26,7 +26,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
     new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
       if (err) {
         return callback(new Error(
-          `Failed to click on cell element of "${this.componentType}" row: #${rowIndex}", col: #${colIndex}": ${err}`
+          `Failed to click on cell element of "${this.componentType}" row: #${rowIndex}, col: #${colIndex}: ${err}`
         ))
       }
 
@@ -48,7 +48,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
         }
       } catch (e) {
         return callback(new Error(
-          `Failed to get editor element of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}": ${e}`
+          `Failed to get editor element of "${this.componentType}" row:#${rowIndex}, col:#${colIndex}: ${e}`
         ))
       }
 
@@ -57,7 +57,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
 
       if (!this.selectors) {
         return callback(new Error(
-          `Failed to get editor component of "${this.componentType}" row:#${rowIndex}", col:#${colIndex}": ${e}`
+          `Failed to get editor component of "${this.componentType}" row:#${rowIndex}, col:#${colIndex}: ${e}`
         ))
       }
 
