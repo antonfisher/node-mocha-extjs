@@ -200,6 +200,7 @@ $ sencha app build
 
 Please take care to maintain the existing coding style, unit tests for any changed functionality.
 Eslint and test your code.
+Push your changes without `./dist/mocha-extjs.*` files, to keep commits cleaner between library releases.
 
 ## Releases History
 
