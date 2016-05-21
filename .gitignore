@@ -13,5 +13,4 @@
 
 /test/sandbox/build/temp
 /test/sandbox/build/development
-/test/sandbox/build/production/Sandbox/index.html
-/test/sandbox/build/production/Sandbox/app.*
+/test/sandbox/build/production
