@@ -173,6 +173,7 @@ eTT().grid('Names').checkRowsCount(2, done);
 eTT().grid('Cell editing').cellEditor(1, 0).select(0, done);
 eTT().grid('Cell editing').cellEditor(0, 2).fill('test1', done);
 eTT().grid('Cell editing').cellEditor(0, 3).click(done);
+eTT().grid('customDataviewReference').select(1, done);
 eTT().waitLoadMask(done);
 eTT().waitText('Result is here!', done);
 ```
