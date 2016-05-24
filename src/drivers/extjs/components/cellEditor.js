@@ -33,14 +33,14 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
       let fieldElement = null
       try {
         const editorElements = document.getElementById(cmp.el.id).getElementsByClassName('x-editor')
-        let i = 0;
-        while (editorElements && editorElements.item(i)) {
-          const editorElement = editorElements.item(i)
+
+        // "editorElements.item(i)" doesn't work in PhantonJS
+        for (let i = 0; i < editorElements.length; i++) {
+          const editorElement = editorElements[i];
           if (this.driver.isVisibleElement(editorElement)) {
             fieldElement = editorElement.getElementsByClassName('x-field')[0]
             break
           }
-          i++
         }
 
         if (!fieldElement) {
