@@ -68,18 +68,24 @@ Done. Run your application!
 
 ## PhantomJs
 
-It works now, but some hack needed. Just install `mocha-phantomjs` and upgrade one of its dependency to latest version:
+It works now, but some hack needed.
+First of all you need _PhantonJs_ version 2 and `mocha-phantomjs` library.
+After install `mocha-phantomjs` upgrade one of its dependency to latest version:
 
 ```bash
-$ npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1
+$ npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1 phantomjs-prebuilt@2.1.7
 $ rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core
+
+# check PhantonJs version, should be like:
+$ ./node_modules/.bin/phantomjs --version
+2.1.1
 ```
 
 Run tests in console:
 
 ```bash
 # http://localhost:3000 - application address
-$ ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --view 1024x768 http://localhost:3000
+$ ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://localhost:3000
 ```
 
 Self library test with _PhantonJs_:
@@ -125,6 +131,7 @@ eTT() -->--->|------->--->|- button ---> (|- '%title%'     )----.
         |    |            |- textfield    |- '%boxLabel%'       |
         |    |            |- checkbox     |- '%xtype%'          |
         |    |            |- combobox     `- '%text%'           |
+        |    |            |- dataview                           |
         |    |            |- radio                              |
         |    |            |- grid        .----------------------x----------------------.
         |    |            `- tab         |                                             |
@@ -198,13 +205,14 @@ $ sencha app build
 
 ## Contributing
 
-Please take care to maintain the existing coding style, unit tests for any changed functionality.
-Eslint and test your code.
+Please take care to maintain the existing coding style, tests for any changed functionality.
+`npm test` and `npm run lint` your code.
 Push your changes without `./dist/mocha-extjs.*` files, to keep commits cleaner between library releases.
 
 ## Releases History
 
-* 0.1.6 CellEditing plugin support in _PhantomJs_
+* 0.1.7 Move to _PhantomJs v2_, _ExtJs v6_, add _DataView_ support (thanks [@vadimpopa](https://github.com/antonfisher/node-mocha-extjs/pull/1))
+* 0.1.6 _CellEditing_ plugin support in _PhantomJs_
 * 0.1.5 Update click method, minor fixes
 * 0.1.4 New grid cell editor methods
 * 0.1.3 Fix previous release trouble
