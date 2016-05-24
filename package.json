@@ -13,7 +13,7 @@
     "lint": "./node_modules/.bin/standard gulpfile.js mocha-extjs.js ./src/**/*.js ./test/suites/**/*.js ./test/sandbox/app/**/*.js | ./node_modules/.bin/snazzy",
     "copy-demo": "./scripts/copy-demo.sh",
     "fix-deps": "rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core",
-    "postinstall": "npm fix-deps"
+    "postinstall": "npm run fix-deps"
   },
   "standard": {
     "globals": [
