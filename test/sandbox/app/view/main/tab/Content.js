@@ -39,5 +39,4 @@ Ext.define('Sandbox.view.main.tab.Content', {
       handler: 'onContentHideMeButtonClick'
     }
   }]
-
 })

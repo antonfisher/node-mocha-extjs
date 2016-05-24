@@ -31,5 +31,4 @@ Ext.define('Sandbox.view.main.tab.LoadMasks', {
       handler: 'onLoadMasksShowComponentButtonClick'
     }
   }]
-
 })

@@ -25,5 +25,4 @@ Ext.define('Sandbox.view.main.tab.Windows', {
     xtype: 'button',
     text: 'Yes'
   }]
-
 })

@@ -11,7 +11,7 @@ Ext.define('Sandbox.view.main.tab.Buttons', {
 
   items: [{
     xtype: 'suitePanel',
-    suiteCode: 'eTT().button(\"Simple button\").isEnabled().click(done)',
+    suiteCode: 'eTT().button(\'Simple button\').isEnabled().click(done)',
     suiteItems: {
       text: 'Simple button',
       xtype: 'button',
@@ -43,5 +43,4 @@ Ext.define('Sandbox.view.main.tab.Buttons', {
       handler: 'onButtonsSelectMeByCustomXtypeButtonClick'
     }
   }]
-
 })

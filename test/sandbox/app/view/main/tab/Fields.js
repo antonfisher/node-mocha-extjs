@@ -59,5 +59,4 @@ Ext.define('Sandbox.view.main.tab.Fields', {
       ]
     }
   }]
-
 })

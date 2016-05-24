@@ -70,5 +70,4 @@ Ext.define('Sandbox.view.main.tab.Grids', {
       }]
     }
   }]
-
 })
