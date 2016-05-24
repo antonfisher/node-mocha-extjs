@@ -8,7 +8,6 @@ cd test/sandbox/ \
     && mkdir -p ./"${DEMO_DEST}" \
     && rm -rf ./"${DEMO_DEST}"/* \
     && cp -r ./test/sandbox/build/production/Sandbox/* ./"${DEMO_DEST}"/ \
-    && cp -r dist/ ./"${DEMO_DEST}"/ \
     && mkdir -p ./"${DEMO_DEST}"/test/ \
     && cp -r test/suites/ ./"${DEMO_DEST}"/test;
 exit_code="${?}";
