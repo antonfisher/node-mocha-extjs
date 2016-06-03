@@ -11,6 +11,4 @@
 /test/sandbox/resources
 /test/sandbox/sass
 
-/test/sandbox/build/temp
-/test/sandbox/build/development
-/test/sandbox/build/production
+/test/sandbox/build

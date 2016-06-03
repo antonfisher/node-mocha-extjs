@@ -80,7 +80,7 @@
      * root namespace, change this to "". Doing so would change the mapping of
      * "FooApp.view.Foo" to "sass/src/FooApp/view/Foo.scss".
      */
-    "namespace": "FooApp",
+    "namespace": "Sandbox",
 
     /**
      * File used to save sass variables edited via Sencha Inspector. This file
@@ -207,6 +207,7 @@
     {
       "path": "${framework.dir}/build/ext-all-debug.js"
       //"path": "https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.1/ext-all-debug.js",
+      //"includeInBundle": true,
       //"remote": true
     },
     {
