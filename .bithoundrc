@@ -1,18 +1,18 @@
 {
   "ignore": [
-    "./node_modules/**",
-    "./dist/**",
-    "./test/sandbox/.sencha/**",
-    "./test/sandbox/build/**",
-    "./test/sandbox/ext/**",
-    "./test/sandbox/*.js",
-    "./test/sandbox/*.json",
-    "./test/sandbox/*.css",
-    "./test/sandbox/*.xml",
-    "./test/sandbox/*.html"
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/test/sandbox/.sencha/**",
+    "**/test/sandbox/build/**",
+    "**/test/sandbox/ext/**",
+    "**/test/sandbox/*.js",
+    "**/test/sandbox/*.json",
+    "**/test/sandbox/*.css",
+    "**/test/sandbox/*.xml",
+    "**/test/sandbox/*.html"
   ],
   "test": [
-    "./test/suites/**"
+    "**/test/suites/**"
   ],
   "critics": {
     "lint": {
