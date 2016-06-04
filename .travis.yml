@@ -5,9 +5,9 @@ before_script:
   - cd test/sandbox
   - wget https://dl.dropboxusercontent.com/u/21095169/archive/sencha-cmd-6.1.2.15.tar.gz
   - tar -zxvf sencha-cmd-6.1.2.15.tar.gz
-  - ./6.1.2.15/sencha app build
+  - ./6.1.2.15/sencha app build development
   - cd ../../
   - npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1 phantomjs-prebuilt@2.1.7
   - rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core
   - npm start &
-  - sleep 10
+  - sleep 20
