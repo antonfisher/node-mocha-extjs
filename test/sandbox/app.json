@@ -205,10 +205,8 @@
    */
   "js": [
     {
-      "path": "${framework.dir}/build/ext-all-debug.js"
-      //"path": "https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.1/ext-all-debug.js",
-      //"includeInBundle": true,
-      //"remote": true
+      "path": "${framework.dir}/build/ext-all-debug.js",
+      "includeInBundle": true
     },
     {
       "path": "app.js",
@@ -302,6 +300,16 @@
    * Settings specific to production builds.
    */
   "production": {
+    "js": [
+      {
+        "path": "https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.1/ext-all-debug.js",
+        "remote": true
+      },
+      {
+        "path": "app.js",
+        "bundle": true
+      }
+    ],
     "output": {
       "appCache": {
         "enable": true,
