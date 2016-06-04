@@ -48,8 +48,8 @@
     "test/sandbox/ext",
     "test/sandbox/*.js",
     "test/sandbox/*.json",
-    "test/sandbox/*.css"
-    "test/sandbox/*.xml"
+    "test/sandbox/*.css",
+    "test/sandbox/*.xml",
     "test/sandbox/*.html"
   ],
   "test": [
