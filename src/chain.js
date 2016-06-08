@@ -11,9 +11,9 @@ export class Chain {
     this._itemsSet = new Set()
 
     this._chainRunned = false
-    this._chainCallback = (() => {
+    this._chainCallback = () => {
       throw new Error('Chain callback is not presented.')
-    })
+    }
 
     this.driver = driver
     this.itemsRunDelay = itemsRunDelay
@@ -38,7 +38,7 @@ export class Chain {
   }
 
   createActionFunction (actionType, invert) {
-    return ((...args) => {
+    return (...args) => {
       if (this._chainRunned) {
         throw new Error('Cannot add an action after the action which calls Mocha test callback.')
       }
@@ -50,7 +50,7 @@ export class Chain {
           this._chainCallback = arg
           break
         }
-        actionArgs.push(arg);
+        actionArgs.push(arg)
       }
 
       const chainProperties = {
@@ -73,13 +73,13 @@ export class Chain {
       }
 
       return this
-    })
+    }
   }
 
   run () {
     const itemsGenerator = this._itemsSet.items()
 
-    const runNextAction = (() => {
+    const runNextAction = () => {
       const item = itemsGenerator.next()
 
       if (item.done) {
@@ -95,7 +95,7 @@ export class Chain {
           }, this.itemsRunDelay)
         })
       }
-    })
+    }
 
     runNextAction()
   }
@@ -104,7 +104,6 @@ export class Chain {
     for (let item of this._itemsSet.reversedItems()) {
       if (item.component) {
         return item.component
-        break
       }
     }
 

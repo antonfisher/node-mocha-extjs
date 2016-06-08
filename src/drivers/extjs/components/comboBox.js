@@ -6,7 +6,7 @@ import {ExtJsComponentBase} from './base.js'
 export class ExtJsComponentComboBox extends ExtJsComponentBase {
 
   get titleProperties () {
-    return ['fieldLabel', ...super.titleProperties];
+    return ['fieldLabel', ...super.titleProperties]
   }
 
   generateSelectors (titleOrSelector) {
@@ -21,7 +21,7 @@ export class ExtJsComponentComboBox extends ExtJsComponentBase {
         return callback(`cannot select item #${index} in component "${this.componentType}": ${err}`)
       }
 
-      //TODO add validation method
+      // TODO add validation method
       if (!cmp || !cmp.picker || !cmp.picker.el || !cmp.picker.el.id) {
         return callback(`cannot find picker of component "${this.componentType}"`)
       }

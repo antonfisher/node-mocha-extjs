@@ -1,11 +1,11 @@
-'use strict';
+'use strict'
 
 import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentCheckBox extends ExtJsComponentBase {
 
   get titleProperties () {
-    return ['fieldLabel', 'boxLabel', ...super.titleProperties];
+    return ['fieldLabel', 'boxLabel', ...super.titleProperties]
   }
 
   generateSelectors (titleOrSelector) {

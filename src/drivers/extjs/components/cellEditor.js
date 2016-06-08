@@ -36,7 +36,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
 
         // "editorElements.item(i)" doesn't work in PhantonJS
         for (let i = 0; i < editorElements.length; i++) {
-          const editorElement = editorElements[i];
+          const editorElement = editorElements[i]
           if (this.driver.isVisibleElement(editorElement)) {
             fieldElement = editorElement.getElementsByClassName('x-field')[0]
             break
@@ -44,7 +44,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
         }
 
         if (!fieldElement) {
-          throw new Error(`no "x-field" element found`)
+          throw new Error('no "x-field" element found')
         }
       } catch (e) {
         return callback(new Error(
@@ -57,7 +57,7 @@ export class ExtJsComponentCellEditor extends ExtJsComponentBase {
 
       if (!this.selectors) {
         return callback(new Error(
-          `Failed to get editor component of "${this.componentType}" row:#${rowIndex}, col:#${colIndex}: ${e}`
+          `Failed to get editor component of "${this.componentType}" row:#${rowIndex}, col:#${colIndex}`
         ))
       }
 

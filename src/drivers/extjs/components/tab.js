@@ -1,11 +1,11 @@
-'use strict';
+'use strict'
 
 import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentTab extends ExtJsComponentBase {
 
   get titleProperties () {
-    return ['title', ...super.titleProperties];
+    return ['title', ...super.titleProperties]
   }
 
   generateSelectors (titleOrSelector) {

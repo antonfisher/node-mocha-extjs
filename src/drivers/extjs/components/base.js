@@ -71,7 +71,7 @@ export class ExtJsComponentBase {
           let title = item[prop]
           const fnName = `get${prop[0].toUpperCase()}${prop.slice(1)}`
           if (fnName && item[fnName] && typeof item[fnName] === 'function') {
-            title = item[fnName].call(item)
+            title = item[fnName]()
           }
           if ((new RegExp(titleOrSelector, 'g')).test(title)) {
             extJsComponent = item
@@ -88,12 +88,12 @@ export class ExtJsComponentBase {
       return callback(new Error(`No existing HTML element for selector "${selectors.join(', ')}".`))
     }
 
-    //TODO to method
+    // TODO to method
     const rect = extJsComponent.el.dom.getBoundingClientRect()
     if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
       return callback(new Error(
-        `No visible HTML element for selector "${selectors.join(', ')}", `
-        + `offset: ${rect.left},${rect.top}, size: ${rect.width},${rect.height}.`
+        `No visible HTML element for selector "${selectors.join(', ')}", ` +
+        `offset: ${rect.left},${rect.top}, size: ${rect.width},${rect.height}.`
       ))
     }
 
@@ -103,7 +103,7 @@ export class ExtJsComponentBase {
     return callback(null, this)
   }
 
-  //BUG does not work properly
+  // BUG does not work properly
   getVisibleComponents (selector) {
     try {
       return Ext.ComponentQuery.query(selector).filter((item) => {
@@ -119,18 +119,18 @@ export class ExtJsComponentBase {
           return true
         }
 
-        //this.mochaUi.hide()
+        // this.mochaUi.hide()
         this.driver.mochaUi.hide()
         const visible = (window.document.elementsFromPoint(x, y) || []).filter((dom) => {
           return (dom === item.el.dom)
         })
-        //this.mochaUi.show()
+        // this.mochaUi.show()
         this.driver.mochaUi.show()
 
         return (visible.length > 0)
       })
     } catch (e) {
-      throw `${e}. Selector: ${selector}`;
+      throw new Error(`${e}. Selector: ${selector}`)
     }
   }
 
@@ -170,8 +170,8 @@ export class ExtJsComponentBase {
       return callback(null)
     } else {
       return callback(new Error(
-        `state of "${this.componentType}" function "${stateFnName}" expected to be "${expectedValue}" `
-        + `instead of "${result}"`
+        `state of "${this.componentType}" function "${stateFnName}" expected to be "${expectedValue}" ` +
+        `instead of "${result}"`
       ))
     }
   }

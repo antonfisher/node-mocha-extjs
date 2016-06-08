@@ -6,7 +6,7 @@ import {ExtJsComponentBase} from './base.js'
 export class ExtJsComponentGrid extends ExtJsComponentBase {
 
   get titleProperties () {
-    return ['title', ...super.titleProperties];
+    return ['title', ...super.titleProperties]
   }
 
   generateSelectors (titleOrSelector) {
@@ -44,8 +44,8 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
       return callback(null)
     } else {
       return callback(
-        `No store binded to "${this.componentType}" (selectors: ${this.selectors}):`
-        + ` count of rows expected to be equal "${countExpected}" instead of "${count}".`
+        `No store binded to "${this.componentType}" (selectors: ${this.selectors}):` +
+        ` count of rows expected to be equal "${countExpected}" instead of "${count}".`
       )
     }
   }

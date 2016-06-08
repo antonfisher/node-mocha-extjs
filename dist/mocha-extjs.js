@@ -8372,7 +8372,6 @@
 
 	          if (item.component) {
 	            return item.component;
-	            break;
 	          }
 	        }
 	      } catch (err) {
@@ -9081,7 +9080,7 @@
 	  }, {
 	    key: 'waitText',
 	    value: function waitText(callback, text) {
-	      //TODO check parent
+	      // TODO check parent
 	      return (0, _utils.waitForFn)(function (done) {
 	        var textPresented = false;
 
@@ -9229,7 +9228,7 @@
 	            var title = item[prop];
 	            var fnName = 'get' + prop[0].toUpperCase() + prop.slice(1);
 	            if (fnName && item[fnName] && typeof item[fnName] === 'function') {
-	              title = item[fnName].call(item);
+	              title = item[fnName]();
 	            }
 	            if (new RegExp(titleOrSelector, 'g').test(title)) {
 	              extJsComponent = item;
@@ -9246,7 +9245,7 @@
 	        return callback(new Error('No existing HTML element for selector "' + selectors.join(', ') + '".'));
 	      }
 
-	      //TODO to method
+	      // TODO to method
 	      var rect = extJsComponent.el.dom.getBoundingClientRect();
 	      if (rect.left + rect.width < 0 || rect.top + rect.height < 0) {
 	        return callback(new Error('No visible HTML element for selector "' + selectors.join(', ') + '", ' + ('offset: ' + rect.left + ',' + rect.top + ', size: ' + rect.width + ',' + rect.height + '.')));
@@ -9258,7 +9257,7 @@
 	      return callback(null, this);
 	    }
 
-	    //BUG does not work properly
+	    // BUG does not work properly
 
 	  }, {
 	    key: 'getVisibleComponents',
@@ -9279,18 +9278,18 @@
 	            return true;
 	          }
 
-	          //this.mochaUi.hide()
+	          // this.mochaUi.hide()
 	          _this2.driver.mochaUi.hide();
 	          var visible = (window.document.elementsFromPoint(x, y) || []).filter(function (dom) {
 	            return dom === item.el.dom;
 	          });
-	          //this.mochaUi.show()
+	          // this.mochaUi.show()
 	          _this2.driver.mochaUi.show();
 
 	          return visible.length > 0;
 	        });
 	      } catch (e) {
-	        throw e + '. Selector: ' + selector;
+	        throw new Error(e + '. Selector: ' + selector);
 	      }
 	    }
 	  }, {
@@ -9886,7 +9885,7 @@
 	          return callback('cannot select item #' + index + ' in component "' + _this2.componentType + '": ' + err);
 	        }
 
-	        //TODO add validation method
+	        // TODO add validation method
 	        if (!cmp || !cmp.picker || !cmp.picker.el || !cmp.picker.el.id) {
 	          return callback('cannot find picker of component "' + _this2.componentType + '"');
 	        }
@@ -10042,7 +10041,7 @@
 	        _this2.extJsComponent = Ext.ComponentQuery.query(_this2.selectors)[0];
 
 	        if (!_this2.selectors) {
-	          return callback(new Error('Failed to get editor component of "' + _this2.componentType + '" row:#' + rowIndex + ', col:#' + colIndex + ': ' + e));
+	          return callback(new Error('Failed to get editor component of "' + _this2.componentType + '" row:#' + rowIndex + ', col:#' + colIndex));
 	        }
 
 	        return callback(null, _this2);

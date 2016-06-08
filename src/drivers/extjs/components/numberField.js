@@ -1,11 +1,11 @@
-'use strict';
+'use strict'
 
 import {ExtJsComponentBase} from './base.js'
 
 export class ExtJsComponentNumberField extends ExtJsComponentBase {
 
   get titleProperties () {
-    return ['fieldLabel', ...super.titleProperties];
+    return ['fieldLabel', ...super.titleProperties]
   }
 
   generateSelectors (titleOrSelector) {

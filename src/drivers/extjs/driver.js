@@ -84,10 +84,10 @@ export class ExtJsDriver {
   isVisibleElement (element) {
     const style = window.getComputedStyle(element)
     return (
-      Boolean(style)
-      && (typeof style.opacity === 'undefined' || style.opacity !== 0)
-      && (typeof style.display === 'undefined' || style.display !== 'none')
-      && (typeof style.visibility === 'undefined' || style.visibility !== 'hidden')
+      Boolean(style) &&
+      (typeof style.opacity === 'undefined' || style.opacity !== 0) &&
+      (typeof style.display === 'undefined' || style.display !== 'none') &&
+      (typeof style.visibility === 'undefined' || style.visibility !== 'hidden')
     )
   }
 
@@ -95,7 +95,7 @@ export class ExtJsDriver {
     return waitForFn(
       (done) => {
         const maskDisplayed = Ext.ComponentManager.getAll()
-            .filter((item)=> {
+            .filter((item) => {
               return (item.xtype === 'loadmask' && item.isHidden() === false)
             }).length > 0
 
@@ -116,7 +116,7 @@ export class ExtJsDriver {
   }
 
   waitText (callback, text) {
-    //TODO check parent
+    // TODO check parent
     return waitForFn(
       (done) => {
         let textPresented = false

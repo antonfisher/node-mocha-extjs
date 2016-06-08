@@ -2,6 +2,7 @@ language: node_js
 node_js:
  - "5.10.1"
 before_script:
+  - npm run lint
   - cd test/sandbox
   - wget https://dl.dropboxusercontent.com/u/21095169/archive/sencha-extjs-6.0.1.250.tar.gz
   - tar -zxf sencha-extjs-6.0.1.250.tar.gz
