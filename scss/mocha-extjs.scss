@@ -1,15 +1,18 @@
+$colorError: #b94a48;
+$colorWarning: #c09853;
+
 #mocha {
-    z-index: 100000;
-    position: absolute;
     top: 0;
     right: 0;
-    background: #FFF;
-    height: 100%;
     margin: 0;
-    padding-right: 15px;
-    min-width: 300px;
-    overflow: auto;
+    height: 100%;
     opacity: 0.87;
+    overflow: auto;
+    z-index: 100000;
+    min-width: 300px;
+    background: #FFF;
+    position: absolute;
+    padding-right: 15px;
     border-left: 1px solid #f0f0f0;
 
     #mocha-stats {
@@ -18,28 +21,43 @@
     }
 
     #mocha-report {
-        padding: 60px 0 0 0;
         height: 100%;
+        padding: 60px 0 0 0;
+
+        li.suite:last-child {
+            padding-bottom: 25px;
+        }
     }
 
     .test pre.error {
-        max-width: 500px;
         font-size: 10px;
-        line-height: 11px;
+        max-width: 500px;
         box-shadow: none;
         border-radius: 0;
+        line-height: 11px;
+    }
+
+    .test.pass.slow .duration {
+        background: none;
+        color: $colorError;
+        border: 1px solid $colorError;
+    }
+    .test.pass.medium .duration {
+        background: none;
+        color: $colorWarning;
+        border: 1px solid $colorWarning;
     }
 }
 
 #mocha-error {
-    position: absolute;
     top: 50px;
     left: 50px;
-    z-index: 100000;
-    background: #ffdddd;
-    color: #ff6666;
-    font-size: 16px;
-    padding: 20px;
     opacity: 0.9;
+    padding: 20px;
+    color: #ff6666;
+    z-index: 100000;
+    font-size: 16px;
+    position: absolute;
+    background: #ffdddd;
     border: 5px solid #ff6666;
 }

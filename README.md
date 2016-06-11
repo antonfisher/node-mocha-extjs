@@ -227,9 +227,7 @@ Push your changes without `./dist/mocha-extjs.*` files, to keep commits cleaner 
 
 ## ToDo
 
-- [x] ES2015
-- [x] StandardJs
-- [x] Grid Cell Editing
+- [x] update Mocha UI style
 - [ ] Migrate to WebPack
 - [ ] Use sencha test env
 - [ ] Self tests
