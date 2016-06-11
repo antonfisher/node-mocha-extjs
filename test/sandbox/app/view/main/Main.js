@@ -43,11 +43,11 @@ Ext.define('Sandbox.view.main.Main', {
     }, {
       xtype: 'tabGrids'
     }, {
+      xtype: 'tabDataview'
+    }, {
       xtype: 'tabLoadMasks'
     }, {
       xtype: 'tabContent'
-    }, {
-      xtype: 'tabDataview'
     }]
   }
 })
