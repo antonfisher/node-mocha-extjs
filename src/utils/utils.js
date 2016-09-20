@@ -1,7 +1,7 @@
 'use strict'
 
 export function waitForFn (waitFn, callback,
-  {delay: delay, timeout: timeout, ticInterval: ticInterval} = {delay: 10, timeout: 10 * 1000, ticInterval: 500}) {
+  {delay, timeout, ticInterval} = {delay: 10, timeout: 10 * 1000, ticInterval: 500}) {
   const startTimestamp = +(new Date())
   let interval
   let lastError = ''
