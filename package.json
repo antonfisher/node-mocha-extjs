@@ -8,8 +8,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/gulp",
-    "test": "./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://localhost:3000",
-    "test-remote": "./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://antonfisher.com/demo/mocha-extjs/",
+    "test": "npm run clear-phantomjs-cache && ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://localhost:3000",
+    "test-remote": "npm run clear-phantomjs-cache && ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://antonfisher.com/demo/mocha-extjs/",
     "lint": "./node_modules/.bin/standard 'gulpfile.js' 'mocha-extjs.js' './src/**/*.js' './test/suites/**/*.js' './test/sandbox/app/**/*.js' | ./node_modules/.bin/snazzy",
     "copy-demo": "./scripts/copy-demo.sh",
     "fix-deps": "rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "babel-core": "6.x",
     "babel-loader": "6.x",
-    "babel-polyfill": "6.9.0",
+    "babel-polyfill": "6.13.0",
     "babel-preset-es2015": "6.x",
     "browser-sync": "2.x",
     "gulp": "3.x",
@@ -53,9 +53,9 @@
     "gulp-sourcemaps": "1.x",
     "mocha-phantomjs": "4.0.2",
     "mocha-phantomjs-core": "2.0.1",
-    "phantomjs-prebuilt": "2.1.7",
-    "snazzy": "4.x",
-    "standard": "7.x",
+    "phantomjs-prebuilt": "2.1.12",
+    "snazzy": "5.0.0",
+    "standard": "8.1.0",
     "webpack-stream": "3.x"
   }
 }
