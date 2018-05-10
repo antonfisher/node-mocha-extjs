@@ -1,6 +1,5 @@
 # mocha-extjs
 
-[![build](https://travis-ci.org/antonfisher/node-mocha-extjs.svg?branch=master)](https://travis-ci.org/antonfisher/node-mocha-extjs)
 [![npm](https://img.shields.io/npm/dt/mocha-extjs.svg?maxAge=86400)](https://www.npmjs.com/package/mocha-extjs)
 [![bitHound Overall Score](https://www.bithound.io/github/antonfisher/node-mocha-extjs/badges/score.svg)](https://www.bithound.io/github/antonfisher/node-mocha-extjs)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
