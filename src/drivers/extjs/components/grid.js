@@ -50,4 +50,22 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
     }
   }
 
+  clickAction (callback, rowIndex = 0, colIndex = 0, actionIndex = 0) {
+    const cmp = this.extJsComponent
+    let htmlElement = null
+
+    try {
+      htmlElement = document
+          .getElementById(cmp.el.id)
+          .getElementsByClassName('x-grid-item')[rowIndex]
+          .getElementsByClassName('x-grid-cell')[colIndex]
+          .getElementsByClassName('x-action-col-icon')[actionIndex];
+    } catch (e) {
+      return callback(`Failed to get element of "${this.componentType}" row #${rowIndex}": ${e}`)
+    }
+
+    new HTMLComponentBase({htmlElement, driver: this.driver}).click((err) => {
+      return callback(err ? `Failed to click on action item in row #${rowIndex} of "${this.componentType}" ": ${err}` : null)
+    })
+  }
 }

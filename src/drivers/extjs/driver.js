@@ -33,7 +33,7 @@ export class ExtJsDriver {
 
   get supportedComponentActions () {
     return [
-      'click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount', 'edit'
+      'click', 'fill', 'select', 'isEnabled', 'isDisabled', 'isHidden', 'isVisible', 'checkRowsCount', 'edit', 'clickAction'
     ]
   }
 
