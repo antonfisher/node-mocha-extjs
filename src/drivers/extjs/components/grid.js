@@ -59,7 +59,7 @@ export class ExtJsComponentGrid extends ExtJsComponentBase {
           .getElementById(cmp.el.id)
           .getElementsByClassName('x-grid-item')[rowIndex]
           .getElementsByClassName('x-grid-cell')[colIndex]
-          .getElementsByClassName('x-action-col-icon')[actionIndex];
+          .getElementsByClassName('x-action-col-icon')[actionIndex]
     } catch (e) {
       return callback(`Failed to get element of "${this.componentType}" row #${rowIndex}": ${e}`)
     }

@@ -24,9 +24,9 @@ Ext.define('Sandbox.view.main.custom.Grid', {
     items: [{
       iconCls: 'x-fa fa-check',
       handler: function () {
-        Ext.Msg.alert('Alert','Test Action Column');
+        Ext.Msg.alert('Alert', 'Test Action Column')
       }
-    },{
+    }, {
       iconCls: 'x-fa fa-car'
     }]
   }],

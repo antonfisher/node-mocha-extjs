@@ -18,17 +18,17 @@ describe('Grids', function () {
     eTT().grid('Names').checkRowsCount(2, done)
   })
 
-  it('Click on first action in first row of "Names" grid', function(done) {
-    eTT().grid('Names').clickAction(0, 2, 0, function() {
+  it('Click on first action in first row of "Names" grid', function (done) {
+    eTT().grid('Names').clickAction(0, 2, 0, function () {
       eTT().button('OK').click(done)
     })
   })
 
-  it('Click on second action in first row of "Names" grid', function(done) {
+  it('Click on second action in first row of "Names" grid', function (done) {
     eTT().grid('Names').clickAction(0, 2, 1, done)
   })
 
-  it('Click on second action in second row of "Names" grid', function(done) {
+  it('Click on second action in second row of "Names" grid', function (done) {
     eTT().grid('Names').clickAction(1, 2, 1, done)
   })
 
@@ -59,5 +59,4 @@ describe('Grids', function () {
   it('Edit "Cell editing" grid #2 row, check column #3', function (done) {
     eTT().grid('Cell editing').cellEditor(1, 3).click(done)
   })
-
 })
