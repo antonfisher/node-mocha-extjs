@@ -1,12 +1,11 @@
 # mocha-extjs
 
 [![npm](https://img.shields.io/npm/dt/mocha-extjs.svg?maxAge=86400)](https://www.npmjs.com/package/mocha-extjs)
-[![bitHound Overall Score](https://www.bithound.io/github/antonfisher/node-mocha-extjs/badges/score.svg)](https://www.bithound.io/github/antonfisher/node-mocha-extjs)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![GitHub license](https://img.shields.io/github/license/antonfisher/node-mocha-extjs.svg)](https://github.com/antonfisher/node-mocha-extjs/blob/master/LICENSE)
 ![status](https://img.shields.io/badge/status-alpha-lightgray.svg)
 
-Framework for testing ExtJs applications which simulates user actions.
+ExtJs applications testing framework which simulates user actions.
 
 [Online demo](http://antonfisher.com/demo/mocha-extjs/)
 
@@ -15,10 +14,10 @@ Framework for testing ExtJs applications which simulates user actions.
 Component search by _title_, _fieldLabel_, _reference_, _boxLabel_, _xtype_, _text_ properties:
 
 ```javascript
-// click on button "Save"
+// click on "Save" button
 eTT().button('Save').click(done);
 
-// select first item in combobox with "Country" fieldLabel.
+// select first item in the combobox with "Country" fieldLabel.
 eTT().combobox('Country').select(1, done);
 ```
 
@@ -69,15 +68,15 @@ Done. Run your application!
 
 ## PhantomJs
 
-It works now, but some hack needed.
-First of all you need _PhantonJs_ version 2 and `mocha-phantomjs` library.
-After install `mocha-phantomjs` upgrade one of its dependency to latest version:
+It works now, but some hack is needed.
+First of all you will need _PhantonJs_ version 2 and `mocha-phantomjs` library.
+After `mocha-phantomjs` installation, upgrade one of its dependency to the latest version:
 
 ```bash
 $ npm install mocha-phantomjs@4.0.2 mocha-phantomjs-core@2.0.1 phantomjs-prebuilt@2.1.7
 $ rm -rf ./node_modules/mocha-phantomjs/node_modules/mocha-phantomjs-core
 
-# check PhantonJs version, should be like:
+# check PhantonJs version, should be like this:
 $ ./node_modules/.bin/phantomjs --version
 2.1.1
 ```
@@ -89,7 +88,7 @@ Run tests in console:
 $ ./node_modules/.bin/mocha-phantomjs --timeout 15000 --path ./node_modules/.bin/phantomjs --setting disk-cache=false --view 1024x768 http://localhost:3000
 ```
 
-Self library test with _PhantonJs_:
+Library's self test with _PhantonJs_:
 
 ```bash
 $ npm test
@@ -97,7 +96,7 @@ $ npm test
 
 ## Usage
 
-### Init library before running MochaJs
+### Init the library before running MochaJs
 
 ```javascript
 var eTT = new MochaExtJs(); // init testing framework
@@ -108,7 +107,7 @@ var eTT = new MochaExtJs(); // init testing framework
 ```javascript
 // tests/suites/020-buttons.js
 describe('Buttons', function () {
-    this.bail(true);         // exit on first test fails
+    this.bail(true);         // exit when first test fails
     this.timeout(20 * 1000); // necessary timeout for ui operations
 
     it('Switch to "Buttons" tab', function (done) { // done - async tests callback
@@ -143,6 +142,7 @@ eTT() -->--->|------->--->|- button ---> (|- '%title%'     )----.
         |    `- waitText('%text%')---v   |   |- isVisible                              |
         |                            |   |   |- select                                 |
         |                            |   |   |- checkRowsCount                         |
+        |                            |   |   |- clickAction                            |
         |                            |   |   |- edit                                   |
         |                            |   |   `- fill                                   |
         |                            |   |                                             |
@@ -171,6 +171,7 @@ eTT().radio('check B').click(done);
 eTT().combobox('Select in list').select(1, done);
 eTT().grid('Names').select(1, 1, done);
 eTT().grid('Names').checkRowsCount(2, done);
+eTT().grid('Names').clickAction(0, 2, 1, done); // row, coll, action index
 eTT().grid('Cell editing').cellEditor(1, 0).select(0, done);
 eTT().grid('Cell editing').cellEditor(0, 2).fill('test1', done);
 eTT().grid('Cell editing').cellEditor(0, 3).click(done);
@@ -199,7 +200,7 @@ MochaExtJs.screenshot('./mypath/');
 - build _Sandbox_ application
 ```bash
 $ cd ./node-mocha-extjs/test/sandbox
-$ sencha app build 
+$ sencha app build
 ```
 - install dependencies `$ npm install`
 - run _lint_: `$ npm run lint`
@@ -210,9 +211,11 @@ $ sencha app build
 Please take care to maintain the existing coding style, tests for any changed functionality.
 `npm test` and `npm run lint` your code.
 Push your changes without `./dist/mocha-extjs.*` files, to keep commits cleaner between library releases.
+Thank you!
 
 ## Releases History
 
+* 0.2.0 New grid method - clickAction
 * 0.1.7 Move to _PhantomJs v2_, _ExtJs v6_, add _DataView_ support (thanks [@vadimpopa](https://github.com/antonfisher/node-mocha-extjs/pull/1))
 * 0.1.6 _CellEditing_ plugin support in _PhantomJs_
 * 0.1.5 Update click method, minor fixes
@@ -228,11 +231,11 @@ Push your changes without `./dist/mocha-extjs.*` files, to keep commits cleaner 
 ## ToDo
 
 - [x] update Mocha UI style
+- [x] Self tests
 - [ ] Migrate to WebPack
-- [ ] Use sencha test env
-- [ ] Self tests
+- [ ] Use Sencha test env
 - [ ] New components
-- [ ] Documenation
+- [ ] Documentation
 
 ## License
 
