@@ -18,6 +18,17 @@ Ext.define('Sandbox.view.main.custom.Grid', {
   }, {
     header: 'Count',
     dataIndex: 'count'
+  }, {
+    header: 'Actions',
+    xtype: 'actioncolumn',
+    items: [{
+      iconCls: 'x-fa fa-check',
+      handler: function () {
+        Ext.Msg.alert('Alert', 'Test Action Column')
+      }
+    }, {
+      iconCls: 'x-fa fa-car'
+    }]
   }],
 
   store: Ext.create('Ext.data.Store', {

@@ -18,6 +18,20 @@ describe('Grids', function () {
     eTT().grid('Names').checkRowsCount(2, done)
   })
 
+  it('Click on first action in first row of "Names" grid', function (done) {
+    eTT().grid('Names').clickAction(0, 2, 0, function () {
+      eTT().button('OK').click(done)
+    })
+  })
+
+  it('Click on second action in first row of "Names" grid', function (done) {
+    eTT().grid('Names').clickAction(0, 2, 1, done)
+  })
+
+  it('Click on second action in second row of "Names" grid', function (done) {
+    eTT().grid('Names').clickAction(1, 2, 1, done)
+  })
+
   it('Click on cells of second grid', function (done) {
     eTT().grid('customGridReference').select(0, 0).select(0, 1).select(1, 1).select(1, 0, done)
   })
